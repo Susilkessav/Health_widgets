@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from datetime import date, datetime, time, timedelta, timezone
 from typing import Annotated, Any
+from uuid import UUID
 from zoneinfo import ZoneInfo
 
 from pydantic import AfterValidator, BaseModel, BeforeValidator, ConfigDict, Field, StringConstraints
@@ -28,12 +29,32 @@ def utc(dt: datetime) -> datetime:
     return dt.astimezone(timezone.utc)
 
 
+def json_value(value: Any) -> Any:
+    """JSON-ready form used for hashing and fixtures: UTC "Z" datetimes, string
+    dates/times/UUIDs, lists for tuples."""
+    if isinstance(value, BaseModel):
+        return json_value(value.model_dump(mode="python"))
+    if isinstance(value, datetime):
+        return utc(value).isoformat().replace("+00:00", "Z")
+    if isinstance(value, (date, time, UUID)):
+        return value.isoformat() if isinstance(value, (date, time)) else str(value)
+    if isinstance(value, dict):
+        return {key: json_value(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [json_value(item) for item in value]
+    return value
+
+
+def local_day_start(day: date, zone: str) -> datetime:
+    """The first instant of a local calendar day, in UTC. Where DST skips
+    midnight (e.g. America/Santiago), zoneinfo maps the nonexistent 00:00 to
+    the transition instant, which is exactly when the local day begins."""
+    return utc(datetime.combine(day, time(0), ZoneInfo(zone)))
+
+
 def local_day_minutes(day: date, zone: str) -> float:
     """Length of a local calendar day: 1380, 1440 or 1500 minutes around DST."""
-    tz = ZoneInfo(zone)
-    start = datetime.combine(day, time(0), tz)
-    end = datetime.combine(day + timedelta(days=1), time(0), tz)
-    return (utc(end) - utc(start)).total_seconds() / 60
+    return (local_day_start(day + timedelta(days=1), zone) - local_day_start(day, zone)).total_seconds() / 60
 
 
 def close(a: float, b: float, tolerance: float = DERIVED_TOLERANCE) -> bool:

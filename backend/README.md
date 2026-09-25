@@ -9,6 +9,110 @@ uv sync
 uv run pytest
 ```
 
+## Synthetic dataset — Step 2
+
+Generate the default corpus from `backend/`:
+
+```bash
+uv run python -m app.synthetic generate \
+  --seed 20260923 --start-date 2026-08-14 --days 40 \
+  --timezone America/Chicago --output ../data/synthetic
+uv run pytest -q
+```
+
+No new dependencies or running database are needed for generation. The demo
+contains 40 local days for one fictional person. All five canonical event types
+are represented. The 44 isolated scenarios include all 14 G1 golden cases plus
+calibration, missing history, zero and near-zero MAD, outliers, overlapping sleep, retries,
+corrections, deletions, delayed delivery, irregular step history, DST, travel,
+two-input recovery and a device with no visible data.
+
+`data/synthetic/` at the repository root contains 181 managed files:
+canonical event JSONL, context, delivery batches, authored expectations and a
+manifest with versions, inputs, timezone provenance, counts and SHA-256 hashes.
+Read its `README.md` before consuming the fixtures. Load each dataset separately;
+the isolated scenarios describe alternative histories and must not be combined.
+Use `known_at` to filter deliveries and `effective_at` to select observations.
+Coverage explicitly distinguishes known-empty history from unavailable history.
+
+Changing the seed/date/day count/timezone changes the demo; golden scenarios
+stay fixed. A minimum of 40 demo days is required. Regeneration overwrites managed
+files and preserves unrelated files. Use a temporary output directory to compare
+versions. Stable byte output requires the same generator, inputs, Python runtime
+and timezone data; the manifest records that provenance. Demo client/sample IDs
+are scoped to the seed, starting date and zone, while retries preserve their IDs.
+
+Step 2 verifies canonical records, scenario facts, snapshot conflicts/corrections,
+manifest integrity and fresh-process determinism across ambient timezones.
+Feature assertions run in Step 3; state assertions await the Step 4 engine.
+
+## Feature calculations — Step 3
+
+```bash
+uv run python -m app.features calculate \
+  --dataset ../data/synthetic/scenarios/typical --checkpoint evaluation \
+  [--config config/homeostat.yaml] [--output report.json]
+```
+
+`calculate_features(observations, context, settings)` in `app/features/` turns
+canonical events into a `CalculationReport`: the contract `DailyFeatures`, the
+resolved settings and their hash, an input hash, per-domain evidence and
+diagnostics. It is pure: no clock, files, network or database. Settings live in
+`config/homeostat.yaml` (validated by `app/config.py`; quote times such as
+`"18:00"`). Policies and their reasons are in `../Plan/Step_3_plan.md`:
+
+- **Inputs:** deliveries visible by `known_at`; retries collapse by client ID;
+  reimports add no weight; conflicting provider records are quarantined; visible
+  tombstones remove their record whenever the original arrives.
+- **Sleep:** union of asleep stages minus overlapping awake time, per source;
+  primary = longest overnight episode of the highest-priority source; naps and
+  in-bed-only data never count as primary sleep.
+- **HRV/RHR:** one fixed reading per day (latest inside primary sleep, else first
+  after waking); robust z = (x - median) / max(1.4826 * MAD, floor).
+- **Movement:** current total vs the median total at the same local wall time
+  (any zone, up to 60 minutes earlier) over the previous 28 days. Real history
+  needs hourly buckets from the HealthKit adapter.
+- **Workouts:** overlapping sources split into segments, highest priority wins;
+  unknown coverage is `missing`, known-empty history is `none_recent`.
+- **Confidence:** maturity x freshness x coverage x source weight. Once-daily
+  values stay fresh through their day. "Complete" coverage in production means
+  the query finished after authorization was requested; HealthKit hides denials.
+
+## State engine and widget mapper — Step 4
+
+```bash
+uv run python -m app.pipeline run --dataset ../data/synthetic/scenarios/short_sleep --checkpoint evaluation
+uv run python -m app.pipeline timeline --dataset ../data/synthetic/demo
+```
+
+- **`app/engine.py`:** `compute_health_state(features, settings)` turns
+  `DailyFeatures` into `HealthState`. It is pure, and it rejects features made
+  under different settings, an unsupported feature version, or an `active`
+  workout. Its recovery rule follows G1:
+  - an input votes only when it is ready, classified and has confidence > 0;
+  - two or more adverse inputs → `strained`;
+  - HRV above plus RHR below, with no usable short sleep → `favorable`;
+  - fewer than two inputs → `insufficient_data`;
+  - confidence = min(input confidence) × inputs / 3.
+  
+  Every claim is backed by a driver built from features.
+- **`app/presentation.py`:** `map_widget_state(state)` is the only place health
+  meaning becomes icons and text.
+  - Rules are ranked: shorter sleep, strained recovery, less active, workout
+    complete, longer sleep, favorable recovery, more active, recent workout,
+    learning your baseline, typical day, waiting for data.
+  - Nothing with confidence below 0.5 is shown anywhere.
+  - The text contains no clock or relative times.
+  - Unknown workout types display as "Workout".
+- **`app/pipeline.py`:** runs events → features → state → widget for one
+  checkpoint, or prints a timeline of every demo checkpoint.
+
+Decisions and their reasons are in `../Plan/Step_4_plan.md`.
+
+The full suite has **3,496 passing tests**: 170 contract, 91 synthetic,
+116 feature and 3,119 engine/mapper. The engine and mapper count includes the
+512-case recovery matrix and all 2,500 valid widget state combinations.
+
 ## Contract rules
 
 The Pydantic contracts in `app/contracts/` enforce these rules. This section is the reference for the choices the G1 plan leaves open.
@@ -40,7 +144,7 @@ Retry lifecycle, from plan sections 26–28:
   - If HealthKit supplies `HKMetadataKeyTimeZone`, the adapter uses it and sets `timezone_source="sample_metadata"`.
   - Otherwise it records the device's zone at ingestion time and sets `timezone_source="device_at_ingestion"`.
 - **Sleep belongs to its wake day.** `DailyFeatures.day` is a local date in `DailyFeatures.timezone`. When a primary sleep episode exists, `day` must be the local date on which it ends, in the episode's own timezone.
-- **A step snapshot's `day` is local to its `timezone`.** `as_of` must fall on that day, or exactly on its closing midnight for an end-of-day total.
+- **A step snapshot's `day` is local to its `timezone`.** `as_of` must fall on that day, or exactly on its closing boundary for an end-of-day total. The closing boundary is the next local day's first instant: midnight normally, but 01:00 in zones where DST skips midnight (e.g. America/Santiago).
 
 ### Step snapshots and corrections
 
@@ -158,6 +262,10 @@ A stored state can be reproduced from its canonical events plus these three valu
 | `engine_version` | the state-engine interpretation |
 | `config_sha256` | the configuration: SHA-256 of the fully resolved configuration, serialized as JSON with sorted keys, `(",", ":")` separators and UTF-8 encoding |
 
+Feature version history: `features@0.2.0` added `WorkoutFeatures.source_name`
+(set together with the last workout), so a workout driver can name its source.
+Nothing was persisted under `features@0.1.0`.
+
 Contract schema versions are separate from these: `schema_version` on events, and `version` on DailyFeatures, HealthState and WidgetState. They change only when the contract's shape changes. Sleep features also record `source_policy_version` (plan section 13).
 
 ### Deviations from the G1 examples
@@ -176,3 +284,5 @@ The plan's JSON examples are abbreviated. The contracts additionally require:
   - `engine_version`, `feature_version` and `config_sha256`.
   - A `domain` on each driver.
   - `required_days` and per-domain usable days in the calibration summary.
+  - Sleep `severity` = min(|delta minutes| / 120, 1). G1 requires a severity
+    but doesn't define it; its 0.62 example is illustrative.

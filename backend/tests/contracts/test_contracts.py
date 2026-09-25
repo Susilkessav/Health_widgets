@@ -449,7 +449,7 @@ def workout_recent(**overrides) -> dict:
     return {
         "state": "recent_workout", "confidence": 1.0, "type": "traditional_strength_training",
         "last_workout_start": WORKOUT_START, "last_workout_end": WORKOUT_END,
-        "source_record_id": "hk-workout-1", "hours_since": 1.3,
+        "source_record_id": "hk-workout-1", "source_name": "Apple Watch", "hours_since": 1.3,
         "workout_minutes_today": 62, "workout_minutes_last_7d": 180,
         **overrides,
     }
@@ -592,6 +592,7 @@ def test_movement_features_reject(block):
         {"state": "none_recent", "confidence": 1.0},                             # confirmed absence needs totals
         workout_recent(workout_minutes_today=200),                               # today > last 7 days
         workout_recent(type=""),
+        workout_recent(source_name=None),                                        # last workout needs its source
     ],
 )
 def test_workout_features_reject(block):
@@ -657,7 +658,7 @@ def calibration(sleep=19, hrv=19, rhr=19, movement=19, required_days=14) -> dict
 
 def health_state(**overrides) -> HealthState:
     return HealthState.model_validate({
-        "engine_version": "state-engine@0.1.0", "feature_version": "features@0.1.0",
+        "engine_version": "state-engine@0.1.0", "feature_version": "features@0.2.0",
         "config_sha256": CONFIG, "effective_at": NOW,
         "calibration": calibration(),
         "sleep": {"state": "below_baseline", "severity": 0.62, "confidence": 0.97},

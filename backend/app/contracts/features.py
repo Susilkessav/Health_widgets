@@ -41,7 +41,7 @@ from app.contracts._types import (
     utc,
 )
 
-FEATURES_VERSION = "features@0.1.0"
+FEATURES_VERSION = "features@0.2.0"
 
 BaselineStatus = Literal["calibrating", "ready"]
 
@@ -242,6 +242,9 @@ class WorkoutFeatures(Frozen):
     last_workout_start: AwareDatetime | None = None
     last_workout_end: AwareDatetime | None = None
     source_record_id: NonEmptyStr | None = None
+    # The recording source's display name (features@0.2.0), so a workout
+    # driver can say which source produced it.
+    source_name: NonEmptyStr | None = None
     hours_since: NonNegativeFloat | None = None
 
     workout_minutes_today: NonNegativeFloat | None = None
@@ -254,6 +257,7 @@ class WorkoutFeatures(Frozen):
             "last_workout_start": self.last_workout_start,
             "last_workout_end": self.last_workout_end,
             "source_record_id": self.source_record_id,
+            "source_name": self.source_name,
             "hours_since": self.hours_since,
         }
         totals = {
@@ -280,7 +284,7 @@ class WorkoutFeatures(Frozen):
 
 
 class DailyFeatures(Frozen):
-    version: Literal["features@0.1.0"] = FEATURES_VERSION
+    version: Literal["features@0.2.0"] = FEATURES_VERSION
     # sha256 of the canonical configuration used (backend/README.md).
     config_sha256: Sha256Hex
     # The local calendar day in `timezone`. When a primary sleep episode exists,

@@ -6,7 +6,7 @@ deletion rules are documented in backend/README.md.
 from __future__ import annotations
 
 from collections.abc import Iterable
-from datetime import date, datetime, time, timedelta
+from datetime import date, datetime, timedelta
 from typing import Annotated, Literal
 from uuid import UUID
 from zoneinfo import ZoneInfo
@@ -21,6 +21,7 @@ from app.contracts._types import (
     NonEmptyStr,
     NonNegativeFloat,
     PositiveFloat,
+    local_day_start,
     utc,
 )
 
@@ -190,9 +191,11 @@ class DailyActivitySnapshot(_EventBase):
     @model_validator(mode="after")
     def _consistent(self) -> DailyActivitySnapshot:
         local = utc(self.as_of).astimezone(ZoneInfo(self.timezone))
-        closing_midnight = local.date() == self.day + timedelta(days=1) and local.time() == time(0)
-        if local.date() != self.day and not closing_midnight:
-            raise ValueError("as_of must fall on `day` in `timezone` (or be that day's closing midnight)")
+        # The day's closing boundary is the next local day's first instant; that
+        # is 01:00, not 00:00, where DST skips midnight.
+        closing = utc(self.as_of) == local_day_start(self.day + timedelta(days=1), self.timezone)
+        if local.date() != self.day and not closing:
+            raise ValueError("as_of must fall on `day` in `timezone` (or be that day's closing boundary)")
         if utc(self.queried_at) < utc(self.as_of):
             raise ValueError("queried_at cannot be before as_of")
         expected = snapshot_record_id(self.timezone, self.day, self.as_of, self.queried_at, self.steps)
@@ -203,6 +206,7 @@ class DailyActivitySnapshot(_EventBase):
     @property
     def bucket(self) -> tuple[str, date, datetime]:
         return (self.timezone, self.day, utc(self.as_of))
+
 
 class SnapshotConflictError(ValueError):
     """The newest query time for a bucket contains contradictory totals."""

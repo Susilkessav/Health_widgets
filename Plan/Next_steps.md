@@ -4,9 +4,17 @@ Updated: 2026-09-23
 
 ## Current position
 
-**G1 Step 1 — contracts — is complete.** The contracts, validation rules,
-regression tests and backend contract documentation are implemented. All
-**169 tests pass** using `.venv/bin/python -m pytest -q` from `backend/`.
+**G1 Steps 1-5 are complete.** The contracts, validation rules, deterministic
+synthetic generator, default corpus, configuration, feature calculations, state
+engine and dummy widget mapper are implemented. All **3,496 tests pass** using
+`.venv/bin/python -m pytest -q` from `backend/`.
+
+| Suite | Tests |
+|---|---|
+| Contract | 170 |
+| Synthetic | 91 |
+| Feature | 116 |
+| Engine and mapper | 3,119 |
 
 The repository also has the backend dependency setup, a PostgreSQL Compose
 configuration, and starter iOS app/widget targets. Those scaffolds do not mean
@@ -17,9 +25,9 @@ is implemented.
 |---|---|
 | Development scaffolding | Present; previously verified |
 | Step 1: contracts and validation | Complete; 169 passing tests |
-| Step 2: reproducible synthetic dataset | Next; not implemented |
-| Step 3: calculations and configuration | Planned |
-| Steps 4-5: state engine and presentation mapper | Planned |
+| Step 2: reproducible synthetic dataset | Complete; 40 demo days and 44 isolated scenarios |
+| Step 3: calculations and configuration | Complete; all fixture feature expectations pass |
+| Steps 4-5: state engine and presentation mapper | Complete; all golden state and widget expectations pass |
 | Steps 6-8: persistence, API and replay | Planned |
 | Steps 9-16: HealthKit, durable sync and cached widget | Starter targets only; behavior planned |
 
@@ -57,6 +65,25 @@ knowledge/effective time and selecting across buckets remain calculation work.
 
 ## B. Step 2 — deterministic synthetic dataset
 
+**Complete.** Implementation: `backend/app/synthetic/`; tests:
+`backend/tests/synthetic/`; default corpus: `data/synthetic/`.
+All 14 G1 golden cases are represented among 44 isolated scenarios. The default
+demo covers 2026-08-14 through 2026-09-22 in America/Chicago. The corpus contains
+181 managed files; the manifest records hashes for the other 180 files, counts,
+inputs and runtime provenance.
+
+Generation command from `backend/`:
+
+```bash
+uv run python -m app.synthetic generate --output ../data/synthetic
+```
+
+Checks verify all canonical events, authored raw facts, snapshot resolution,
+delivery/reference integrity, SHA-256 hashes, saved-corpus regeneration, and byte
+equality across fresh processes with different ambient timezone/hash settings.
+Semantic expectations remain specifications until the Step 3 feature calculator
+and Step 4 state engine execute them. No new dependencies were added.
+
 Deliverables:
 
 - A generator under `backend/app/synthetic/` with explicit seed, starting date,
@@ -82,6 +109,10 @@ events validate, and each scenario's intended inputs/expected outcomes are
 documented independently of the future calculator.
 
 ## C. Step 3 — configuration and feature calculations
+
+**Complete.** Plan, adopted decisions and results: [Step_3_plan.md](Step_3_plan.md).
+Implementation: `backend/app/config.py`, `backend/config/homeostat.yaml`,
+`backend/app/features/`; tests: `backend/tests/features/`.
 
 Implement in this order:
 
@@ -119,6 +150,10 @@ zero MAD, missing data, deletions, overlapping sources, DST and correction
 ordering. Output includes the provenance needed by a pure state engine.
 
 ## D. Steps 4-5 — state engine and dummy presentation
+
+**Complete.** Plan, decisions and results: [Step_4_plan.md](Step_4_plan.md).
+Implementation: `backend/app/engine.py`, `backend/app/presentation.py`,
+`backend/app/pipeline.py`; tests: `backend/tests/engine/`.
 
 Deliverables:
 
@@ -186,8 +221,8 @@ and canonical replay reproduces the resulting states.
 
 ## Recommended next implementation task
 
-Build **B, the reproducible synthetic dataset** next. Step 1 is complete.
-Then proceed through C-D to demonstrate the full synthetic pipeline before
-integrating persistence and real device data. Add repository ignore rules before
-staging the project, including virtual environments, caches, machine-specific
-Xcode state and local secrets.
+The synthetic events -> features -> health state -> widget payload pipeline is
+complete (`python -m app.pipeline timeline --dataset ../data/synthetic/demo`).
+Build **E, Steps 6-8: PostgreSQL persistence, the FastAPI sync/state endpoints
+and replay** next. Before real HealthKit data is relied on, run the device checks
+in Step_3_plan.md section 13.

@@ -1,0 +1,56 @@
+# Homeostat calculation settings (G1 Step 3). These are product policies, not
+# clinical thresholds. Every value is validated by app/config.py; omitted values
+# take the same defaults, and the resolved settings are hashed for replay.
+# Quote times ("18:00"): YAML reads an unquoted 18:00 as the number 1080.
+schema_version: 1
+calculation_version: features-calc@0.1.0
+
+baseline:
+  window_days: 28          # previous calendar days, excluding the report day
+  minimum_valid_days: 14   # per domain
+
+sleep:
+  below_minutes: 60        # delta <= -60 minutes -> below_baseline
+  above_minutes: 60        # delta >= +60 minutes -> above_baseline
+  episode_gap_minutes: 90  # join sleep/awake stages separated by at most this
+  overnight_start: "18:00" # previous local day
+  overnight_end: "12:00"   # wake day
+  source_policy_version: sleep-source-policy@0.1.0
+
+hrv:
+  lower_z: -1.0            # z < lower -> below_usual; endpoints are typical
+  upper_z: 1.0
+  scale_floor: 1.0         # ms; denominator is max(1.4826 * MAD, floor)
+
+rhr:
+  lower_z: -1.0
+  upper_z: 1.0
+  scale_floor: 1.0         # bpm
+
+movement:
+  behind_ratio: 0.70
+  ahead_ratio: 1.30
+  comparison_window_minutes: 60
+
+workout:
+  just_completed_hours: 2  # inclusive
+  recent_hours: 12         # inclusive
+  totals_days: 7           # report day plus the previous six local days
+
+state:
+  sleep_severity_full_minutes: 120  # |delta| where sleep severity reaches 1
+
+freshness:                 # full until full_hours, zero at zero_hours
+  sleep: {full_hours: 24, zero_hours: 48}
+  hrv: {full_hours: 24, zero_hours: 48}
+  rhr: {full_hours: 24, zero_hours: 48}
+  movement: {full_hours: 1, zero_hours: 3}
+
+# Matched in order (first match wins); the order is also source priority.
+# Unmatched sources rank after these, in lexical order.
+source_groups:
+  - {id: apple_watch, bundle_prefix: com.apple.health., product_type_prefix: Watch}
+  - {id: synthetic_watch, bundle_id: org.homeostat.synthetic.watch}
+  - {id: apple_iphone, bundle_prefix: com.apple.health., product_type_prefix: iPhone}
+  - {id: synthetic_phone, bundle_id: org.homeostat.synthetic.phone}
+  - {id: synthetic_sleep_app, bundle_id: org.homeostat.synthetic.sleepapp}
