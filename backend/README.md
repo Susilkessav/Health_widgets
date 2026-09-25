@@ -109,9 +109,87 @@ uv run python -m app.pipeline timeline --dataset ../data/synthetic/demo
 
 Decisions and their reasons are in `../Plan/Step_4_plan.md`.
 
-The full suite has **3,496 passing tests**: 170 contract, 91 synthetic,
-116 feature and 3,119 engine/mapper. The engine and mapper count includes the
-512-case recovery matrix and all 2,500 valid widget state combinations.
+## Persistence, API and replay — Steps 6-8
+
+```bash
+docker compose up -d db                                   # from the repo root
+uv run alembic upgrade head                               # migrate the development database
+HOMEOSTAT_API_KEY=dev-key HOMEOSTAT_ENV=development uv run uvicorn app.main:app
+uv run python -m app.worker --once                        # run any pending recalculation now
+uv run python -m app.replay runs    --user dev --from 2026-08-01 --to 2026-09-30
+uv run python -m app.replay rebuild --user dev --from 2026-08-01 --to 2026-09-30
+```
+
+The API can also run in a container:
+
+```bash
+HOMEOSTAT_API_KEY=dev-key docker compose --profile api up -d --build
+```
+
+The container migrates on start and serves on port 8000.
+
+**Endpoints.** All except `/healthz` need the `X-Homeostat-Key` header.
+
+| Endpoint | Purpose |
+|---|---|
+| `POST /v1/health/sync` | Upload events and coverage. Returns a result per event, the new revision, and the state (`published`, `pending` or `unchanged`). |
+| `GET /v1/state/current` | The latest state for any day, flagged `is_today`. 404 only if no state has ever existed. |
+| `GET /v1/state/{day}` | The latest state for one day, flagged `finalized`. |
+| `GET /v1/debug/features/{day}` | The latest features report. Only with `HOMEOSTAT_ENV=development`. |
+| `GET /healthz` | Database status. |
+
+**How it works** (the full design and its reasons are in `../Plan/Step_6_8_plan.md`):
+
+- **Uploads are idempotent.**
+  - A resent `request_id` returns the original response.
+  - Every client event ID keeps a permanent receipt, so a retry returns the recorded outcome.
+  - An event ID reused with different content is rejected.
+  - Each distinct provider version is stored once. Contradictory versions of one record are both stored and quarantined until that record is tombstoned.
+- **Revisions decide visibility.** Each committed upload gets the next per-user revision. A calculation sees exactly the data at its input revision, and results are ordered by revision, so an older calculation finishing late never becomes "latest".
+- **Recalculation is durable.**
+  - The upload and its recalculation job commit together. The job is tried inline, then by a background worker until it succeeds, including after crashes.
+  - Pending jobs merge into one calculation at the newest revision.
+  - Past days are computed at their closing boundary and today at the upload time, up to 35 days back.
+  - A sweep finalizes yesterday after midnight even without an upload.
+- **Coverage.** A later declaration supersedes an earlier one. Coverage is resolved over UTC time spans, so travel and DST days are checked correctly.
+  - A declaration gives either whole local days (`start_day`/`end_day`) or exact instants (`start_at`/`end_at`) for a partial day, never both.
+  - Coverage is needed only up to the calculation's effective time.
+  - A timezone-only upload recalculates today.
+- **Ordering.** State responses carry `input_revision` and `run_id`. Clients keep the state with the higher `(input_revision, run_id)`.
+- **The run ledger.** Every calculation records its context, input revision, configuration snapshot hash and feature/engine/presentation versions:
+  - `replay runs` re-executes each recorded run and compares outputs;
+  - `replay rebuild` recomputes daily summaries at a cutoff revision.
+- **Private logs and errors.** They contain counts, codes and field paths only, never health values or event and record IDs.
+
+**Environment variables:**
+
+| Variable | Meaning |
+|---|---|
+| `DATABASE_URL` | Default: the Compose database on port 5433 |
+| `HOMEOSTAT_API_KEY` | Required for the API |
+| `HOMEOSTAT_DEV_USER_ID` | The single development user |
+| `HOMEOSTAT_ENV` | `development` enables the debug endpoint |
+| `HOMEOSTAT_CONFIG` | The settings file |
+| `HOMEOSTAT_WORKER_INTERVAL_SECONDS` | Default 30; 0 disables the thread |
+
+**Deviations from G1 section 25:**
+- Provider versions are unique on content, not on record identity.
+- Client receipts live in their own table.
+- A run ledger with outputs replaces `daily_features` and `health_state_history`. It keeps all their fields and adds what exact replay needs.
+
+**Tests.** The full suite has **3,651 passing tests**, which take about 4 minutes:
+
+| Suite | Tests |
+|---|---|
+| Contract | 170 |
+| Synthetic | 91 |
+| Feature | 127 |
+| Engine and mapper | 3,119 (including the 512-case recovery matrix and all 2,500 valid widget state combinations) |
+| Database | 34 |
+| API | 104 |
+| Replay | 6 |
+
+Database tests use a throwaway database on the Compose server. `uv run pytest -m "not db"` runs the non-database tests in about 15 seconds, without PostgreSQL.
 
 ## Contract rules
 
@@ -286,3 +364,16 @@ The plan's JSON examples are abbreviated. The contracts additionally require:
   - `required_days` and per-domain usable days in the calibration summary.
   - Sleep `severity` = min(|delta minutes| / 120, 1). G1 requires a severity
     but doesn't define it; its 0.62 example is illustrative.
+
+## Review fixes — 2026-09-25
+
+Live sync calculations use the common completed query cutoff of the domains
+with coverage for today. `known_at` remains the server receipt/finalization time;
+`effective_at` is saved separately in the calculation ledger. Missing domains and
+explicit `unavailable` coverage still reduce confidence. Past days keep their
+closing boundary. Exact replay uses the recorded timestamps.
+
+Replay verification now reports a ledger entry with missing derived output as
+`missing_output`, instead of silently skipping it. Rebuilding the same context
+restores its missing output under the original run ID, without overwriting an
+existing output or deleting the ledger.

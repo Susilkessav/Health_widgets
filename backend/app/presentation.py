@@ -12,6 +12,8 @@ from math import floor
 from app.contracts.health_state import Driver, HealthState
 from app.contracts.widget_state import Freshness, Presentation, PrimaryTrait, WidgetState
 
+# Recorded on every stored run: wording can change without engine or feature changes.
+PRESENTATION_VERSION = "presentation@0.1.0"
 MIN_DISPLAY_CONFIDENCE = 0.5
 # Known labels only. Any other type shows as "Workout" so no unvetted provider
 # identifier reaches the widget; the raw type stays in HealthState and drivers.

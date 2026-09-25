@@ -1,0 +1,42 @@
+[
+  {
+    "as_of": "2026-09-22T18:00:00Z",
+    "day": "2026-09-22",
+    "queried_at": "2026-09-22T18:00:05.123456Z",
+    "source_record_id": "steps:America/Chicago:2026-09-22:2026-09-22T18:00:00+00:00:2026-09-22T18:00:05.123456+00:00:4821",
+    "steps": 4821,
+    "timezone": "America/Chicago"
+  },
+  {
+    "as_of": "2026-09-23T05:00:00Z",
+    "day": "2026-09-22",
+    "queried_at": "2026-09-23T13:00:00Z",
+    "source_record_id": "steps:America/Chicago:2026-09-22:2026-09-23T05:00:00+00:00:2026-09-23T13:00:00+00:00:9001",
+    "steps": 9001,
+    "timezone": "America/Chicago"
+  },
+  {
+    "as_of": "2026-11-01T07:00:00Z",
+    "day": "2026-11-01",
+    "queried_at": "2026-11-01T07:30:00Z",
+    "source_record_id": "steps:America/Chicago:2026-11-01:2026-11-01T07:00:00+00:00:2026-11-01T07:30:00+00:00:12",
+    "steps": 12,
+    "timezone": "America/Chicago"
+  },
+  {
+    "as_of": "2026-09-06T04:00:00Z",
+    "day": "2026-09-05",
+    "queried_at": "2026-09-06T12:00:00.000001Z",
+    "source_record_id": "steps:America/Santiago:2026-09-05:2026-09-06T04:00:00+00:00:2026-09-06T12:00:00.000001+00:00:7000",
+    "steps": 7000,
+    "timezone": "America/Santiago"
+  },
+  {
+    "as_of": "2026-01-01T00:00:00Z",
+    "day": "2026-01-01",
+    "queried_at": "2026-01-01T00:00:00.999999Z",
+    "source_record_id": "steps:UTC:2026-01-01:2026-01-01T00:00:00+00:00:2026-01-01T00:00:00.999999+00:00:0",
+    "steps": 0,
+    "timezone": "UTC"
+  }
+]

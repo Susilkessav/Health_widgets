@@ -3,12 +3,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from dataclasses import field as dataclass_field
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from typing import Literal
 
 from pydantic import AwareDatetime, JsonValue, model_validator
 
-from app.contracts._types import Frozen, IanaTimezone, Sha256Hex, utc
+from app.contracts._types import Frozen, IanaTimezone, Sha256Hex, local_day_start, utc
 from app.contracts.canonical_events import CanonicalEvent
 from app.contracts.features import DailyFeatures
 
@@ -22,22 +22,44 @@ class CalculationInputError(ValueError):
 
 
 class CoverageWindow(Frozen):
-    """A declared query result for local days start_day..end_day in `timezone`.
-    Production: "complete" means the query for that window finished after
-    authorization was requested. HealthKit hides denials, so denied access
-    looks like complete-and-empty; that is accepted, not inferred away."""
+    """A declared query result, either for whole local days start_day..end_day
+    in `timezone`, or for an exact UTC interval start_at..end_at (a partial
+    day: a query finished at 13:00 covers only until 13:00). Production:
+    "complete" means the query for that window finished after authorization
+    was requested. HealthKit hides denials, so denied access looks like
+    complete-and-empty; that is accepted, not inferred away."""
 
     domain: Domain
-    start_day: date
-    end_day: date
     timezone: IanaTimezone
     status: Literal["complete", "unavailable"]
+    start_day: date | None = None
+    end_day: date | None = None
+    start_at: AwareDatetime | None = None
+    end_at: AwareDatetime | None = None
+    # Upload revision that declared it; later revisions supersede earlier ones.
+    revision: int = 0
 
     @model_validator(mode="after")
-    def _ordered(self) -> CoverageWindow:
-        if self.end_day < self.start_day:
-            raise ValueError("coverage window is reversed")
+    def _one_form(self) -> CoverageWindow:
+        days = (self.start_day, self.end_day)
+        instants = (self.start_at, self.end_at)
+        if all(v is not None for v in days) and all(v is None for v in instants):
+            if self.end_day < self.start_day:
+                raise ValueError("coverage window is reversed")
+        elif all(v is not None for v in instants) and all(v is None for v in days):
+            if not utc(self.start_at) < utc(self.end_at):
+                raise ValueError("coverage start_at must be before end_at")
+        else:
+            raise ValueError("coverage needs either start_day and end_day, or start_at and end_at")
         return self
+
+    def span(self) -> tuple[datetime, datetime]:
+        """The window's UTC interval. Day form: its first local day's start to
+        its last local day's closing boundary, in its own timezone."""
+        if self.start_at is not None:
+            return utc(self.start_at), utc(self.end_at)
+        return (local_day_start(self.start_day, self.timezone),
+                local_day_start(self.end_day + timedelta(days=1), self.timezone))
 
 
 class CalculationContext(Frozen):
@@ -54,14 +76,28 @@ class CalculationContext(Frozen):
         return self
 
     def covered(self, domain: Domain, first: date, last: date) -> bool:
-        """Every day in first..last is inside a complete window and no
-        unavailable window. An undeclared day is unknown, never complete."""
-        day = first
-        while day <= last:
-            statuses = {w.status for w in self.coverage if w.domain == domain and w.start_day <= day <= w.end_day}
-            if statuses != {"complete"}:
+        """Report days first..last (in this context's timezone) are covered when,
+        at every instant of their UTC span, the highest-revision declaration
+        there is "complete". Later declarations supersede earlier ones; equal
+        revisions that disagree count as unavailable; undeclared time is
+        unknown, never complete (Step 6-8 plan section 7). Coverage is only
+        required up to effective_at: later time can't affect this calculation,
+        and a partial-day declaration covers only until its query finished
+        (Step 9-13 plan section 3A)."""
+        start = local_day_start(first, self.timezone)
+        end = min(local_day_start(last + timedelta(days=1), self.timezone), utc(self.effective_at))
+        if end <= start:
+            return True
+        windows = [(w, *w.span()) for w in self.coverage if w.domain == domain]
+        windows = [(w, a, b) for w, a, b in windows if a < end and b > start]
+        cuts = sorted({start, end} | {t for _, a, b in windows for t in (a, b) if start < t < end})
+        for piece_start, piece_end in zip(cuts, cuts[1:]):
+            here = [w for w, a, b in windows if a <= piece_start and b >= piece_end]
+            if not here:
                 return False
-            day += timedelta(days=1)
+            newest = max(w.revision for w in here)
+            if any(w.status != "complete" for w in here if w.revision == newest):
+                return False
         return True
 
 

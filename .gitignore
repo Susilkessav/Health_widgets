@@ -9,6 +9,7 @@ __pycache__/
 .env
 
 # iOS
+.build/
 *.xcodeproj/project.xcworkspace/xcuserdata/
 *.xcodeproj/xcuserdata/
 build/

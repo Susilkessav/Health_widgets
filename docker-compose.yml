@@ -14,5 +14,20 @@ services:
       interval: 5s
       retries: 10
 
+  api:
+    # Optional: `HOMEOSTAT_API_KEY=... docker compose --profile api up -d --build`.
+    # `docker compose up -d db` alone is unaffected.
+    profiles: ["api"]
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql+psycopg://postgres:postgres@db:5432/homeostat
+      HOMEOSTAT_API_KEY: ${HOMEOSTAT_API_KEY:-}  # the app refuses to start without it
+      HOMEOSTAT_ENV: development
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
 volumes:
   pgdata:

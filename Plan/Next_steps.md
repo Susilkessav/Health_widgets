@@ -1,20 +1,23 @@
 # G1 review and next steps
 
-Updated: 2026-09-23
+Updated: 2026-09-25
 
 ## Current position
 
-**G1 Steps 1-5 are complete.** The contracts, validation rules, deterministic
-synthetic generator, default corpus, configuration, feature calculations, state
-engine and dummy widget mapper are implemented. All **3,496 tests pass** using
-`.venv/bin/python -m pytest -q` from `backend/`.
+**G1 Steps 1-8 are complete.** The contracts, synthetic corpus, feature
+calculations, state engine, dummy widget mapper, PostgreSQL persistence, API and
+replay are implemented. All **3,651 backend tests pass** using
+`.venv/bin/python -m pytest -q` from `backend/`, with the Compose database running.
 
 | Suite | Tests |
 |---|---|
 | Contract | 170 |
 | Synthetic | 91 |
-| Feature | 116 |
+| Feature | 127 |
 | Engine and mapper | 3,119 |
+| Database | 34 |
+| API | 104 |
+| Replay | 6 |
 
 The repository also has the backend dependency setup, a PostgreSQL Compose
 configuration, and starter iOS app/widget targets. Those scaffolds do not mean
@@ -28,8 +31,9 @@ is implemented.
 | Step 2: reproducible synthetic dataset | Complete; 40 demo days and 44 isolated scenarios |
 | Step 3: calculations and configuration | Complete; all fixture feature expectations pass |
 | Steps 4-5: state engine and presentation mapper | Complete; all golden state and widget expectations pass |
-| Steps 6-8: persistence, API and replay | Planned |
-| Steps 9-16: HealthKit, durable sync and cached widget | Starter targets only; behavior planned |
+| Steps 6-8: persistence, API and replay | Complete; every scenario matches the pipeline through HTTP and PostgreSQL |
+| Steps 9-13: HealthKit import and durable sync | Implemented and tested in the simulator; real-iPhone gates and §3B lost-anchor reconciliation pending |
+| Steps 14-16: cached widget | Starter widget only |
 
 ## A. Step 1 review closure
 
@@ -177,6 +181,10 @@ This synthetic pipeline is the next substantial product milestone.
 
 ## E. Steps 6-8 — persistence, API and replay
 
+**Complete.** Plan, decisions and results: [Step_6_8_plan.md](Step_6_8_plan.md).
+Implementation: `backend/app/{db,store,ingest,recalc,worker,main,replay,runtime}.py`,
+`backend/migrations/`, `backend/Dockerfile`; tests: `backend/tests/{db,api,replay}/`.
+
 - Add SQLAlchemy tables and Alembic migrations for canonical events, features,
   state history and recoverable configuration snapshots.
 - Implement idempotent ingestion, explicit conflicts, tombstones, per-event
@@ -193,6 +201,10 @@ fresh migrations work; replay twice gives identical results; conflicts are not
 silently treated as duplicates.
 
 ## F. Steps 9-13 — real HealthKit and durable synchronization
+
+Detailed plan and results: [Step_9_13_plan.md](Step_9_13_plan.md) §12.
+Implemented on 2026-09-25, with 38 Swift tests; the real-iPhone checks are still open. It builds the durable queue before bootstrap and identifies the
+backend handoffs for partial-day coverage and lost-anchor reconciliation.
 
 - Build authorization-request tracking and the iOS debug screen.
 - Import approximately 35 historical days and normalize supported samples and
@@ -221,8 +233,9 @@ and canonical replay reproduces the resulting states.
 
 ## Recommended next implementation task
 
-The synthetic events -> features -> health state -> widget payload pipeline is
-complete (`python -m app.pipeline timeline --dataset ../data/synthetic/demo`).
-Build **E, Steps 6-8: PostgreSQL persistence, the FastAPI sync/state endpoints
-and replay** next. Before real HealthKit data is relied on, run the device checks
-in Step_3_plan.md section 13.
+1. Run the Step 9-13 real-iPhone checks: sample inspection, a live HealthKit
+   change reaching the widget text, and background catch-up. The steps are in
+   Step_9_13_plan.md §12.
+2. Build §3B lost-anchor reconciliation if deletion inference after anchor loss
+   is needed.
+3. Then build **G, Steps 14-16**.

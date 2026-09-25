@@ -11,6 +11,7 @@
 		6CE0106630638A0800DF579A /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6CE0106530638A0800DF579A /* SwiftUI.framework */; };
 		6CE0107130638A0A00DF579A /* HomeostatWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6CE0106130638A0800DF579A /* HomeostatWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6CE0107D3063947C00DF579A /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 6CE0107C3063947C00DF579A /* GRDB */; };
+		6CE0109000000000000000A3 /* HomeostatCore in Frameworks */ = {isa = PBXBuildFile; productRef = 6CE0109000000000000000A2 /* HomeostatCore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -74,6 +75,7 @@
 			isa = PBXFrameworksBuildPhase;
 			files = (
 				6CE0107D3063947C00DF579A /* GRDB in Frameworks */,
+				6CE0109000000000000000A3 /* HomeostatCore in Frameworks */,
 			);
 		};
 		6CE0105E30638A0800DF579A /* Frameworks */ = {
@@ -138,6 +140,7 @@
 			name = Homeostat;
 			packageProductDependencies = (
 				6CE0107C3063947C00DF579A /* GRDB */,
+				6CE0109000000000000000A2 /* HomeostatCore */,
 			);
 			productName = Homeostat;
 			productReference = 6CE0104F3063888E00DF579A /* Homeostat.app */;
@@ -190,6 +193,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				6CE0107B30638F2E00DF579A /* XCRemoteSwiftPackageReference "GRDB" */,
+				6CE0109000000000000000A1 /* XCLocalSwiftPackageReference "../HomeostatCore" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6CE010503063888E00DF579A /* Products */;
@@ -370,6 +374,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "Homeostat reads your sleep, steps, heart rate, HRV and workouts to show how your day compares to your personal baseline.";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Homeostat connects to your development server on the local network.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -406,6 +411,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "Homeostat reads your sleep, steps, heart rate, HRV and workouts to show how your day compares to your personal baseline.";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Homeostat connects to your development server on the local network.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -523,6 +529,13 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		6CE0109000000000000000A1 /* XCLocalSwiftPackageReference "../HomeostatCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../HomeostatCore;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
 		6CE0107B30638F2E00DF579A /* XCRemoteSwiftPackageReference "GRDB" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -539,6 +552,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6CE0107B30638F2E00DF579A /* XCRemoteSwiftPackageReference "GRDB" */;
 			productName = GRDB;
+		};
+		6CE0109000000000000000A2 /* HomeostatCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = HomeostatCore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

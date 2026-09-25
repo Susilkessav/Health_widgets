@@ -1,0 +1,4353 @@
+{
+  "error_401": {
+    "request": {
+      "coverage": [],
+      "device_timezone": "America/Chicago",
+      "events": [],
+      "request_id": "c65631f7-b7dc-5acf-ade5-311cd86b918e"
+    },
+    "response": {
+      "code": "UNAUTHORIZED"
+    },
+    "status": 401
+  },
+  "error_409": {
+    "request": {
+      "coverage": [],
+      "device_timezone": "America/Chicago",
+      "events": [
+        {
+          "event_id": "775388b9-e1b8-5ddf-9a53-a2bd246ca66b",
+          "event_type": "point_measurement",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKQuantityTypeIdentifierHeartRateVariabilitySDNN",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-22T12:15:00Z",
+            "sample_start_at": "2026-09-22T12:14:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "metric": "hrv_sdnn_ms",
+          "observed_at": "2026-09-22T12:15:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "90b17d37-5090-5244-afea-005e4a0c804f",
+          "unit": "ms",
+          "value": 50.0
+        }
+      ],
+      "request_id": "c739b70e-6474-5bd1-bb56-f8e93dff53d3"
+    },
+    "response": {
+      "code": "REQUEST_ID_REUSED"
+    },
+    "status": 409
+  },
+  "error_413": {
+    "request": {
+      "coverage": [],
+      "device_timezone": "America/Chicago",
+      "events": [
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {}
+      ],
+      "request_id": "e6579381-3f53-56e0-9b6e-ab6757718910"
+    },
+    "response": {
+      "code": "TOO_MANY_EVENTS"
+    },
+    "status": 413
+  },
+  "error_422": {
+    "request": {
+      "coverage": [],
+      "device_timezone": "Not/AZone",
+      "events": [],
+      "request_id": "f95f1000-ac79-5efc-8b62-0c589c4aa92c"
+    },
+    "response": {
+      "code": "INVALID_REQUEST",
+      "errors": [
+        {
+          "code": "value_error",
+          "field_path": "device_timezone"
+        }
+      ]
+    },
+    "status": 422
+  },
+  "state_before_any": {
+    "request": null,
+    "response": {
+      "code": "NO_STATE_YET"
+    },
+    "status": 404
+  },
+  "state_current": {
+    "request": null,
+    "response": {
+      "day": "2026-09-22",
+      "effective_at": "2026-09-22T19:00:00+00:00",
+      "health_state": {
+        "calibration": {
+          "domains": {
+            "hrv": 3,
+            "movement": 3,
+            "rhr": 3,
+            "sleep": 3
+          },
+          "required_days": 14,
+          "status": "calibrating",
+          "usable_days": 3
+        },
+        "config_sha256": "a30f283082908df13b284e1dee3aac071b48f353b2c6d728dfbd836082221b1a",
+        "drivers": [
+          {
+            "baseline": null,
+            "confidence": 0.0,
+            "difference": null,
+            "domain": "sleep",
+            "id": "sleep_duration",
+            "observed_at": "2026-09-22T12:00:00Z",
+            "source": "synthetic_watch",
+            "unit": "hours",
+            "value": 7.5
+          },
+          {
+            "baseline": null,
+            "confidence": 0.0,
+            "difference": null,
+            "domain": "rhr",
+            "id": "resting_hr",
+            "observed_at": "2026-09-22T12:30:00Z",
+            "source": "Synthetic Watch",
+            "unit": "bpm",
+            "value": 60.0
+          },
+          {
+            "baseline": null,
+            "confidence": 0.0,
+            "difference": null,
+            "domain": "movement",
+            "id": "steps_so_far",
+            "observed_at": "2026-09-22T18:00:00Z",
+            "source": "HealthKit statistics",
+            "unit": "steps",
+            "value": 5200.0
+          }
+        ],
+        "effective_at": "2026-09-22T19:00:00Z",
+        "engine_version": "state-engine@0.1.0",
+        "feature_version": "features@0.2.0",
+        "movement": {
+          "confidence": 0.0,
+          "state": "calibrating"
+        },
+        "recovery": {
+          "confidence": 0.0,
+          "state": "insufficient_data"
+        },
+        "sleep": {
+          "confidence": 0.0,
+          "severity": null,
+          "state": "calibrating"
+        },
+        "version": "health-state@0.1.0",
+        "workout": {
+          "confidence": 0.0,
+          "state": "missing",
+          "type": null
+        }
+      },
+      "input_revision": 2,
+      "is_today": true,
+      "run_id": 37,
+      "widget_state": {
+        "effective_at": "2026-09-22T19:00:00Z",
+        "freshness": {
+          "last_updated_at": "2026-09-22T19:00:00Z"
+        },
+        "presentation": {
+          "detail": "3 / 14 usable days",
+          "headline": "Learning your baseline",
+          "icon": "🙂",
+          "secondary": null
+        },
+        "primary_trait": {
+          "explainable": false,
+          "id": "calibration"
+        },
+        "version": "widget-state@0.1.0"
+      }
+    },
+    "status": 200
+  },
+  "sync_mixed": {
+    "request": {
+      "coverage": [],
+      "device_timezone": "America/Chicago",
+      "events": [
+        {
+          "event_id": "a875a233-ff08-56fa-9118-ba4fe5cedf9c",
+          "event_type": "point_measurement",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKQuantityTypeIdentifierHeartRateVariabilitySDNN",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-22T12:15:00Z",
+            "sample_start_at": "2026-09-22T12:14:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "metric": "hrv_sdnn_ms",
+          "observed_at": "2026-09-22T12:15:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "d8d9562b-e39f-532d-ad73-32d501050236",
+          "unit": "ms",
+          "value": 50.0
+        },
+        {
+          "event_id": "a875a233-ff08-56fa-9118-ba4fe5cedf9c",
+          "event_type": "point_measurement",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKQuantityTypeIdentifierHeartRateVariabilitySDNN",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-22T12:15:00Z",
+            "sample_start_at": "2026-09-22T12:14:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "metric": "hrv_sdnn_ms",
+          "observed_at": "2026-09-22T12:15:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "d8d9562b-e39f-532d-ad73-32d501050236",
+          "unit": "ms",
+          "value": 50.0
+        },
+        {
+          "event_id": "0a4a588c-7105-5fcb-a26a-35d658b7ed3c",
+          "event_type": "point_measurement",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKQuantityTypeIdentifierHeartRateVariabilitySDNN",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-22T12:15:00Z",
+            "sample_start_at": "2026-09-22T12:14:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "metric": "hrv_sdnn_ms",
+          "observed_at": "2026-09-22T12:15:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "d8d9562b-e39f-532d-ad73-32d501050236",
+          "unit": "ms",
+          "value": 90.0
+        },
+        {
+          "event_id": "df618773-b575-53f1-b9bc-5c4d17884dbc",
+          "event_type": "point_measurement",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKQuantityTypeIdentifierHeartRateVariabilitySDNN",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-22T12:15:00Z",
+            "sample_start_at": "2026-09-22T12:14:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "metric": "hrv_sdnn_ms",
+          "observed_at": "2026-09-22T12:15:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "92f7b4f2-9932-515c-9188-83fa5cc9d768",
+          "unit": "bpm",
+          "value": 50.0
+        }
+      ],
+      "request_id": "c739b70e-6474-5bd1-bb56-f8e93dff53d3"
+    },
+    "response": {
+      "affected_days": [
+        "2026-09-22"
+      ],
+      "days_beyond_recalc_window": 0,
+      "request_id": "c739b70e-6474-5bd1-bb56-f8e93dff53d3",
+      "results": [
+        {
+          "client_event_id": "a875a233-ff08-56fa-9118-ba4fe5cedf9c",
+          "index": 0,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "a875a233-ff08-56fa-9118-ba4fe5cedf9c",
+          "index": 1,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "0a4a588c-7105-5fcb-a26a-35d658b7ed3c",
+          "code": "CONFLICTING_PROVIDER_RECORD",
+          "index": 2,
+          "retryable": false,
+          "status": "conflict"
+        },
+        {
+          "client_event_id": "df618773-b575-53f1-b9bc-5c4d17884dbc",
+          "code": "INVALID_UNIT",
+          "index": 3,
+          "retryable": false,
+          "status": "rejected"
+        }
+      ],
+      "revision": 2,
+      "state": {
+        "input_revision": 2,
+        "run_id": 37,
+        "status": "published",
+        "widget_state": {
+          "effective_at": "2026-09-22T19:00:00Z",
+          "freshness": {
+            "last_updated_at": "2026-09-22T19:00:00Z"
+          },
+          "presentation": {
+            "detail": "3 / 14 usable days",
+            "headline": "Learning your baseline",
+            "icon": "🙂",
+            "secondary": null
+          },
+          "primary_trait": {
+            "explainable": false,
+            "id": "calibration"
+          },
+          "version": "widget-state@0.1.0"
+        }
+      }
+    },
+    "status": 200
+  },
+  "sync_pending": {
+    "request": {
+      "coverage": [],
+      "device_timezone": "America/Chicago",
+      "events": [
+        {
+          "event_id": "29715e8d-34ee-53bb-a4b0-1f3504533958",
+          "event_type": "point_measurement",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKQuantityTypeIdentifierHeartRateVariabilitySDNN",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-22T12:15:00Z",
+            "sample_start_at": "2026-09-22T12:14:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "metric": "hrv_sdnn_ms",
+          "observed_at": "2026-09-22T12:15:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "490b547a-8146-5bb4-84f9-326772c3a278",
+          "unit": "ms",
+          "value": 50.0
+        }
+      ],
+      "request_id": "3bd1def5-f054-52c7-8f11-80319c2f7123"
+    },
+    "response": {
+      "affected_days": [
+        "2026-09-22"
+      ],
+      "days_beyond_recalc_window": 0,
+      "request_id": "3bd1def5-f054-52c7-8f11-80319c2f7123",
+      "results": [
+        {
+          "client_event_id": "29715e8d-34ee-53bb-a4b0-1f3504533958",
+          "index": 0,
+          "retryable": false,
+          "status": "accepted"
+        }
+      ],
+      "revision": 3,
+      "state": {
+        "input_revision": null,
+        "run_id": null,
+        "status": "pending",
+        "widget_state": null
+      }
+    },
+    "status": 200
+  },
+  "sync_published": {
+    "request": {
+      "coverage": [
+        {
+          "domain": "sleep",
+          "end_at": "2026-09-22T18:00:00Z",
+          "start_at": "2026-08-16T05:00:00Z",
+          "status": "complete",
+          "timezone": "America/Chicago"
+        }
+      ],
+      "device_timezone": "America/Chicago",
+      "events": [
+        {
+          "end_at": "2026-09-19T12:20:00Z",
+          "event_id": "cb2d6718-3050-5dba-a2f9-1534e7654353",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-19T12:20:00Z",
+            "sample_start_at": "2026-09-19T04:00:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "6b62909a-a4e4-503a-822f-fb7f5dd2497a",
+          "start_at": "2026-09-19T04:00:00Z",
+          "value": "in_bed"
+        },
+        {
+          "end_at": "2026-09-19T07:10:00Z",
+          "event_id": "8db3e5af-47b8-511e-ae0d-56164583cff8",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-19T07:10:00Z",
+            "sample_start_at": "2026-09-19T04:10:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "dfb5db77-23a3-5e3d-9295-4a42f0200de9",
+          "start_at": "2026-09-19T04:10:00Z",
+          "value": "asleep_core"
+        },
+        {
+          "end_at": "2026-09-19T07:30:00Z",
+          "event_id": "6621b022-3696-574c-ae91-b88fcba0ff11",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-19T07:30:00Z",
+            "sample_start_at": "2026-09-19T07:10:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "dbc06f17-7466-52ff-bf6c-b1d39fcd434a",
+          "start_at": "2026-09-19T07:10:00Z",
+          "value": "awake"
+        },
+        {
+          "end_at": "2026-09-19T09:45:00Z",
+          "event_id": "0679d8a1-a107-56c3-a18d-88d2920110f1",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-19T09:45:00Z",
+            "sample_start_at": "2026-09-19T07:30:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "ac78e2d8-e3a4-5cc5-b78e-06241edef441",
+          "start_at": "2026-09-19T07:30:00Z",
+          "value": "asleep_deep"
+        },
+        {
+          "end_at": "2026-09-19T12:00:00Z",
+          "event_id": "3e2c8b0c-d4a5-5e71-bb35-338a7e855339",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-19T12:00:00Z",
+            "sample_start_at": "2026-09-19T09:45:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "c2ea9241-2195-5cf9-bbc1-ca5a5b81c184",
+          "start_at": "2026-09-19T09:45:00Z",
+          "value": "asleep_rem"
+        },
+        {
+          "event_id": "50f78ce7-e29d-5d5a-ad4b-af4feee388e3",
+          "event_type": "point_measurement",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKQuantityTypeIdentifierHeartRateVariabilitySDNN",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-19T12:15:00Z",
+            "sample_start_at": "2026-09-19T12:14:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "metric": "hrv_sdnn_ms",
+          "observed_at": "2026-09-19T12:15:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "b9adcc8c-451f-5bab-8348-5426d26649b6",
+          "unit": "ms",
+          "value": 50.0
+        },
+        {
+          "event_id": "33d81105-1947-54e1-b731-e881f2e0f962",
+          "event_type": "point_measurement",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKQuantityTypeIdentifierRestingHeartRate",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-19T12:30:00Z",
+            "sample_start_at": "2026-09-19T12:29:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "metric": "resting_hr_bpm",
+          "observed_at": "2026-09-19T12:30:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "005ddd5e-221a-5e3b-a8c6-805587a4a87c",
+          "unit": "bpm",
+          "value": 60.0
+        },
+        {
+          "as_of": "2026-09-19T13:00:00Z",
+          "day": "2026-09-19",
+          "event_id": "97c26dda-f843-5158-89e6-7b163dbee953",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-19T13:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-19:2026-09-19T13:00:00+00:00:2026-09-19T13:00:00+00:00:2600",
+          "steps": 2600,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-19T18:00:00Z",
+          "day": "2026-09-19",
+          "event_id": "418c4f1a-6373-5f81-a1ed-ff179a5d4fc8",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-19T18:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-19:2026-09-19T18:00:00+00:00:2026-09-19T18:00:00+00:00:5200",
+          "steps": 5200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-19T23:00:00Z",
+          "day": "2026-09-19",
+          "event_id": "20d7506e-8592-5996-9fd0-0c1a89633355",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-19T23:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-19:2026-09-19T23:00:00+00:00:2026-09-19T23:00:00+00:00:7200",
+          "steps": 7200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-20T05:00:00Z",
+          "day": "2026-09-19",
+          "event_id": "413abb1f-378a-591e-9201-894e666bb8c9",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-20T05:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-19:2026-09-20T05:00:00+00:00:2026-09-20T05:00:00+00:00:9200",
+          "steps": 9200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "end_at": "2026-09-20T12:20:00Z",
+          "event_id": "bc4c9579-0dee-541a-8a10-6549d0ac99e6",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-20T12:20:00Z",
+            "sample_start_at": "2026-09-20T04:00:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "21ae696a-f420-566c-8fe6-f071b5aea637",
+          "start_at": "2026-09-20T04:00:00Z",
+          "value": "in_bed"
+        },
+        {
+          "end_at": "2026-09-20T07:10:00Z",
+          "event_id": "0f17fc66-d31f-55af-acb5-52a61d21820b",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-20T07:10:00Z",
+            "sample_start_at": "2026-09-20T04:10:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "23f0af6b-7736-5ed1-99ab-3954c4ad0393",
+          "start_at": "2026-09-20T04:10:00Z",
+          "value": "asleep_core"
+        },
+        {
+          "end_at": "2026-09-20T07:30:00Z",
+          "event_id": "a2dd1ffd-7781-5cd9-85f4-b0fbf2c3d541",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-20T07:30:00Z",
+            "sample_start_at": "2026-09-20T07:10:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "99de62dc-7583-507f-a08b-0cae8c5ecbe5",
+          "start_at": "2026-09-20T07:10:00Z",
+          "value": "awake"
+        },
+        {
+          "end_at": "2026-09-20T09:45:00Z",
+          "event_id": "ec639dc8-b097-5cc9-af77-b935ae807209",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-20T09:45:00Z",
+            "sample_start_at": "2026-09-20T07:30:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "1ec82212-b022-53c0-a21c-fc49608048e2",
+          "start_at": "2026-09-20T07:30:00Z",
+          "value": "asleep_deep"
+        },
+        {
+          "end_at": "2026-09-20T12:00:00Z",
+          "event_id": "86b74a29-b842-512b-a7f1-d6d9103b47b5",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-20T12:00:00Z",
+            "sample_start_at": "2026-09-20T09:45:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "09478a98-3762-53c0-bccc-a7900821f30f",
+          "start_at": "2026-09-20T09:45:00Z",
+          "value": "asleep_rem"
+        },
+        {
+          "event_id": "2d36548e-542e-55e8-8c58-1986bf9abc2e",
+          "event_type": "point_measurement",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKQuantityTypeIdentifierHeartRateVariabilitySDNN",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-20T12:15:00Z",
+            "sample_start_at": "2026-09-20T12:14:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "metric": "hrv_sdnn_ms",
+          "observed_at": "2026-09-20T12:15:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "6bf7f58b-ab81-52ef-a639-b1d59d6a1445",
+          "unit": "ms",
+          "value": 50.0
+        },
+        {
+          "event_id": "1c498b17-2b53-5c77-a833-cc25d02d51fd",
+          "event_type": "point_measurement",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKQuantityTypeIdentifierRestingHeartRate",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-20T12:30:00Z",
+            "sample_start_at": "2026-09-20T12:29:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "metric": "resting_hr_bpm",
+          "observed_at": "2026-09-20T12:30:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "af93b072-9e23-50bb-b0b9-77bcf47e7f2f",
+          "unit": "bpm",
+          "value": 60.0
+        },
+        {
+          "as_of": "2026-09-20T13:00:00Z",
+          "day": "2026-09-20",
+          "event_id": "d4f85616-7a15-526d-953a-87a6453ae359",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-20T13:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-20:2026-09-20T13:00:00+00:00:2026-09-20T13:00:00+00:00:2600",
+          "steps": 2600,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-20T18:00:00Z",
+          "day": "2026-09-20",
+          "event_id": "151c3321-d695-5045-96f4-4914c30dfea0",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-20T18:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-20:2026-09-20T18:00:00+00:00:2026-09-20T18:00:00+00:00:5200",
+          "steps": 5200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-20T23:00:00Z",
+          "day": "2026-09-20",
+          "event_id": "80512911-8cdd-5e04-bdc5-4e93a0f4c899",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-20T23:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-20:2026-09-20T23:00:00+00:00:2026-09-20T23:00:00+00:00:7200",
+          "steps": 7200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-21T05:00:00Z",
+          "day": "2026-09-20",
+          "event_id": "4b87cd48-46a1-5f0f-b392-bc1bd4736005",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-21T05:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-20:2026-09-21T05:00:00+00:00:2026-09-21T05:00:00+00:00:9200",
+          "steps": 9200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "end_at": "2026-09-21T12:20:00Z",
+          "event_id": "9a9a3582-5f71-508a-9154-fc60dde30e5a",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-21T12:20:00Z",
+            "sample_start_at": "2026-09-21T04:00:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "81ca600b-f087-5691-b0c1-187f94d9260f",
+          "start_at": "2026-09-21T04:00:00Z",
+          "value": "in_bed"
+        },
+        {
+          "end_at": "2026-09-21T07:10:00Z",
+          "event_id": "c3af7379-75d9-5ec4-8fa3-9b7c6536c719",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-21T07:10:00Z",
+            "sample_start_at": "2026-09-21T04:10:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "b0e78136-2203-5d2e-95f8-26059a6273df",
+          "start_at": "2026-09-21T04:10:00Z",
+          "value": "asleep_core"
+        },
+        {
+          "end_at": "2026-09-21T07:30:00Z",
+          "event_id": "d0a3e0a1-5455-5b8c-99b0-6c63e085fb2b",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-21T07:30:00Z",
+            "sample_start_at": "2026-09-21T07:10:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "cade3cd7-3c64-53eb-a36c-e1f992dfadaf",
+          "start_at": "2026-09-21T07:10:00Z",
+          "value": "awake"
+        },
+        {
+          "end_at": "2026-09-21T09:45:00Z",
+          "event_id": "fff14880-c46d-516e-9914-fb40764652e0",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-21T09:45:00Z",
+            "sample_start_at": "2026-09-21T07:30:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "a87c1844-6862-5eba-a0ee-0626fa9b508b",
+          "start_at": "2026-09-21T07:30:00Z",
+          "value": "asleep_deep"
+        },
+        {
+          "end_at": "2026-09-21T12:00:00Z",
+          "event_id": "5fef0280-4c7b-5499-8a82-a82db64fe0e4",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-21T12:00:00Z",
+            "sample_start_at": "2026-09-21T09:45:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "729cd789-3970-528d-8e50-592573836028",
+          "start_at": "2026-09-21T09:45:00Z",
+          "value": "asleep_rem"
+        },
+        {
+          "event_id": "a966c0fb-8b34-5c1e-a518-3da4f949e4a3",
+          "event_type": "point_measurement",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKQuantityTypeIdentifierHeartRateVariabilitySDNN",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-21T12:15:00Z",
+            "sample_start_at": "2026-09-21T12:14:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "metric": "hrv_sdnn_ms",
+          "observed_at": "2026-09-21T12:15:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "716b86be-667f-588a-8c1b-0115de80c9cb",
+          "unit": "ms",
+          "value": 50.0
+        },
+        {
+          "event_id": "7395ed13-98b3-5bb0-95b1-2449c09e318f",
+          "event_type": "point_measurement",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKQuantityTypeIdentifierRestingHeartRate",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-21T12:30:00Z",
+            "sample_start_at": "2026-09-21T12:29:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "metric": "resting_hr_bpm",
+          "observed_at": "2026-09-21T12:30:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "af197a75-69f9-5338-9315-e2168d7c30e2",
+          "unit": "bpm",
+          "value": 60.0
+        },
+        {
+          "as_of": "2026-09-21T13:00:00Z",
+          "day": "2026-09-21",
+          "event_id": "bde17520-9d99-5fc8-96d0-c338e934bcda",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-21T13:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-21:2026-09-21T13:00:00+00:00:2026-09-21T13:00:00+00:00:2600",
+          "steps": 2600,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-21T18:00:00Z",
+          "day": "2026-09-21",
+          "event_id": "809c12ce-147e-5748-81cb-1cfb2e7bded8",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-21T18:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-21:2026-09-21T18:00:00+00:00:2026-09-21T18:00:00+00:00:5200",
+          "steps": 5200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-21T23:00:00Z",
+          "day": "2026-09-21",
+          "event_id": "2fc3f1bf-e310-594f-8bce-ea0b7e96ad5c",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-21T23:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-21:2026-09-21T23:00:00+00:00:2026-09-21T23:00:00+00:00:7200",
+          "steps": 7200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-22T05:00:00Z",
+          "day": "2026-09-21",
+          "event_id": "45bc35a8-37a0-5b54-a976-769a711a75c6",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-22T05:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-21:2026-09-22T05:00:00+00:00:2026-09-22T05:00:00+00:00:9200",
+          "steps": 9200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "end_at": "2026-09-22T12:20:00Z",
+          "event_id": "5ae1bfd8-d789-558d-9112-3c5476c57bd0",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-22T12:20:00Z",
+            "sample_start_at": "2026-09-22T04:00:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "c2d3f3cb-bb6f-5370-afac-0894f0c00408",
+          "start_at": "2026-09-22T04:00:00Z",
+          "value": "in_bed"
+        },
+        {
+          "end_at": "2026-09-22T07:10:00Z",
+          "event_id": "8da3e057-e0cc-5048-a8d2-e1fa896fbfea",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-22T07:10:00Z",
+            "sample_start_at": "2026-09-22T04:10:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "63da93a5-ecb3-56fc-8a27-3672bfeb784d",
+          "start_at": "2026-09-22T04:10:00Z",
+          "value": "asleep_core"
+        },
+        {
+          "end_at": "2026-09-22T07:30:00Z",
+          "event_id": "6fe09806-4e7c-5f3c-a072-11927b7cf64a",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-22T07:30:00Z",
+            "sample_start_at": "2026-09-22T07:10:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "762ca52c-1d64-5359-848e-f32d6b81e0eb",
+          "start_at": "2026-09-22T07:10:00Z",
+          "value": "awake"
+        },
+        {
+          "end_at": "2026-09-22T09:45:00Z",
+          "event_id": "a814c752-9488-53b3-b97c-98330e15ce90",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-22T09:45:00Z",
+            "sample_start_at": "2026-09-22T07:30:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "b35e31a4-b008-5125-a3de-a4fb6109ee6c",
+          "start_at": "2026-09-22T07:30:00Z",
+          "value": "asleep_deep"
+        },
+        {
+          "end_at": "2026-09-22T12:00:00Z",
+          "event_id": "229049cf-59fa-5e2c-aadb-cd625cdcd51b",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-22T12:00:00Z",
+            "sample_start_at": "2026-09-22T09:45:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "57da1c8e-60e3-544d-b317-3c0ba6aa552c",
+          "start_at": "2026-09-22T09:45:00Z",
+          "value": "asleep_rem"
+        },
+        {
+          "event_id": "fc4a4f59-bd1d-5d71-a989-b2fa7eddc33d",
+          "event_type": "point_measurement",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKQuantityTypeIdentifierHeartRateVariabilitySDNN",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-22T12:15:00Z",
+            "sample_start_at": "2026-09-22T12:14:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "metric": "hrv_sdnn_ms",
+          "observed_at": "2026-09-22T12:15:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "ac0ff870-99b6-5809-ba5a-656b9accf0d3",
+          "unit": "ms",
+          "value": 50.0
+        },
+        {
+          "event_id": "10bde181-d751-55cd-bb66-deeaa8ce1c3c",
+          "event_type": "point_measurement",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKQuantityTypeIdentifierRestingHeartRate",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-22T12:30:00Z",
+            "sample_start_at": "2026-09-22T12:29:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "metric": "resting_hr_bpm",
+          "observed_at": "2026-09-22T12:30:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "8c3d9813-ec2a-5faf-a00a-929133d4b6b3",
+          "unit": "bpm",
+          "value": 60.0
+        },
+        {
+          "as_of": "2026-09-22T13:00:00Z",
+          "day": "2026-09-22",
+          "event_id": "89634693-82d8-58f4-86f5-40904f66e6af",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-22T13:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-22:2026-09-22T13:00:00+00:00:2026-09-22T13:00:00+00:00:2600",
+          "steps": 2600,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-22T18:00:00Z",
+          "day": "2026-09-22",
+          "event_id": "f929e6f3-ae70-5d60-93f8-e5761a67d466",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-22T18:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-22:2026-09-22T18:00:00+00:00:2026-09-22T18:00:00+00:00:5200",
+          "steps": 5200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-22T23:00:00Z",
+          "day": "2026-09-22",
+          "event_id": "94a31b93-3dcf-5dfc-91da-4eb2086630be",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-22T23:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-22:2026-09-22T23:00:00+00:00:2026-09-22T23:00:00+00:00:7200",
+          "steps": 7200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-23T05:00:00Z",
+          "day": "2026-09-22",
+          "event_id": "79614e34-b705-57ac-9625-cdb7d6686070",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-23T05:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-22:2026-09-23T05:00:00+00:00:2026-09-23T05:00:00+00:00:9200",
+          "steps": 9200,
+          "timezone": "America/Chicago"
+        }
+      ],
+      "request_id": "f011851e-9334-56bf-889c-3e204fd84a45"
+    },
+    "response": {
+      "affected_days": [
+        "2026-08-16",
+        "2026-09-18",
+        "2026-09-19",
+        "2026-09-20",
+        "2026-09-21",
+        "2026-09-22"
+      ],
+      "days_beyond_recalc_window": 1,
+      "request_id": "f011851e-9334-56bf-889c-3e204fd84a45",
+      "results": [
+        {
+          "client_event_id": "cb2d6718-3050-5dba-a2f9-1534e7654353",
+          "index": 0,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "8db3e5af-47b8-511e-ae0d-56164583cff8",
+          "index": 1,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "6621b022-3696-574c-ae91-b88fcba0ff11",
+          "index": 2,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "0679d8a1-a107-56c3-a18d-88d2920110f1",
+          "index": 3,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "3e2c8b0c-d4a5-5e71-bb35-338a7e855339",
+          "index": 4,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "50f78ce7-e29d-5d5a-ad4b-af4feee388e3",
+          "index": 5,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "33d81105-1947-54e1-b731-e881f2e0f962",
+          "index": 6,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "97c26dda-f843-5158-89e6-7b163dbee953",
+          "index": 7,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "418c4f1a-6373-5f81-a1ed-ff179a5d4fc8",
+          "index": 8,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "20d7506e-8592-5996-9fd0-0c1a89633355",
+          "index": 9,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "413abb1f-378a-591e-9201-894e666bb8c9",
+          "index": 10,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "bc4c9579-0dee-541a-8a10-6549d0ac99e6",
+          "index": 11,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "0f17fc66-d31f-55af-acb5-52a61d21820b",
+          "index": 12,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "a2dd1ffd-7781-5cd9-85f4-b0fbf2c3d541",
+          "index": 13,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "ec639dc8-b097-5cc9-af77-b935ae807209",
+          "index": 14,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "86b74a29-b842-512b-a7f1-d6d9103b47b5",
+          "index": 15,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "2d36548e-542e-55e8-8c58-1986bf9abc2e",
+          "index": 16,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "1c498b17-2b53-5c77-a833-cc25d02d51fd",
+          "index": 17,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "d4f85616-7a15-526d-953a-87a6453ae359",
+          "index": 18,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "151c3321-d695-5045-96f4-4914c30dfea0",
+          "index": 19,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "80512911-8cdd-5e04-bdc5-4e93a0f4c899",
+          "index": 20,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "4b87cd48-46a1-5f0f-b392-bc1bd4736005",
+          "index": 21,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "9a9a3582-5f71-508a-9154-fc60dde30e5a",
+          "index": 22,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "c3af7379-75d9-5ec4-8fa3-9b7c6536c719",
+          "index": 23,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "d0a3e0a1-5455-5b8c-99b0-6c63e085fb2b",
+          "index": 24,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "fff14880-c46d-516e-9914-fb40764652e0",
+          "index": 25,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "5fef0280-4c7b-5499-8a82-a82db64fe0e4",
+          "index": 26,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "a966c0fb-8b34-5c1e-a518-3da4f949e4a3",
+          "index": 27,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "7395ed13-98b3-5bb0-95b1-2449c09e318f",
+          "index": 28,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "bde17520-9d99-5fc8-96d0-c338e934bcda",
+          "index": 29,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "809c12ce-147e-5748-81cb-1cfb2e7bded8",
+          "index": 30,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "2fc3f1bf-e310-594f-8bce-ea0b7e96ad5c",
+          "index": 31,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "45bc35a8-37a0-5b54-a976-769a711a75c6",
+          "index": 32,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "5ae1bfd8-d789-558d-9112-3c5476c57bd0",
+          "index": 33,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "8da3e057-e0cc-5048-a8d2-e1fa896fbfea",
+          "index": 34,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "6fe09806-4e7c-5f3c-a072-11927b7cf64a",
+          "index": 35,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "a814c752-9488-53b3-b97c-98330e15ce90",
+          "index": 36,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "229049cf-59fa-5e2c-aadb-cd625cdcd51b",
+          "index": 37,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "fc4a4f59-bd1d-5d71-a989-b2fa7eddc33d",
+          "index": 38,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "10bde181-d751-55cd-bb66-deeaa8ce1c3c",
+          "index": 39,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "89634693-82d8-58f4-86f5-40904f66e6af",
+          "index": 40,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "f929e6f3-ae70-5d60-93f8-e5761a67d466",
+          "index": 41,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "94a31b93-3dcf-5dfc-91da-4eb2086630be",
+          "index": 42,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "79614e34-b705-57ac-9625-cdb7d6686070",
+          "index": 43,
+          "retryable": false,
+          "status": "accepted"
+        }
+      ],
+      "revision": 1,
+      "state": {
+        "input_revision": 1,
+        "run_id": 36,
+        "status": "published",
+        "widget_state": {
+          "effective_at": "2026-09-22T18:00:00Z",
+          "freshness": {
+            "last_updated_at": "2026-09-22T18:00:00Z"
+          },
+          "presentation": {
+            "detail": "3 / 14 usable days",
+            "headline": "Learning your baseline",
+            "icon": "🙂",
+            "secondary": null
+          },
+          "primary_trait": {
+            "explainable": false,
+            "id": "calibration"
+          },
+          "version": "widget-state@0.1.0"
+        }
+      }
+    },
+    "status": 200
+  },
+  "sync_replayed": {
+    "request": {
+      "coverage": [
+        {
+          "domain": "sleep",
+          "end_at": "2026-09-22T18:00:00Z",
+          "start_at": "2026-08-16T05:00:00Z",
+          "status": "complete",
+          "timezone": "America/Chicago"
+        }
+      ],
+      "device_timezone": "America/Chicago",
+      "events": [
+        {
+          "end_at": "2026-09-19T12:20:00Z",
+          "event_id": "cb2d6718-3050-5dba-a2f9-1534e7654353",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-19T12:20:00Z",
+            "sample_start_at": "2026-09-19T04:00:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "6b62909a-a4e4-503a-822f-fb7f5dd2497a",
+          "start_at": "2026-09-19T04:00:00Z",
+          "value": "in_bed"
+        },
+        {
+          "end_at": "2026-09-19T07:10:00Z",
+          "event_id": "8db3e5af-47b8-511e-ae0d-56164583cff8",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-19T07:10:00Z",
+            "sample_start_at": "2026-09-19T04:10:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "dfb5db77-23a3-5e3d-9295-4a42f0200de9",
+          "start_at": "2026-09-19T04:10:00Z",
+          "value": "asleep_core"
+        },
+        {
+          "end_at": "2026-09-19T07:30:00Z",
+          "event_id": "6621b022-3696-574c-ae91-b88fcba0ff11",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-19T07:30:00Z",
+            "sample_start_at": "2026-09-19T07:10:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "dbc06f17-7466-52ff-bf6c-b1d39fcd434a",
+          "start_at": "2026-09-19T07:10:00Z",
+          "value": "awake"
+        },
+        {
+          "end_at": "2026-09-19T09:45:00Z",
+          "event_id": "0679d8a1-a107-56c3-a18d-88d2920110f1",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-19T09:45:00Z",
+            "sample_start_at": "2026-09-19T07:30:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "ac78e2d8-e3a4-5cc5-b78e-06241edef441",
+          "start_at": "2026-09-19T07:30:00Z",
+          "value": "asleep_deep"
+        },
+        {
+          "end_at": "2026-09-19T12:00:00Z",
+          "event_id": "3e2c8b0c-d4a5-5e71-bb35-338a7e855339",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-19T12:00:00Z",
+            "sample_start_at": "2026-09-19T09:45:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "c2ea9241-2195-5cf9-bbc1-ca5a5b81c184",
+          "start_at": "2026-09-19T09:45:00Z",
+          "value": "asleep_rem"
+        },
+        {
+          "event_id": "50f78ce7-e29d-5d5a-ad4b-af4feee388e3",
+          "event_type": "point_measurement",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKQuantityTypeIdentifierHeartRateVariabilitySDNN",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-19T12:15:00Z",
+            "sample_start_at": "2026-09-19T12:14:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "metric": "hrv_sdnn_ms",
+          "observed_at": "2026-09-19T12:15:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "b9adcc8c-451f-5bab-8348-5426d26649b6",
+          "unit": "ms",
+          "value": 50.0
+        },
+        {
+          "event_id": "33d81105-1947-54e1-b731-e881f2e0f962",
+          "event_type": "point_measurement",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKQuantityTypeIdentifierRestingHeartRate",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-19T12:30:00Z",
+            "sample_start_at": "2026-09-19T12:29:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "metric": "resting_hr_bpm",
+          "observed_at": "2026-09-19T12:30:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "005ddd5e-221a-5e3b-a8c6-805587a4a87c",
+          "unit": "bpm",
+          "value": 60.0
+        },
+        {
+          "as_of": "2026-09-19T13:00:00Z",
+          "day": "2026-09-19",
+          "event_id": "97c26dda-f843-5158-89e6-7b163dbee953",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-19T13:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-19:2026-09-19T13:00:00+00:00:2026-09-19T13:00:00+00:00:2600",
+          "steps": 2600,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-19T18:00:00Z",
+          "day": "2026-09-19",
+          "event_id": "418c4f1a-6373-5f81-a1ed-ff179a5d4fc8",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-19T18:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-19:2026-09-19T18:00:00+00:00:2026-09-19T18:00:00+00:00:5200",
+          "steps": 5200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-19T23:00:00Z",
+          "day": "2026-09-19",
+          "event_id": "20d7506e-8592-5996-9fd0-0c1a89633355",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-19T23:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-19:2026-09-19T23:00:00+00:00:2026-09-19T23:00:00+00:00:7200",
+          "steps": 7200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-20T05:00:00Z",
+          "day": "2026-09-19",
+          "event_id": "413abb1f-378a-591e-9201-894e666bb8c9",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-20T05:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-19:2026-09-20T05:00:00+00:00:2026-09-20T05:00:00+00:00:9200",
+          "steps": 9200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "end_at": "2026-09-20T12:20:00Z",
+          "event_id": "bc4c9579-0dee-541a-8a10-6549d0ac99e6",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-20T12:20:00Z",
+            "sample_start_at": "2026-09-20T04:00:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "21ae696a-f420-566c-8fe6-f071b5aea637",
+          "start_at": "2026-09-20T04:00:00Z",
+          "value": "in_bed"
+        },
+        {
+          "end_at": "2026-09-20T07:10:00Z",
+          "event_id": "0f17fc66-d31f-55af-acb5-52a61d21820b",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-20T07:10:00Z",
+            "sample_start_at": "2026-09-20T04:10:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "23f0af6b-7736-5ed1-99ab-3954c4ad0393",
+          "start_at": "2026-09-20T04:10:00Z",
+          "value": "asleep_core"
+        },
+        {
+          "end_at": "2026-09-20T07:30:00Z",
+          "event_id": "a2dd1ffd-7781-5cd9-85f4-b0fbf2c3d541",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-20T07:30:00Z",
+            "sample_start_at": "2026-09-20T07:10:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "99de62dc-7583-507f-a08b-0cae8c5ecbe5",
+          "start_at": "2026-09-20T07:10:00Z",
+          "value": "awake"
+        },
+        {
+          "end_at": "2026-09-20T09:45:00Z",
+          "event_id": "ec639dc8-b097-5cc9-af77-b935ae807209",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-20T09:45:00Z",
+            "sample_start_at": "2026-09-20T07:30:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "1ec82212-b022-53c0-a21c-fc49608048e2",
+          "start_at": "2026-09-20T07:30:00Z",
+          "value": "asleep_deep"
+        },
+        {
+          "end_at": "2026-09-20T12:00:00Z",
+          "event_id": "86b74a29-b842-512b-a7f1-d6d9103b47b5",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-20T12:00:00Z",
+            "sample_start_at": "2026-09-20T09:45:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "09478a98-3762-53c0-bccc-a7900821f30f",
+          "start_at": "2026-09-20T09:45:00Z",
+          "value": "asleep_rem"
+        },
+        {
+          "event_id": "2d36548e-542e-55e8-8c58-1986bf9abc2e",
+          "event_type": "point_measurement",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKQuantityTypeIdentifierHeartRateVariabilitySDNN",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-20T12:15:00Z",
+            "sample_start_at": "2026-09-20T12:14:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "metric": "hrv_sdnn_ms",
+          "observed_at": "2026-09-20T12:15:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "6bf7f58b-ab81-52ef-a639-b1d59d6a1445",
+          "unit": "ms",
+          "value": 50.0
+        },
+        {
+          "event_id": "1c498b17-2b53-5c77-a833-cc25d02d51fd",
+          "event_type": "point_measurement",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKQuantityTypeIdentifierRestingHeartRate",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-20T12:30:00Z",
+            "sample_start_at": "2026-09-20T12:29:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "metric": "resting_hr_bpm",
+          "observed_at": "2026-09-20T12:30:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "af93b072-9e23-50bb-b0b9-77bcf47e7f2f",
+          "unit": "bpm",
+          "value": 60.0
+        },
+        {
+          "as_of": "2026-09-20T13:00:00Z",
+          "day": "2026-09-20",
+          "event_id": "d4f85616-7a15-526d-953a-87a6453ae359",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-20T13:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-20:2026-09-20T13:00:00+00:00:2026-09-20T13:00:00+00:00:2600",
+          "steps": 2600,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-20T18:00:00Z",
+          "day": "2026-09-20",
+          "event_id": "151c3321-d695-5045-96f4-4914c30dfea0",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-20T18:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-20:2026-09-20T18:00:00+00:00:2026-09-20T18:00:00+00:00:5200",
+          "steps": 5200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-20T23:00:00Z",
+          "day": "2026-09-20",
+          "event_id": "80512911-8cdd-5e04-bdc5-4e93a0f4c899",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-20T23:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-20:2026-09-20T23:00:00+00:00:2026-09-20T23:00:00+00:00:7200",
+          "steps": 7200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-21T05:00:00Z",
+          "day": "2026-09-20",
+          "event_id": "4b87cd48-46a1-5f0f-b392-bc1bd4736005",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-21T05:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-20:2026-09-21T05:00:00+00:00:2026-09-21T05:00:00+00:00:9200",
+          "steps": 9200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "end_at": "2026-09-21T12:20:00Z",
+          "event_id": "9a9a3582-5f71-508a-9154-fc60dde30e5a",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-21T12:20:00Z",
+            "sample_start_at": "2026-09-21T04:00:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "81ca600b-f087-5691-b0c1-187f94d9260f",
+          "start_at": "2026-09-21T04:00:00Z",
+          "value": "in_bed"
+        },
+        {
+          "end_at": "2026-09-21T07:10:00Z",
+          "event_id": "c3af7379-75d9-5ec4-8fa3-9b7c6536c719",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-21T07:10:00Z",
+            "sample_start_at": "2026-09-21T04:10:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "b0e78136-2203-5d2e-95f8-26059a6273df",
+          "start_at": "2026-09-21T04:10:00Z",
+          "value": "asleep_core"
+        },
+        {
+          "end_at": "2026-09-21T07:30:00Z",
+          "event_id": "d0a3e0a1-5455-5b8c-99b0-6c63e085fb2b",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-21T07:30:00Z",
+            "sample_start_at": "2026-09-21T07:10:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "cade3cd7-3c64-53eb-a36c-e1f992dfadaf",
+          "start_at": "2026-09-21T07:10:00Z",
+          "value": "awake"
+        },
+        {
+          "end_at": "2026-09-21T09:45:00Z",
+          "event_id": "fff14880-c46d-516e-9914-fb40764652e0",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-21T09:45:00Z",
+            "sample_start_at": "2026-09-21T07:30:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "a87c1844-6862-5eba-a0ee-0626fa9b508b",
+          "start_at": "2026-09-21T07:30:00Z",
+          "value": "asleep_deep"
+        },
+        {
+          "end_at": "2026-09-21T12:00:00Z",
+          "event_id": "5fef0280-4c7b-5499-8a82-a82db64fe0e4",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-21T12:00:00Z",
+            "sample_start_at": "2026-09-21T09:45:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "729cd789-3970-528d-8e50-592573836028",
+          "start_at": "2026-09-21T09:45:00Z",
+          "value": "asleep_rem"
+        },
+        {
+          "event_id": "a966c0fb-8b34-5c1e-a518-3da4f949e4a3",
+          "event_type": "point_measurement",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKQuantityTypeIdentifierHeartRateVariabilitySDNN",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-21T12:15:00Z",
+            "sample_start_at": "2026-09-21T12:14:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "metric": "hrv_sdnn_ms",
+          "observed_at": "2026-09-21T12:15:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "716b86be-667f-588a-8c1b-0115de80c9cb",
+          "unit": "ms",
+          "value": 50.0
+        },
+        {
+          "event_id": "7395ed13-98b3-5bb0-95b1-2449c09e318f",
+          "event_type": "point_measurement",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKQuantityTypeIdentifierRestingHeartRate",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-21T12:30:00Z",
+            "sample_start_at": "2026-09-21T12:29:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "metric": "resting_hr_bpm",
+          "observed_at": "2026-09-21T12:30:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "af197a75-69f9-5338-9315-e2168d7c30e2",
+          "unit": "bpm",
+          "value": 60.0
+        },
+        {
+          "as_of": "2026-09-21T13:00:00Z",
+          "day": "2026-09-21",
+          "event_id": "bde17520-9d99-5fc8-96d0-c338e934bcda",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-21T13:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-21:2026-09-21T13:00:00+00:00:2026-09-21T13:00:00+00:00:2600",
+          "steps": 2600,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-21T18:00:00Z",
+          "day": "2026-09-21",
+          "event_id": "809c12ce-147e-5748-81cb-1cfb2e7bded8",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-21T18:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-21:2026-09-21T18:00:00+00:00:2026-09-21T18:00:00+00:00:5200",
+          "steps": 5200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-21T23:00:00Z",
+          "day": "2026-09-21",
+          "event_id": "2fc3f1bf-e310-594f-8bce-ea0b7e96ad5c",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-21T23:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-21:2026-09-21T23:00:00+00:00:2026-09-21T23:00:00+00:00:7200",
+          "steps": 7200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-22T05:00:00Z",
+          "day": "2026-09-21",
+          "event_id": "45bc35a8-37a0-5b54-a976-769a711a75c6",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-22T05:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-21:2026-09-22T05:00:00+00:00:2026-09-22T05:00:00+00:00:9200",
+          "steps": 9200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "end_at": "2026-09-22T12:20:00Z",
+          "event_id": "5ae1bfd8-d789-558d-9112-3c5476c57bd0",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-22T12:20:00Z",
+            "sample_start_at": "2026-09-22T04:00:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "c2d3f3cb-bb6f-5370-afac-0894f0c00408",
+          "start_at": "2026-09-22T04:00:00Z",
+          "value": "in_bed"
+        },
+        {
+          "end_at": "2026-09-22T07:10:00Z",
+          "event_id": "8da3e057-e0cc-5048-a8d2-e1fa896fbfea",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-22T07:10:00Z",
+            "sample_start_at": "2026-09-22T04:10:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "63da93a5-ecb3-56fc-8a27-3672bfeb784d",
+          "start_at": "2026-09-22T04:10:00Z",
+          "value": "asleep_core"
+        },
+        {
+          "end_at": "2026-09-22T07:30:00Z",
+          "event_id": "6fe09806-4e7c-5f3c-a072-11927b7cf64a",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-22T07:30:00Z",
+            "sample_start_at": "2026-09-22T07:10:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "762ca52c-1d64-5359-848e-f32d6b81e0eb",
+          "start_at": "2026-09-22T07:10:00Z",
+          "value": "awake"
+        },
+        {
+          "end_at": "2026-09-22T09:45:00Z",
+          "event_id": "a814c752-9488-53b3-b97c-98330e15ce90",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-22T09:45:00Z",
+            "sample_start_at": "2026-09-22T07:30:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "b35e31a4-b008-5125-a3de-a4fb6109ee6c",
+          "start_at": "2026-09-22T07:30:00Z",
+          "value": "asleep_deep"
+        },
+        {
+          "end_at": "2026-09-22T12:00:00Z",
+          "event_id": "229049cf-59fa-5e2c-aadb-cd625cdcd51b",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-22T12:00:00Z",
+            "sample_start_at": "2026-09-22T09:45:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "57da1c8e-60e3-544d-b317-3c0ba6aa552c",
+          "start_at": "2026-09-22T09:45:00Z",
+          "value": "asleep_rem"
+        },
+        {
+          "event_id": "fc4a4f59-bd1d-5d71-a989-b2fa7eddc33d",
+          "event_type": "point_measurement",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKQuantityTypeIdentifierHeartRateVariabilitySDNN",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-22T12:15:00Z",
+            "sample_start_at": "2026-09-22T12:14:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "metric": "hrv_sdnn_ms",
+          "observed_at": "2026-09-22T12:15:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "ac0ff870-99b6-5809-ba5a-656b9accf0d3",
+          "unit": "ms",
+          "value": 50.0
+        },
+        {
+          "event_id": "10bde181-d751-55cd-bb66-deeaa8ce1c3c",
+          "event_type": "point_measurement",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKQuantityTypeIdentifierRestingHeartRate",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-22T12:30:00Z",
+            "sample_start_at": "2026-09-22T12:29:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "metric": "resting_hr_bpm",
+          "observed_at": "2026-09-22T12:30:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "8c3d9813-ec2a-5faf-a00a-929133d4b6b3",
+          "unit": "bpm",
+          "value": 60.0
+        },
+        {
+          "as_of": "2026-09-22T13:00:00Z",
+          "day": "2026-09-22",
+          "event_id": "89634693-82d8-58f4-86f5-40904f66e6af",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-22T13:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-22:2026-09-22T13:00:00+00:00:2026-09-22T13:00:00+00:00:2600",
+          "steps": 2600,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-22T18:00:00Z",
+          "day": "2026-09-22",
+          "event_id": "f929e6f3-ae70-5d60-93f8-e5761a67d466",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-22T18:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-22:2026-09-22T18:00:00+00:00:2026-09-22T18:00:00+00:00:5200",
+          "steps": 5200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-22T23:00:00Z",
+          "day": "2026-09-22",
+          "event_id": "94a31b93-3dcf-5dfc-91da-4eb2086630be",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-22T23:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-22:2026-09-22T23:00:00+00:00:2026-09-22T23:00:00+00:00:7200",
+          "steps": 7200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-23T05:00:00Z",
+          "day": "2026-09-22",
+          "event_id": "79614e34-b705-57ac-9625-cdb7d6686070",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-23T05:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-22:2026-09-23T05:00:00+00:00:2026-09-23T05:00:00+00:00:9200",
+          "steps": 9200,
+          "timezone": "America/Chicago"
+        }
+      ],
+      "request_id": "f011851e-9334-56bf-889c-3e204fd84a45"
+    },
+    "response": {
+      "affected_days": [
+        "2026-08-16",
+        "2026-09-18",
+        "2026-09-19",
+        "2026-09-20",
+        "2026-09-21",
+        "2026-09-22"
+      ],
+      "days_beyond_recalc_window": 1,
+      "request_id": "f011851e-9334-56bf-889c-3e204fd84a45",
+      "results": [
+        {
+          "client_event_id": "cb2d6718-3050-5dba-a2f9-1534e7654353",
+          "index": 0,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "8db3e5af-47b8-511e-ae0d-56164583cff8",
+          "index": 1,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "6621b022-3696-574c-ae91-b88fcba0ff11",
+          "index": 2,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "0679d8a1-a107-56c3-a18d-88d2920110f1",
+          "index": 3,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "3e2c8b0c-d4a5-5e71-bb35-338a7e855339",
+          "index": 4,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "50f78ce7-e29d-5d5a-ad4b-af4feee388e3",
+          "index": 5,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "33d81105-1947-54e1-b731-e881f2e0f962",
+          "index": 6,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "97c26dda-f843-5158-89e6-7b163dbee953",
+          "index": 7,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "418c4f1a-6373-5f81-a1ed-ff179a5d4fc8",
+          "index": 8,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "20d7506e-8592-5996-9fd0-0c1a89633355",
+          "index": 9,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "413abb1f-378a-591e-9201-894e666bb8c9",
+          "index": 10,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "bc4c9579-0dee-541a-8a10-6549d0ac99e6",
+          "index": 11,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "0f17fc66-d31f-55af-acb5-52a61d21820b",
+          "index": 12,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "a2dd1ffd-7781-5cd9-85f4-b0fbf2c3d541",
+          "index": 13,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "ec639dc8-b097-5cc9-af77-b935ae807209",
+          "index": 14,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "86b74a29-b842-512b-a7f1-d6d9103b47b5",
+          "index": 15,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "2d36548e-542e-55e8-8c58-1986bf9abc2e",
+          "index": 16,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "1c498b17-2b53-5c77-a833-cc25d02d51fd",
+          "index": 17,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "d4f85616-7a15-526d-953a-87a6453ae359",
+          "index": 18,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "151c3321-d695-5045-96f4-4914c30dfea0",
+          "index": 19,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "80512911-8cdd-5e04-bdc5-4e93a0f4c899",
+          "index": 20,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "4b87cd48-46a1-5f0f-b392-bc1bd4736005",
+          "index": 21,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "9a9a3582-5f71-508a-9154-fc60dde30e5a",
+          "index": 22,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "c3af7379-75d9-5ec4-8fa3-9b7c6536c719",
+          "index": 23,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "d0a3e0a1-5455-5b8c-99b0-6c63e085fb2b",
+          "index": 24,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "fff14880-c46d-516e-9914-fb40764652e0",
+          "index": 25,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "5fef0280-4c7b-5499-8a82-a82db64fe0e4",
+          "index": 26,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "a966c0fb-8b34-5c1e-a518-3da4f949e4a3",
+          "index": 27,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "7395ed13-98b3-5bb0-95b1-2449c09e318f",
+          "index": 28,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "bde17520-9d99-5fc8-96d0-c338e934bcda",
+          "index": 29,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "809c12ce-147e-5748-81cb-1cfb2e7bded8",
+          "index": 30,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "2fc3f1bf-e310-594f-8bce-ea0b7e96ad5c",
+          "index": 31,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "45bc35a8-37a0-5b54-a976-769a711a75c6",
+          "index": 32,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "5ae1bfd8-d789-558d-9112-3c5476c57bd0",
+          "index": 33,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "8da3e057-e0cc-5048-a8d2-e1fa896fbfea",
+          "index": 34,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "6fe09806-4e7c-5f3c-a072-11927b7cf64a",
+          "index": 35,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "a814c752-9488-53b3-b97c-98330e15ce90",
+          "index": 36,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "229049cf-59fa-5e2c-aadb-cd625cdcd51b",
+          "index": 37,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "fc4a4f59-bd1d-5d71-a989-b2fa7eddc33d",
+          "index": 38,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "10bde181-d751-55cd-bb66-deeaa8ce1c3c",
+          "index": 39,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "89634693-82d8-58f4-86f5-40904f66e6af",
+          "index": 40,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "f929e6f3-ae70-5d60-93f8-e5761a67d466",
+          "index": 41,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "94a31b93-3dcf-5dfc-91da-4eb2086630be",
+          "index": 42,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "79614e34-b705-57ac-9625-cdb7d6686070",
+          "index": 43,
+          "retryable": false,
+          "status": "accepted"
+        }
+      ],
+      "revision": 1,
+      "state": {
+        "input_revision": 1,
+        "run_id": 36,
+        "status": "published",
+        "widget_state": {
+          "effective_at": "2026-09-22T18:00:00Z",
+          "freshness": {
+            "last_updated_at": "2026-09-22T18:00:00Z"
+          },
+          "presentation": {
+            "detail": "3 / 14 usable days",
+            "headline": "Learning your baseline",
+            "icon": "🙂",
+            "secondary": null
+          },
+          "primary_trait": {
+            "explainable": false,
+            "id": "calibration"
+          },
+          "version": "widget-state@0.1.0"
+        }
+      }
+    },
+    "status": 200
+  },
+  "sync_unchanged": {
+    "request": {
+      "coverage": [],
+      "device_timezone": "America/Chicago",
+      "events": [
+        {
+          "end_at": "2026-09-19T12:20:00Z",
+          "event_id": "cb2d6718-3050-5dba-a2f9-1534e7654353",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-19T12:20:00Z",
+            "sample_start_at": "2026-09-19T04:00:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "6b62909a-a4e4-503a-822f-fb7f5dd2497a",
+          "start_at": "2026-09-19T04:00:00Z",
+          "value": "in_bed"
+        },
+        {
+          "end_at": "2026-09-19T07:10:00Z",
+          "event_id": "8db3e5af-47b8-511e-ae0d-56164583cff8",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-19T07:10:00Z",
+            "sample_start_at": "2026-09-19T04:10:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "dfb5db77-23a3-5e3d-9295-4a42f0200de9",
+          "start_at": "2026-09-19T04:10:00Z",
+          "value": "asleep_core"
+        },
+        {
+          "end_at": "2026-09-19T07:30:00Z",
+          "event_id": "6621b022-3696-574c-ae91-b88fcba0ff11",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-19T07:30:00Z",
+            "sample_start_at": "2026-09-19T07:10:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "dbc06f17-7466-52ff-bf6c-b1d39fcd434a",
+          "start_at": "2026-09-19T07:10:00Z",
+          "value": "awake"
+        },
+        {
+          "end_at": "2026-09-19T09:45:00Z",
+          "event_id": "0679d8a1-a107-56c3-a18d-88d2920110f1",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-19T09:45:00Z",
+            "sample_start_at": "2026-09-19T07:30:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "ac78e2d8-e3a4-5cc5-b78e-06241edef441",
+          "start_at": "2026-09-19T07:30:00Z",
+          "value": "asleep_deep"
+        },
+        {
+          "end_at": "2026-09-19T12:00:00Z",
+          "event_id": "3e2c8b0c-d4a5-5e71-bb35-338a7e855339",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-19T12:00:00Z",
+            "sample_start_at": "2026-09-19T09:45:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "c2ea9241-2195-5cf9-bbc1-ca5a5b81c184",
+          "start_at": "2026-09-19T09:45:00Z",
+          "value": "asleep_rem"
+        },
+        {
+          "event_id": "50f78ce7-e29d-5d5a-ad4b-af4feee388e3",
+          "event_type": "point_measurement",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKQuantityTypeIdentifierHeartRateVariabilitySDNN",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-19T12:15:00Z",
+            "sample_start_at": "2026-09-19T12:14:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "metric": "hrv_sdnn_ms",
+          "observed_at": "2026-09-19T12:15:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "b9adcc8c-451f-5bab-8348-5426d26649b6",
+          "unit": "ms",
+          "value": 50.0
+        },
+        {
+          "event_id": "33d81105-1947-54e1-b731-e881f2e0f962",
+          "event_type": "point_measurement",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKQuantityTypeIdentifierRestingHeartRate",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-19T12:30:00Z",
+            "sample_start_at": "2026-09-19T12:29:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "metric": "resting_hr_bpm",
+          "observed_at": "2026-09-19T12:30:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "005ddd5e-221a-5e3b-a8c6-805587a4a87c",
+          "unit": "bpm",
+          "value": 60.0
+        },
+        {
+          "as_of": "2026-09-19T13:00:00Z",
+          "day": "2026-09-19",
+          "event_id": "97c26dda-f843-5158-89e6-7b163dbee953",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-19T13:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-19:2026-09-19T13:00:00+00:00:2026-09-19T13:00:00+00:00:2600",
+          "steps": 2600,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-19T18:00:00Z",
+          "day": "2026-09-19",
+          "event_id": "418c4f1a-6373-5f81-a1ed-ff179a5d4fc8",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-19T18:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-19:2026-09-19T18:00:00+00:00:2026-09-19T18:00:00+00:00:5200",
+          "steps": 5200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-19T23:00:00Z",
+          "day": "2026-09-19",
+          "event_id": "20d7506e-8592-5996-9fd0-0c1a89633355",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-19T23:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-19:2026-09-19T23:00:00+00:00:2026-09-19T23:00:00+00:00:7200",
+          "steps": 7200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-20T05:00:00Z",
+          "day": "2026-09-19",
+          "event_id": "413abb1f-378a-591e-9201-894e666bb8c9",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-20T05:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-19:2026-09-20T05:00:00+00:00:2026-09-20T05:00:00+00:00:9200",
+          "steps": 9200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "end_at": "2026-09-20T12:20:00Z",
+          "event_id": "bc4c9579-0dee-541a-8a10-6549d0ac99e6",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-20T12:20:00Z",
+            "sample_start_at": "2026-09-20T04:00:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "21ae696a-f420-566c-8fe6-f071b5aea637",
+          "start_at": "2026-09-20T04:00:00Z",
+          "value": "in_bed"
+        },
+        {
+          "end_at": "2026-09-20T07:10:00Z",
+          "event_id": "0f17fc66-d31f-55af-acb5-52a61d21820b",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-20T07:10:00Z",
+            "sample_start_at": "2026-09-20T04:10:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "23f0af6b-7736-5ed1-99ab-3954c4ad0393",
+          "start_at": "2026-09-20T04:10:00Z",
+          "value": "asleep_core"
+        },
+        {
+          "end_at": "2026-09-20T07:30:00Z",
+          "event_id": "a2dd1ffd-7781-5cd9-85f4-b0fbf2c3d541",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-20T07:30:00Z",
+            "sample_start_at": "2026-09-20T07:10:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "99de62dc-7583-507f-a08b-0cae8c5ecbe5",
+          "start_at": "2026-09-20T07:10:00Z",
+          "value": "awake"
+        },
+        {
+          "end_at": "2026-09-20T09:45:00Z",
+          "event_id": "ec639dc8-b097-5cc9-af77-b935ae807209",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-20T09:45:00Z",
+            "sample_start_at": "2026-09-20T07:30:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "1ec82212-b022-53c0-a21c-fc49608048e2",
+          "start_at": "2026-09-20T07:30:00Z",
+          "value": "asleep_deep"
+        },
+        {
+          "end_at": "2026-09-20T12:00:00Z",
+          "event_id": "86b74a29-b842-512b-a7f1-d6d9103b47b5",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-20T12:00:00Z",
+            "sample_start_at": "2026-09-20T09:45:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "09478a98-3762-53c0-bccc-a7900821f30f",
+          "start_at": "2026-09-20T09:45:00Z",
+          "value": "asleep_rem"
+        },
+        {
+          "event_id": "2d36548e-542e-55e8-8c58-1986bf9abc2e",
+          "event_type": "point_measurement",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKQuantityTypeIdentifierHeartRateVariabilitySDNN",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-20T12:15:00Z",
+            "sample_start_at": "2026-09-20T12:14:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "metric": "hrv_sdnn_ms",
+          "observed_at": "2026-09-20T12:15:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "6bf7f58b-ab81-52ef-a639-b1d59d6a1445",
+          "unit": "ms",
+          "value": 50.0
+        },
+        {
+          "event_id": "1c498b17-2b53-5c77-a833-cc25d02d51fd",
+          "event_type": "point_measurement",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKQuantityTypeIdentifierRestingHeartRate",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-20T12:30:00Z",
+            "sample_start_at": "2026-09-20T12:29:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "metric": "resting_hr_bpm",
+          "observed_at": "2026-09-20T12:30:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "af93b072-9e23-50bb-b0b9-77bcf47e7f2f",
+          "unit": "bpm",
+          "value": 60.0
+        },
+        {
+          "as_of": "2026-09-20T13:00:00Z",
+          "day": "2026-09-20",
+          "event_id": "d4f85616-7a15-526d-953a-87a6453ae359",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-20T13:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-20:2026-09-20T13:00:00+00:00:2026-09-20T13:00:00+00:00:2600",
+          "steps": 2600,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-20T18:00:00Z",
+          "day": "2026-09-20",
+          "event_id": "151c3321-d695-5045-96f4-4914c30dfea0",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-20T18:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-20:2026-09-20T18:00:00+00:00:2026-09-20T18:00:00+00:00:5200",
+          "steps": 5200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-20T23:00:00Z",
+          "day": "2026-09-20",
+          "event_id": "80512911-8cdd-5e04-bdc5-4e93a0f4c899",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-20T23:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-20:2026-09-20T23:00:00+00:00:2026-09-20T23:00:00+00:00:7200",
+          "steps": 7200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-21T05:00:00Z",
+          "day": "2026-09-20",
+          "event_id": "4b87cd48-46a1-5f0f-b392-bc1bd4736005",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-21T05:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-20:2026-09-21T05:00:00+00:00:2026-09-21T05:00:00+00:00:9200",
+          "steps": 9200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "end_at": "2026-09-21T12:20:00Z",
+          "event_id": "9a9a3582-5f71-508a-9154-fc60dde30e5a",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-21T12:20:00Z",
+            "sample_start_at": "2026-09-21T04:00:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "81ca600b-f087-5691-b0c1-187f94d9260f",
+          "start_at": "2026-09-21T04:00:00Z",
+          "value": "in_bed"
+        },
+        {
+          "end_at": "2026-09-21T07:10:00Z",
+          "event_id": "c3af7379-75d9-5ec4-8fa3-9b7c6536c719",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-21T07:10:00Z",
+            "sample_start_at": "2026-09-21T04:10:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "b0e78136-2203-5d2e-95f8-26059a6273df",
+          "start_at": "2026-09-21T04:10:00Z",
+          "value": "asleep_core"
+        },
+        {
+          "end_at": "2026-09-21T07:30:00Z",
+          "event_id": "d0a3e0a1-5455-5b8c-99b0-6c63e085fb2b",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-21T07:30:00Z",
+            "sample_start_at": "2026-09-21T07:10:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "cade3cd7-3c64-53eb-a36c-e1f992dfadaf",
+          "start_at": "2026-09-21T07:10:00Z",
+          "value": "awake"
+        },
+        {
+          "end_at": "2026-09-21T09:45:00Z",
+          "event_id": "fff14880-c46d-516e-9914-fb40764652e0",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-21T09:45:00Z",
+            "sample_start_at": "2026-09-21T07:30:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "a87c1844-6862-5eba-a0ee-0626fa9b508b",
+          "start_at": "2026-09-21T07:30:00Z",
+          "value": "asleep_deep"
+        },
+        {
+          "end_at": "2026-09-21T12:00:00Z",
+          "event_id": "5fef0280-4c7b-5499-8a82-a82db64fe0e4",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-21T12:00:00Z",
+            "sample_start_at": "2026-09-21T09:45:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "729cd789-3970-528d-8e50-592573836028",
+          "start_at": "2026-09-21T09:45:00Z",
+          "value": "asleep_rem"
+        },
+        {
+          "event_id": "a966c0fb-8b34-5c1e-a518-3da4f949e4a3",
+          "event_type": "point_measurement",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKQuantityTypeIdentifierHeartRateVariabilitySDNN",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-21T12:15:00Z",
+            "sample_start_at": "2026-09-21T12:14:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "metric": "hrv_sdnn_ms",
+          "observed_at": "2026-09-21T12:15:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "716b86be-667f-588a-8c1b-0115de80c9cb",
+          "unit": "ms",
+          "value": 50.0
+        },
+        {
+          "event_id": "7395ed13-98b3-5bb0-95b1-2449c09e318f",
+          "event_type": "point_measurement",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKQuantityTypeIdentifierRestingHeartRate",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-21T12:30:00Z",
+            "sample_start_at": "2026-09-21T12:29:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "metric": "resting_hr_bpm",
+          "observed_at": "2026-09-21T12:30:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "af197a75-69f9-5338-9315-e2168d7c30e2",
+          "unit": "bpm",
+          "value": 60.0
+        },
+        {
+          "as_of": "2026-09-21T13:00:00Z",
+          "day": "2026-09-21",
+          "event_id": "bde17520-9d99-5fc8-96d0-c338e934bcda",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-21T13:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-21:2026-09-21T13:00:00+00:00:2026-09-21T13:00:00+00:00:2600",
+          "steps": 2600,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-21T18:00:00Z",
+          "day": "2026-09-21",
+          "event_id": "809c12ce-147e-5748-81cb-1cfb2e7bded8",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-21T18:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-21:2026-09-21T18:00:00+00:00:2026-09-21T18:00:00+00:00:5200",
+          "steps": 5200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-21T23:00:00Z",
+          "day": "2026-09-21",
+          "event_id": "2fc3f1bf-e310-594f-8bce-ea0b7e96ad5c",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-21T23:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-21:2026-09-21T23:00:00+00:00:2026-09-21T23:00:00+00:00:7200",
+          "steps": 7200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-22T05:00:00Z",
+          "day": "2026-09-21",
+          "event_id": "45bc35a8-37a0-5b54-a976-769a711a75c6",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-22T05:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-21:2026-09-22T05:00:00+00:00:2026-09-22T05:00:00+00:00:9200",
+          "steps": 9200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "end_at": "2026-09-22T12:20:00Z",
+          "event_id": "5ae1bfd8-d789-558d-9112-3c5476c57bd0",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-22T12:20:00Z",
+            "sample_start_at": "2026-09-22T04:00:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "c2d3f3cb-bb6f-5370-afac-0894f0c00408",
+          "start_at": "2026-09-22T04:00:00Z",
+          "value": "in_bed"
+        },
+        {
+          "end_at": "2026-09-22T07:10:00Z",
+          "event_id": "8da3e057-e0cc-5048-a8d2-e1fa896fbfea",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-22T07:10:00Z",
+            "sample_start_at": "2026-09-22T04:10:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "63da93a5-ecb3-56fc-8a27-3672bfeb784d",
+          "start_at": "2026-09-22T04:10:00Z",
+          "value": "asleep_core"
+        },
+        {
+          "end_at": "2026-09-22T07:30:00Z",
+          "event_id": "6fe09806-4e7c-5f3c-a072-11927b7cf64a",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-22T07:30:00Z",
+            "sample_start_at": "2026-09-22T07:10:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "762ca52c-1d64-5359-848e-f32d6b81e0eb",
+          "start_at": "2026-09-22T07:10:00Z",
+          "value": "awake"
+        },
+        {
+          "end_at": "2026-09-22T09:45:00Z",
+          "event_id": "a814c752-9488-53b3-b97c-98330e15ce90",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-22T09:45:00Z",
+            "sample_start_at": "2026-09-22T07:30:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "b35e31a4-b008-5125-a3de-a4fb6109ee6c",
+          "start_at": "2026-09-22T07:30:00Z",
+          "value": "asleep_deep"
+        },
+        {
+          "end_at": "2026-09-22T12:00:00Z",
+          "event_id": "229049cf-59fa-5e2c-aadb-cd625cdcd51b",
+          "event_type": "interval",
+          "kind": "sleep_stage",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKCategoryTypeIdentifierSleepAnalysis",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-22T12:00:00Z",
+            "sample_start_at": "2026-09-22T09:45:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "57da1c8e-60e3-544d-b317-3c0ba6aa552c",
+          "start_at": "2026-09-22T09:45:00Z",
+          "value": "asleep_rem"
+        },
+        {
+          "event_id": "fc4a4f59-bd1d-5d71-a989-b2fa7eddc33d",
+          "event_type": "point_measurement",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKQuantityTypeIdentifierHeartRateVariabilitySDNN",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-22T12:15:00Z",
+            "sample_start_at": "2026-09-22T12:14:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "metric": "hrv_sdnn_ms",
+          "observed_at": "2026-09-22T12:15:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "ac0ff870-99b6-5809-ba5a-656b9accf0d3",
+          "unit": "ms",
+          "value": 50.0
+        },
+        {
+          "event_id": "10bde181-d751-55cd-bb66-deeaa8ce1c3c",
+          "event_type": "point_measurement",
+          "metadata": {
+            "device_product_type": "SyntheticWatch1,1",
+            "healthkit_type": "HKQuantityTypeIdentifierRestingHeartRate",
+            "provider_metadata": [],
+            "sample_end_at": "2026-09-22T12:30:00Z",
+            "sample_start_at": "2026-09-22T12:29:00Z",
+            "source_bundle_id": "org.homeostat.synthetic.watch",
+            "source_name": "Synthetic Watch",
+            "source_revision": "synthetic-1",
+            "timezone": "America/Chicago",
+            "timezone_source": "sample_metadata"
+          },
+          "metric": "resting_hr_bpm",
+          "observed_at": "2026-09-22T12:30:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "8c3d9813-ec2a-5faf-a00a-929133d4b6b3",
+          "unit": "bpm",
+          "value": 60.0
+        },
+        {
+          "as_of": "2026-09-22T13:00:00Z",
+          "day": "2026-09-22",
+          "event_id": "89634693-82d8-58f4-86f5-40904f66e6af",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-22T13:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-22:2026-09-22T13:00:00+00:00:2026-09-22T13:00:00+00:00:2600",
+          "steps": 2600,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-22T18:00:00Z",
+          "day": "2026-09-22",
+          "event_id": "f929e6f3-ae70-5d60-93f8-e5761a67d466",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-22T18:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-22:2026-09-22T18:00:00+00:00:2026-09-22T18:00:00+00:00:5200",
+          "steps": 5200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-22T23:00:00Z",
+          "day": "2026-09-22",
+          "event_id": "94a31b93-3dcf-5dfc-91da-4eb2086630be",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-22T23:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-22:2026-09-22T23:00:00+00:00:2026-09-22T23:00:00+00:00:7200",
+          "steps": 7200,
+          "timezone": "America/Chicago"
+        },
+        {
+          "as_of": "2026-09-23T05:00:00Z",
+          "day": "2026-09-22",
+          "event_id": "79614e34-b705-57ac-9625-cdb7d6686070",
+          "event_type": "daily_activity_snapshot",
+          "queried_at": "2026-09-23T05:00:00Z",
+          "schema_version": "1.0.0",
+          "source": "healthkit",
+          "source_record_id": "steps:America/Chicago:2026-09-22:2026-09-23T05:00:00+00:00:2026-09-23T05:00:00+00:00:9200",
+          "steps": 9200,
+          "timezone": "America/Chicago"
+        }
+      ],
+      "request_id": "e160c29e-d26c-50a2-a538-ef4e2cc939ad"
+    },
+    "response": {
+      "affected_days": [],
+      "days_beyond_recalc_window": 0,
+      "request_id": "e160c29e-d26c-50a2-a538-ef4e2cc939ad",
+      "results": [
+        {
+          "client_event_id": "cb2d6718-3050-5dba-a2f9-1534e7654353",
+          "index": 0,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "8db3e5af-47b8-511e-ae0d-56164583cff8",
+          "index": 1,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "6621b022-3696-574c-ae91-b88fcba0ff11",
+          "index": 2,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "0679d8a1-a107-56c3-a18d-88d2920110f1",
+          "index": 3,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "3e2c8b0c-d4a5-5e71-bb35-338a7e855339",
+          "index": 4,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "50f78ce7-e29d-5d5a-ad4b-af4feee388e3",
+          "index": 5,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "33d81105-1947-54e1-b731-e881f2e0f962",
+          "index": 6,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "97c26dda-f843-5158-89e6-7b163dbee953",
+          "index": 7,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "418c4f1a-6373-5f81-a1ed-ff179a5d4fc8",
+          "index": 8,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "20d7506e-8592-5996-9fd0-0c1a89633355",
+          "index": 9,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "413abb1f-378a-591e-9201-894e666bb8c9",
+          "index": 10,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "bc4c9579-0dee-541a-8a10-6549d0ac99e6",
+          "index": 11,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "0f17fc66-d31f-55af-acb5-52a61d21820b",
+          "index": 12,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "a2dd1ffd-7781-5cd9-85f4-b0fbf2c3d541",
+          "index": 13,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "ec639dc8-b097-5cc9-af77-b935ae807209",
+          "index": 14,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "86b74a29-b842-512b-a7f1-d6d9103b47b5",
+          "index": 15,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "2d36548e-542e-55e8-8c58-1986bf9abc2e",
+          "index": 16,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "1c498b17-2b53-5c77-a833-cc25d02d51fd",
+          "index": 17,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "d4f85616-7a15-526d-953a-87a6453ae359",
+          "index": 18,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "151c3321-d695-5045-96f4-4914c30dfea0",
+          "index": 19,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "80512911-8cdd-5e04-bdc5-4e93a0f4c899",
+          "index": 20,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "4b87cd48-46a1-5f0f-b392-bc1bd4736005",
+          "index": 21,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "9a9a3582-5f71-508a-9154-fc60dde30e5a",
+          "index": 22,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "c3af7379-75d9-5ec4-8fa3-9b7c6536c719",
+          "index": 23,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "d0a3e0a1-5455-5b8c-99b0-6c63e085fb2b",
+          "index": 24,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "fff14880-c46d-516e-9914-fb40764652e0",
+          "index": 25,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "5fef0280-4c7b-5499-8a82-a82db64fe0e4",
+          "index": 26,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "a966c0fb-8b34-5c1e-a518-3da4f949e4a3",
+          "index": 27,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "7395ed13-98b3-5bb0-95b1-2449c09e318f",
+          "index": 28,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "bde17520-9d99-5fc8-96d0-c338e934bcda",
+          "index": 29,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "809c12ce-147e-5748-81cb-1cfb2e7bded8",
+          "index": 30,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "2fc3f1bf-e310-594f-8bce-ea0b7e96ad5c",
+          "index": 31,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "45bc35a8-37a0-5b54-a976-769a711a75c6",
+          "index": 32,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "5ae1bfd8-d789-558d-9112-3c5476c57bd0",
+          "index": 33,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "8da3e057-e0cc-5048-a8d2-e1fa896fbfea",
+          "index": 34,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "6fe09806-4e7c-5f3c-a072-11927b7cf64a",
+          "index": 35,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "a814c752-9488-53b3-b97c-98330e15ce90",
+          "index": 36,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "229049cf-59fa-5e2c-aadb-cd625cdcd51b",
+          "index": 37,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "fc4a4f59-bd1d-5d71-a989-b2fa7eddc33d",
+          "index": 38,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "10bde181-d751-55cd-bb66-deeaa8ce1c3c",
+          "index": 39,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "89634693-82d8-58f4-86f5-40904f66e6af",
+          "index": 40,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "f929e6f3-ae70-5d60-93f8-e5761a67d466",
+          "index": 41,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "94a31b93-3dcf-5dfc-91da-4eb2086630be",
+          "index": 42,
+          "retryable": false,
+          "status": "accepted"
+        },
+        {
+          "client_event_id": "79614e34-b705-57ac-9625-cdb7d6686070",
+          "index": 43,
+          "retryable": false,
+          "status": "accepted"
+        }
+      ],
+      "revision": null,
+      "state": {
+        "input_revision": 1,
+        "run_id": 36,
+        "status": "unchanged",
+        "widget_state": {
+          "effective_at": "2026-09-22T18:00:00Z",
+          "freshness": {
+            "last_updated_at": "2026-09-22T18:00:00Z"
+          },
+          "presentation": {
+            "detail": "3 / 14 usable days",
+            "headline": "Learning your baseline",
+            "icon": "🙂",
+            "secondary": null
+          },
+          "primary_trait": {
+            "explainable": false,
+            "id": "calibration"
+          },
+          "version": "widget-state@0.1.0"
+        }
+      }
+    },
+    "status": 200
+  }
+}
