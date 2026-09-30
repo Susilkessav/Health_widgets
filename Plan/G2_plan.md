@@ -38,15 +38,19 @@ engine, `HealthState` or the engine/config versions (Whole_project.md §31, §38
 
 ## 1. Entry conditions
 
-G2 officially starts "after G1 is stable". G1 Steps 6-16 are still planned
-(Next_steps.md). Therefore:
+Updated 2026-09-30: the original G1 Steps 1–16 and earlier review fixes are
+implemented. Independent widget fetching, the latest gap closures and real-device
+acceptance remain open. See [Master implementation plan](Master_implementation_plan.md).
 
-- **Can start now** (depend only on the finished `HealthState` and synthetic
-  pipeline): T0, T1, T2, T3, T4, T5, T6, T7, T8.
-- **Blocked on G1 Steps 14-16** (cached widget, App Group writes): T9 and the
-  real-device part of T13.
-- **Blocked on G1 Step 7** (API): serving `AvatarState` over HTTP in T4. Until
-  then, T4 is verified through `app.pipeline`.
+- **Avatar implementation begins after recorded G1 acceptance**, including the
+  remaining widget/update and recovery gates. This applies to the T1–T13 work;
+  the existence of synthetic fixtures is not a waiver of that entry condition.
+- The API, shared widget cache and WidgetKit target already exist. Integrate G2
+  with their accepted versions rather than treating them as unimplemented.
+- Planning and recording T0 design choices may continue. No avatar assets,
+  mapper or renderer have been implemented by the completion planning work.
+- After G1 acceptance, source/platform expansion and G2 can be separate tracks
+  consuming the same HealthState. G2 need not wait for every future provider.
 
 ## 2. Decisions to record first (T0)
 

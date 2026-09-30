@@ -1,41 +1,72 @@
 # G1 review and next steps
 
-Updated: 2026-09-25
+Updated: 2026-09-30
 
-## Current position
+## Direction change — on-device calculation (2026-09-30)
 
-**G1 Steps 1-8 are complete.** The contracts, synthetic corpus, feature
-calculations, state engine, dummy widget mapper, PostgreSQL persistence, API and
-replay are implemented. All **3,651 backend tests pass** using
-`.venv/bin/python -m pytest -q` from `backend/`, with the Compose database running.
+Results are now calculated on the iPhone; the server is optional and scoped
+for later. See [On-device plan](On_device_plan.md). Implemented:
 
-| Suite | Tests |
-|---|---|
-| Contract | 170 |
-| Synthetic | 91 |
-| Feature | 127 |
-| Engine and mapper | 3,119 |
-| Database | 34 |
-| API | 104 |
-| Replay | 6 |
+- Swift port of features, state engine and wording (`HomeostatCore/Engine/`),
+  held to the Python engine by a shared fixture: all 170 synthetic
+  checkpoints match (`EngineParityTests`, `tests/engine/test_parity_fixture.py`).
+- Local inputs from the phone's own event log and import coverage, including
+  lost-anchor withdrawal (`LocalCalculation.swift`).
+- The app recalculates after every import (open, HealthKit background delivery,
+  background refresh) and hands the result to the widget. No server needed;
+  the widget no longer fetches server results. Uploading stays optional.
+- Verified in the simulator with no server configured: Health access, import,
+  background delivery registration and an on-device result on screen.
 
-The repository also has the backend dependency setup, a PostgreSQL Compose
-configuration, and starter iOS app/widget targets. Those scaffolds do not mean
-that the later G1 database, API, HealthKit synchronization or widget behavior
-is implemented.
+For the phone test, the backend no longer needs to run: install, request
+Health access (choose **All Recorded Data**), and add the widget.
 
-| Milestone | Status |
-|---|---|
-| Development scaffolding | Present; previously verified |
-| Step 1: contracts and validation | Complete; 169 passing tests |
-| Step 2: reproducible synthetic dataset | Complete; 40 demo days and 44 isolated scenarios |
-| Step 3: calculations and configuration | Complete; all fixture feature expectations pass |
-| Steps 4-5: state engine and presentation mapper | Complete; all golden state and widget expectations pass |
-| Steps 6-8: persistence, API and replay | Complete; every scenario matches the pipeline through HTTP and PostgreSQL |
-| Steps 9-13: HealthKit import and durable sync | Implemented and tested in the simulator; real-iPhone gates and §3B lost-anchor reconciliation pending |
-| Steps 14-16: cached widget | Starter widget only |
+## Current implementation (server design, kept for later)
+
+The approved G1 completion software is implemented. See
+[implementation record and device checklist](Implementation_2026_09_30.md) for
+what changed, deployment details and remaining gates. The
+[master plan](Master_implementation_plan.md) remains the overall sequence.
+
+- Coherent import cutoffs, bounded/resumable history and import diagnostics.
+- Read-only widget credentials, compact publication/status and exact-run APIs.
+- Stable account scope, staged settings activation and coordinated shared cache.
+- Independent widget fetch, deadlines, leases, retry/backoff and offline fallback.
+- Matching run explanations, shared sync toggle and background diagnostics.
+- Pure provider identity/correction/selection foundations; no second source enabled.
+
+## Verification completed — 2026-09-30
+
+- **175 backend tests passed:** 148 existing API/database/migration tests plus
+  5 new widget API tests and 22 provider-foundation tests. Two dependency
+  deprecation warnings remain. The full 3,667-test pre-change baseline passed
+  on September 29; it was not rerun in full for this change.
+- **84 Swift tests passed:** 64 HomeostatCore + 20 HomeostatShared.
+- App and widget Debug simulator build succeeded.
+- Local PostgreSQL backed up and upgraded; Alembic reports **0005 (head)**.
+- No API was listening on port 8000 and no physical iPhone was connected during
+  the deployment check. Real-device acceptance remains open.
+
+## Next steps
+
+1. Start the updated backend with the existing key. The worker must remain enabled.
+2. Build/run on the signed iPhone; save Settings once to provision widget access.
+3. Enable **Sync with server**, sync Health data, and inspect import/widget diagnostics.
+4. Follow the device checklist, including independent fetching while the app is
+   not running, locked/offline recovery, exact-run links and the 24–48 hour check.
+5. Choose always-available HTTPS hosting if updates must work away from the Mac.
+6. Close G1 acceptance before activating another provider. Full v2 ingestion,
+   provider connection storage/authentication, Android and wearable adapters
+   remain future implementation, gated by D01–D15 in the master plan.
+
+The widget requests a roughly 30-minute refresh; iOS controls the actual timing.
+Server fetching cannot force HealthKit to provide new readings while import is
+unavailable. A recent server check can correctly return an older health state.
 
 ## A. Step 1 review closure
+
+Sections A–G retain the earlier milestone notes and their historical test counts.
+The current verification totals and remaining gates are listed above.
 
 The earlier review fixes are implemented and covered by regressions:
 
@@ -221,6 +252,8 @@ restarts, repeated sync is safe, and deleted/replaced samples update state.
 
 ## G. Steps 14-16 — cached widget and complete G1 demo
 
+Detailed plan and results: [Step_14_16_plan.md](Step_14_16_plan.md) §12. Implemented 2026-09-25.
+
 - Add shared Swift decoding for WidgetState and atomic App Group cache writes.
 - Implement small/medium widgets, freshness, calibration and missing-data states.
 - Reload widget timelines after meaningful updates; perform catch-up on app open
@@ -233,9 +266,12 @@ and canonical replay reproduces the resulting states.
 
 ## Recommended next implementation task
 
-1. Run the Step 9-13 real-iPhone checks: sample inspection, a live HealthKit
-   change reaching the widget text, and background catch-up. The steps are in
-   Step_9_13_plan.md §12.
-2. Build §3B lost-anchor reconciliation if deletion inference after anchor loss
-   is needed.
-3. Then build **G, Steps 14-16**.
+The original G1 implementation and earlier review fixes are in place. The new
+independent-widget requirement and completion architecture above supersede this
+earlier implementation status. G1 acceptance is still pending:
+
+1. Apply migration `0004`, then complete the simulator walkthrough and outage
+   drill in Step_14_16_plan.md §12.
+2. 📱 Complete the real-iPhone G1 acceptance run (Step_14_16_plan.md §10), including a
+   live HealthKit change reaching the widget and the lost-anchor demonstration.
+3. Record the results, then start the avatar work (G1 §62).

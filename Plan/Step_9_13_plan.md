@@ -353,10 +353,10 @@ upload. No iOS or backend implementation is authorized by creation of this draft
   (`start_day`/`end_day`) or exact instants (`start_at`/`end_at`), never both
   (migration `0002_partial_day_coverage`). A timezone-only change bumps the
   revision and recalculates today.
-- §3B lost-anchor reconciliation is **deferred**. A corrupt anchor starts a new
-  query generation and re-reads visible records. Duplicates collapse on the
-  server, but deletions are not inferred from records that are missing. **The
-  lost-anchor deletion gate is not passed.**
+- §3B lost-anchor reconciliation was deferred at first, then **implemented as
+  Step 16a on 2026-09-25** (see Step_14_16_plan.md §12). Records missing from
+  a completed fresh scan are withdrawn from calculations, not tombstoned. The
+  gate still needs its real-iPhone demonstration.
 - `run_id` was added to state responses as the ordering token after
   `input_revision`.
 - Step snapshots are queued only when a bucket total changes.
@@ -408,9 +408,9 @@ The code review findings are addressed as follows:
   never its later completion time.
 - **Lost anchors:** resets are per sample type. A durable incomplete marker and
   `unavailable` coverage are queued immediately, including when the fresh query
-  fails. Later imports continue to declare that domain unavailable. Complete
-  deletion reconciliation remains deferred; a fresh query alone cannot clear
-  this marker, and missing records are never treated as inferred deletions.
+  fails. Later imports continue to declare that domain unavailable. The later Step 16a implementation now clears this marker only after scoped scan
+  finalization is acknowledged. Missing records are withdrawn from that
+  installation, never treated as inferred deletions.
 - **Repairable quarantine:** retain the raw sample, original unknown category
   value, numeric values, source metadata and interval before checkpointing.
   Reprocess unresolved rows on catch-up after normalizer upgrades; successful
@@ -440,6 +440,28 @@ invalidates old non-atomic refresh flags, and marks earlier anchor resets or
 legacy unrepairable quarantine as requiring recovery. It runs on opening the
 store; no manual reset or deletion of user data is required.
 
-These changes do not pass the real-iPhone HealthKit gates or implement the
-scoped reconciliation protocol in §3B. Those remain the next validation and
-implementation work before declaring Steps 9-13 complete.
+The review changes above were extended on 2026-09-29 with installation-scoped
+reconciliation (Step_14_16_plan.md §13). Real-iPhone HealthKit gates remain
+required before declaring Steps 9-13 accepted.
+
+Review-fix verification: 48 Swift tests pass, the iOS simulator build succeeds,
+and all 3,654 backend tests are verified (3,653 passed in the full run, then the
+single stale shared-response fixture was updated and all three fixture tests
+passed without regeneration). There are 13 added regression tests. No new
+external dependencies or manual database reset is required.
+
+## 14. Scoped reconciliation update — 2026-09-29
+
+New iPhone requests carry a stable `installation_id`. Completed scans carry a
+fixed UTC start and end and are sent in a separate finalization request after
+all relevant events have acknowledgements. The backend records installation
+visibility separately from canonical provider content, so duplicate records
+from two devices remain visible until both devices withdraw them. Explicit
+HealthKit deletions remain tombstones. Scans cannot withdraw other installations'
+observations or records outside the scanned interval.
+
+A scoped finalization with events or an unbounded interval is rejected. Local
+migration preserves pending request bytes, attributes locally indexed provider
+records through re-delivery, and performs a fresh scan. Unattributed server-only
+legacy data stays outside the new installation's scope. See Step_14_16_plan.md
+§13 for migration and acceptance details.
