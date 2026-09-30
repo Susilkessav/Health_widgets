@@ -33,13 +33,15 @@ from app.db import (
     coverage_declarations,
     event_receipts,
     health_events,
+    installation_records,
     recalc_jobs,
     run_outputs,
     sync_requests,
     users,
+    visibility_scans,
 )
-from app.features.models import CoverageWindow, Observation
-from app.features.selection import _canonical
+from app.features.models import CalculationContext, CoverageWindow, Observation, VisibilityScan
+from app.features.selection import _canonical, _withdrawn
 
 EVENTS = TypeAdapter(CanonicalEvent)
 
@@ -175,6 +177,57 @@ def insert_coverage(conn: Connection, user_id: UUID, windows: list[CoverageWindo
             for w in windows])
 
 
+def insert_scans(conn: Connection, user_id: UUID, scans: list[dict], revision: int, received_at: datetime,
+                 installation_id: UUID | None = None) -> int:
+    """Stores completed scans; a scan ID already stored keeps its first version.
+    Returns how many were new."""
+    if not scans:
+        return 0
+    rows = conn.execute(insert(visibility_scans).values([
+        {"user_id": user_id, "scan_id": scan["scan_id"], "installation_id": installation_id, "healthkit_type": scan["healthkit_type"],
+         "scope_start_at": utc(scan["scope_start_at"]), "scope_end_at": scan.get("scope_end_at"), "members": sorted(scan["members"]), "revision": revision,
+         "received_at": received_at} for scan in scans])
+        .on_conflict_do_nothing(constraint="uq_visibility_scan").returning(visibility_scans.c.id)).all()
+    return len(rows)
+
+
+def load_visibility(conn: Connection, user_id: UUID, revision: int) -> list[VisibilityScan]:
+    """Only the newest scan per type and scope start can govern a record, but
+    older ones still decide records received between scans, so all are loaded."""
+    vs = visibility_scans.c
+    return [VisibilityScan(installation_id=r.installation_id, healthkit_type=r.healthkit_type, scope_start_at=r.scope_start_at,
+                           members=tuple(r.members), revision=r.revision, scope_end_at=r.scope_end_at)
+            for r in conn.execute(select(visibility_scans).where(vs.user_id == user_id, vs.revision <= revision)
+                                  .order_by(vs.id))]
+
+
+def installation_seen(conn, user_id, installation_id, event) -> bool:
+    ir = installation_records.c
+    return conn.execute(select(ir.id).where(ir.user_id == user_id, ir.installation_id == installation_id,
+        ir.source == event.source, ir.source_record_id == event.source_record_id).limit(1)).first() is not None
+
+
+def has_scans(conn, user_id, healthkit_type) -> bool:
+    vs = visibility_scans.c
+    return conn.execute(select(vs.id).where(vs.user_id == user_id, vs.healthkit_type == healthkit_type)
+                        .limit(1)).first() is not None
+
+
+def record_installation(conn, user_id, installation_id, event, revision):
+    conn.execute(insert(installation_records).values(user_id=user_id, installation_id=installation_id,
+        source=event.source, source_record_id=event.source_record_id, revision=revision).on_conflict_do_nothing())
+
+
+def installation_memberships(conn, user_id, revision):
+    ir = installation_records.c
+    result = defaultdict(dict)
+    for row in conn.execute(select(ir.source, ir.source_record_id, ir.installation_id, func.max(ir.revision).label("revision"))
+                            .where(ir.user_id == user_id, ir.revision <= revision)
+                            .group_by(ir.source, ir.source_record_id, ir.installation_id)):
+        result[(row.source, row.source_record_id)][str(row.installation_id)] = row.revision
+    return result
+
+
 def enqueue_job(conn: Connection, user_id: UUID, kind: str, revision: int, from_day: date, now: datetime) -> int:
     return conn.execute(insert(recalc_jobs).values(
         user_id=user_id, kind=kind, target_revision=revision, from_day=from_day, next_attempt_at=utc(now),
@@ -191,13 +244,19 @@ def input_range(day: date, zone: str, effective_at: datetime, settings: Settings
     return local_day_start(day - timedelta(days=lookback), zone) - margin, utc(effective_at)
 
 
-def _observations(rows) -> list[Observation]:
-    return [Observation(event=EVENTS.validate_python(row.payload), delivered_at=row.received_at) for row in rows]
+def _observations(rows, memberships=None) -> list[Observation]:
+    return [Observation(event=EVENTS.validate_python(row.payload), delivered_at=row.received_at, revision=row.revision,
+                        installations=tuple(sorted((memberships or {}).get((row.source, row.source_record_id), {}).items())))
+            for row in rows]
 
 
 def load_inputs(conn: Connection, user_id: UUID, revision: int, day: date, zone: str, effective_at: datetime,
                 settings: Settings) -> tuple[list[Observation], list[CoverageWindow]]:
     start, end = input_range(day, zone, effective_at, settings)
+    memberships = installation_memberships(conn, user_id, revision)
+    scans = tuple(load_visibility(conn, user_id, revision))
+    scan_context = CalculationContext(day=day, timezone=zone, effective_at=effective_at, known_at=effective_at, visibility=scans)
+    scan_members = {id(scan): set(scan.members) for scan in scans}
     he = health_events.c
     visible = and_(he.user_id == user_id, he.revision <= revision)
     in_range = or_(
@@ -217,6 +276,10 @@ def load_inputs(conn: Connection, user_id: UUID, revision: int, day: date, zone:
         versions[(row.source, row.source_record_id)].add(row.payload_sha256)
     for row in older:
         if (row.source, row.source_record_id) in deleted or len(versions[(row.source, row.source_record_id)]) > 1:
+            continue
+        event = EVENTS.validate_python(row.payload)
+        if _withdrawn(event, row.revision, scan_context, scan_members,
+                      memberships.get((row.source, row.source_record_id))):
             continue
         rows |= {r.id: r for r in conn.execute(select(health_events).where(
             visible, he.event_type == "workout", he.end_at > row.start_at, he.end_at < start))}
@@ -238,12 +301,13 @@ def load_inputs(conn: Connection, user_id: UUID, revision: int, day: date, zone:
                        end_at=r.end_at, timezone=r.timezone, status=r.status, revision=r.revision)
         for r in conn.execute(select(coverage_declarations).where(
             cd.user_id == user_id, cd.revision <= revision, overlapping).order_by(cd.id))]
-    return _observations(sorted(rows.values(), key=lambda r: r.id)), coverage
+    return _observations(sorted(rows.values(), key=lambda r: r.id), memberships), coverage
 
 
 def load_all_observations(conn: Connection, user_id: UUID, revision: int) -> list[Observation]:
     return _observations(conn.execute(select(health_events).where(
-        health_events.c.user_id == user_id, health_events.c.revision <= revision).order_by(health_events.c.id)))
+        health_events.c.user_id == user_id, health_events.c.revision <= revision).order_by(health_events.c.id)),
+                         installation_memberships(conn, user_id, revision))
 
 
 # ---------------------------------------------------------------- configuration and runs

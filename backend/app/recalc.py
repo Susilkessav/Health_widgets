@@ -38,7 +38,8 @@ def compute(conn: Connection, user_id: UUID, settings: Settings, revision: int, 
     """One calculation from stored inputs: (report, state, widget)."""
     observations, coverage = store.load_inputs(conn, user_id, revision, day, zone, effective_at, settings)
     context = CalculationContext(day=day, timezone=zone, effective_at=utc(effective_at), known_at=utc(known_at),
-                                 coverage=tuple(coverage))
+                                 coverage=tuple(coverage),
+                                 visibility=tuple(store.load_visibility(conn, user_id, revision)))
     report = calculate_features(observations, context, settings)
     state = compute_health_state(report.features, settings)
     return report, state, map_widget_state(state)

@@ -5,8 +5,9 @@ from dataclasses import dataclass
 from dataclasses import field as dataclass_field
 from datetime import date, datetime, timedelta
 from typing import Literal
+from uuid import UUID
 
-from pydantic import AwareDatetime, JsonValue, model_validator
+from pydantic import AwareDatetime, Field, JsonValue, model_serializer, model_validator
 
 from app.contracts._types import Frozen, IanaTimezone, Sha256Hex, local_day_start, utc
 from app.contracts.canonical_events import CanonicalEvent
@@ -62,12 +63,47 @@ class CoverageWindow(Frozen):
                 local_day_start(self.end_day + timedelta(days=1), self.timezone))
 
 
+class VisibilityScan(Frozen):
+    """A completed fresh scan of one HealthKit type (Step 9-13 plan section 3B).
+    It lists every provider record of that type visible from scope_start_at
+    on. A record of that type ending after scope_start_at, first received at
+    an earlier revision and not listed, is withdrawn: no longer visible to
+    this app, which isn't proof of deletion, so it is never a tombstone. The
+    newest scan that governs a record decides; a later scan can list it again."""
+
+    installation_id: UUID | None = None
+    healthkit_type: str
+    scope_start_at: AwareDatetime
+    scope_end_at: AwareDatetime | None = None
+    # Sorted. Left out of stored reports (they can hold thousands of IDs); the
+    # report's input_sha256 covers them.
+    members: tuple[str, ...] = Field(exclude=True)
+    revision: int
+
+    @model_serializer(mode="wrap")
+    def _legacy_scan(self, handler):
+        result = handler(self)
+        if self.installation_id is None:
+            result.pop("installation_id", None)
+        if self.scope_end_at is None:
+            result.pop("scope_end_at", None)
+        return result
+
+
 class CalculationContext(Frozen):
     day: date
     timezone: IanaTimezone
     effective_at: AwareDatetime
     known_at: AwareDatetime
     coverage: tuple[CoverageWindow, ...] = ()
+    visibility: tuple[VisibilityScan, ...] = ()
+
+    @model_serializer(mode="wrap")
+    def _compatible_context(self, handler):
+        result = handler(self)
+        if not self.visibility:
+            result.pop("visibility", None)  # exact pre-scan report representation
+        return result
 
     @model_validator(mode="after")
     def _ordered(self) -> CalculationContext:
@@ -106,6 +142,10 @@ class Observation(Frozen):
 
     event: CanonicalEvent
     delivered_at: AwareDatetime
+    # The upload revision that delivered it (0 outside the database). Only
+    # visibility scans use it, to know which records a scan can withdraw.
+    revision: int = 0
+    installations: tuple[tuple[str, int], ...] = ()
 
 
 class CalculationReport(Frozen):

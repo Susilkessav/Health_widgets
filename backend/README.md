@@ -1,5 +1,10 @@
 # Homeostat backend
 
+> **Scoped for later (2026-09-30).** The iPhone now calculates results itself
+> (see [On-device plan](../Plan/On_device_plan.md)); this backend is optional
+> and not on the path to the widget. Its Python engine remains the reference
+> the Swift port is tested against (`tests/engine/test_parity_fixture.py`).
+
 G1 backend: canonical events → features → HealthState → WidgetState. See `../Plan/G1_plan.md`.
 
 ```bash
@@ -128,7 +133,16 @@ HOMEOSTAT_API_KEY=dev-key docker compose --profile api up -d --build
 
 The container migrates on start and serves on port 8000.
 
-**Endpoints.** All except `/healthz` need the `X-Homeostat-Key` header.
+**Sign-in.** Each device registers its own random 256-bit key and sends it as
+`Authorization: Bearer <device key>`; the server stores only its hash.
+`HOMEOSTAT_API_KEY` is the *enrollment key*: it creates accounts
+(`POST /v1/accounts`) but reads or writes no data, except that in
+development (`HOMEOSTAT_ENV=development`) `X-Homeostat-Key` still signs in as
+the development user. The first account ever created adopts the development
+user, so data uploaded before device keys stays with it. A signed-in device
+adds another device to its account with a single-use pairing code (8
+characters, 10 minutes). The widget's read-only token is separate and can't
+upload. `/healthz` is unauthenticated.
 
 | Endpoint | Purpose |
 |---|---|
@@ -136,7 +150,27 @@ The container migrates on start and serves on port 8000.
 | `GET /v1/state/current` | The latest state for any day, flagged `is_today`. 404 only if no state has ever existed. |
 | `GET /v1/state/{day}` | The latest state for one day, flagged `finalized`. |
 | `GET /v1/debug/features/{day}` | The latest features report. Only with `HOMEOSTAT_ENV=development`. |
+| `POST /v1/accounts` | Enrollment key in `X-Homeostat-Key`; body `device_id`, `token` (64 lowercase hex), `name`. Creates an account with this device. Retrying returns the same account. |
+| `POST /v1/pairing-codes` | Device key only. Returns a single-use `XXXX-XXXX` code valid for 10 minutes. |
+| `POST /v1/devices/pair` | No sign-in; body as `/v1/accounts` plus `code`. Adds the device to the code's account. |
+| `GET /v1/devices` | The account's active devices, marking the caller. |
+| `DELETE /v1/devices/{device_id}` | Signs a device of this account out and revokes the widget credentials it provisioned. |
+| `GET /v1/account` | Stable authenticated account ID, used to preserve local identity across key rotation. |
+| `POST /v1/widget/credentials` | App-authenticated provisioning: `operation_id`, `installation_id`, 64-character random lowercase hex `token`. Replaying the operation is idempotent. |
+| `DELETE /v1/widget/credentials/{operation_id}` | App-authenticated, owner-scoped revocation. Replaying provisioning cannot revive a revoked credential. |
+| `GET /v1/widget/current` | Read-only widget token: compact publication, accepted revision and calculation status. `published: null` is a successful no-state response. No upload or calculation side effects. |
+| `GET /v1/state/runs/{run_id}` | App-authenticated exact-run explanation, restricted to the owning account. |
 | `GET /healthz` | Database status. |
+
+Apply migration `0005` before using independent widget fetching. In the updated
+app, save Settings once to verify the account and provision the widget token.
+The widget targets a check about every 30 minutes when iOS grants a timeline
+refresh; fetching a published result does not itself import new HealthKit data.
+See [implementation and device checklist](../Plan/Implementation_2026_09_30.md).
+
+Provider-neutral rules under `app/providers` are tested foundations only. There
+is no v2 HTTP ingestion or second-provider adapter enabled. Existing v1 hashes,
+request bodies and replay behavior remain the active data path.
 
 **How it works** (the full design and its reasons are in `../Plan/Step_6_8_plan.md`):
 
@@ -155,6 +189,9 @@ The container migrates on start and serves on port 8000.
   - A declaration gives either whole local days (`start_day`/`end_day`) or exact instants (`start_at`/`end_at`) for a partial day, never both.
   - Coverage is needed only up to the calculation's effective time.
   - A timezone-only upload recalculates today.
+- **Lost-anchor reconciliation.** A request may include `visibility` scans: every record of one HealthKit type that a completed fresh scan found, from `scope_start_at` on.
+  - A record of that type which the newest covering scan doesn't list, and which arrived before that scan, is *withdrawn* from calculations. It is not tombstoned, and a later scan can list it again.
+  - Scans are part of the replay inputs.
 - **Ordering.** State responses carry `input_revision` and `run_id`. Clients keep the state with the higher `(input_revision, run_id)`.
 - **The run ledger.** Every calculation records its context, input revision, configuration snapshot hash and feature/engine/presentation versions:
   - `replay runs` re-executes each recorded run and compares outputs;
@@ -166,7 +203,7 @@ The container migrates on start and serves on port 8000.
 | Variable | Meaning |
 |---|---|
 | `DATABASE_URL` | Default: the Compose database on port 5433 |
-| `HOMEOSTAT_API_KEY` | Required for the API |
+| `HOMEOSTAT_API_KEY` | Required: the enrollment key that creates accounts |
 | `HOMEOSTAT_DEV_USER_ID` | The single development user |
 | `HOMEOSTAT_ENV` | `development` enables the debug endpoint |
 | `HOMEOSTAT_CONFIG` | The settings file |
@@ -177,17 +214,17 @@ The container migrates on start and serves on port 8000.
 - Client receipts live in their own table.
 - A run ledger with outputs replaces `daily_features` and `health_state_history`. It keeps all their fields and adds what exact replay needs.
 
-**Tests.** The full suite has **3,651 passing tests**, which take about 4 minutes:
+**Tests.** The full suite has **3,662 passing tests**, which take about 4 minutes:
 
 | Suite | Tests |
 |---|---|
 | Contract | 170 |
 | Synthetic | 91 |
-| Feature | 127 |
+| Feature | 132 |
 | Engine and mapper | 3,119 (including the 512-case recovery matrix and all 2,500 valid widget state combinations) |
-| Database | 34 |
-| API | 104 |
-| Replay | 6 |
+| Database | 36 |
+| API | 107 |
+| Replay | 7 |
 
 Database tests use a throwaway database on the Compose server. `uv run pytest -m "not db"` runs the non-database tests in about 15 seconds, without PostgreSQL.
 
@@ -377,3 +414,18 @@ Replay verification now reports a ledger entry with missing derived output as
 `missing_output`, instead of silently skipping it. Rebuilding the same context
 restores its missing output under the original run ID, without overwriting an
 existing output or deleting the ledger.
+
+## Installation-scoped reconciliation — 2026-09-29
+
+Apply migrations before using the updated app: `uv run alembic upgrade head`.
+Migration `0004` adds append-only installation observations and bounded scan
+scope. Legacy events and scans remain available for historical replay.
+
+New clients send `installation_id` with uploads. Once the relevant events have
+been acknowledged, a separate request finalizes `visibility` with `scan_id`,
+`healthkit_type`, `scope_start_at`, `scope_end_at`, and `members`. A scoped scan
+with events in the same request is rejected. A record shared between devices is
+retained until every contributing installation withdraws it; an explicit
+HealthKit tombstone still removes it. New scoped scans do not withdraw
+unattributed legacy records. The iPhone upgrade re-delivers locally indexed
+records to establish ownership before its fresh scan.

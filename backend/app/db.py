@@ -59,6 +59,43 @@ sync_requests = Table(
     PrimaryKeyConstraint("user_id", "request_id"),
 )
 
+widget_credentials = Table(
+    "widget_credentials", metadata,
+    _user(),
+    Column("operation_id", PgUUID(as_uuid=True), nullable=False),
+    Column("installation_id", PgUUID(as_uuid=True), nullable=False),
+    Column("token_sha256", Text, nullable=False, unique=True),
+    Column("created_at", TZ, nullable=False),
+    Column("revoked_at", TZ),
+    # The signed-in device that provisioned it (migration 0006); removing the
+    # device revokes its widgets too. NULL for development-key provisioning.
+    Column("device_id", PgUUID(as_uuid=True)),
+    PrimaryKeyConstraint("user_id", "operation_id"),
+)
+
+# Device keys (migration 0006): each device holds its own random token; only
+# the hash is stored.
+devices = Table(
+    "devices", metadata,
+    Column("id", PgUUID(as_uuid=True), primary_key=True),
+    _user(),
+    Column("token_sha256", Text, nullable=False, unique=True),
+    Column("name", Text, nullable=False),
+    Column("created_at", TZ, nullable=False),
+    Column("revoked_at", TZ),
+    Index("ix_devices_user", "user_id"),
+)
+
+# Single-use codes that add another device to an account.
+pairing_codes = Table(
+    "pairing_codes", metadata,
+    Column("code_sha256", Text, primary_key=True),
+    _user(),
+    Column("created_by", PgUUID(as_uuid=True), nullable=False),
+    Column("expires_at", TZ, nullable=False),
+    Column("used_by", PgUUID(as_uuid=True)),
+)
+
 health_events = Table(
     "health_events", metadata,
     Column("id", BigInteger, Identity(), primary_key=True),
@@ -117,6 +154,40 @@ coverage_declarations = Table(
                     "AND start_day <= end_day) OR (start_day IS NULL AND end_day IS NULL AND start_at IS NOT NULL "
                     "AND end_at IS NOT NULL AND start_at < end_at)", name="ck_coverage_form"),
     Index("ix_coverage_user_revision", "user_id", "revision"),
+)
+
+# Lost-anchor reconciliation (Step 9-13 plan section 3B): the provider records
+# of one HealthKit type that a completed fresh scan found visible. Records of
+# that type in scope, received before the scan and not listed, are withdrawn
+# from visibility (not tombstoned) until a later scan lists them again.
+visibility_scans = Table(
+    "visibility_scans", metadata,
+    Column("id", BigInteger, Identity(), primary_key=True),
+    _user(),
+    Column("scan_id", PgUUID(as_uuid=True), nullable=False),
+    Column("installation_id", PgUUID(as_uuid=True)),
+    Column("healthkit_type", Text, nullable=False),
+    Column("scope_start_at", TZ, nullable=False),
+    Column("scope_end_at", TZ),
+    Column("members", JSONB, nullable=False),
+    Column("revision", BigInteger, nullable=False),
+    Column("received_at", TZ, nullable=False),
+    UniqueConstraint("user_id", "scan_id", name="uq_visibility_scan"),
+    Index("ix_visibility_user_revision", "user_id", "revision"),
+)
+
+# Append-only observations of provider identities by an installation. Duplicate
+# provider content still establishes visibility on a second device.
+installation_records = Table(
+    "installation_records", metadata,
+    Column("id", BigInteger, Identity(), primary_key=True),
+    _user(),
+    Column("installation_id", PgUUID(as_uuid=True), nullable=False),
+    Column("source", Text, nullable=False),
+    Column("source_record_id", Text, nullable=False),
+    Column("revision", BigInteger, nullable=False),
+    UniqueConstraint("user_id", "installation_id", "source", "source_record_id", "revision", name="uq_installation_record"),
+    Index("ix_installation_records_user_revision", "user_id", "revision"),
 )
 
 recalc_jobs = Table(

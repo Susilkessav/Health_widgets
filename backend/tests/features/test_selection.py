@@ -87,3 +87,62 @@ def test_deliveries_after_known_at_are_invisible():
     b.deliveries[-1] = b.deliveries[-1].model_copy(update={"delivered_at": at(14)})
     assert not select_visible(observations(b), context()).records
     assert select_visible(observations(b), context(known=at(14))).records
+
+
+# ---------------------------------------------------------------- lost-anchor reconciliation (Step 9-13 §3B)
+
+HRV = "HKQuantityTypeIdentifierHeartRateVariabilitySDNN"
+
+
+def scan(members, revision, start=None, kind=HRV):
+    from app.features.models import VisibilityScan
+    return VisibilityScan(healthkit_type=kind, scope_start_at=start or at(0, day=DAY - timedelta(days=36)),
+                          members=tuple(sorted(members)), revision=revision)
+
+
+def with_scans(*scans):
+    return context().model_copy(update={"visibility": scans})
+
+
+def two_points():
+    b = Builder("t", ZONE)
+    kept = point(b, "a", "hrv_sdnn_ms", 50, at(7, 15))
+    gone = point(b, "b", "hrv_sdnn_ms", 60, at(8, 15))
+    delivered = [Observation(event=e, delivered_at=at(9), revision=1) for e in (kept, gone)]
+    return kept, gone, delivered
+
+
+def test_a_scan_withdraws_earlier_records_it_does_not_list():
+    kept, gone, delivered = two_points()
+    selected = select_visible(delivered, with_scans(scan([kept.source_record_id], revision=2)))
+    assert [r.source_record_id for r in selected.records] == [kept.source_record_id]
+    assert selected.withdrawn == (gone.source_record_id,) and not selected.tombstoned
+
+
+def test_a_scan_never_withdraws_records_received_at_or_after_it():
+    kept, gone, delivered = two_points()
+    later = [Observation(event=e, delivered_at=at(9), revision=2) for e in (kept, gone)]
+    assert not select_visible(later, with_scans(scan([], revision=2))).withdrawn
+    assert not select_visible(delivered, with_scans(scan([], revision=1))).withdrawn
+
+
+def test_a_newer_scan_listing_the_record_again_restores_it():
+    kept, gone, delivered = two_points()
+    both = [kept.source_record_id, gone.source_record_id]
+    selected = select_visible(delivered, with_scans(scan([kept.source_record_id], 2), scan(both, 3)))
+    assert not selected.withdrawn and len(selected.records) == 2
+
+
+def test_scans_are_scoped_to_their_type_and_start():
+    kept, gone, delivered = two_points()
+    other_type = scan([], 2, kind="HKQuantityTypeIdentifierRestingHeartRate")
+    after_both = scan([], 2, start=at(9))
+    assert not select_visible(delivered, with_scans(other_type, after_both)).withdrawn
+
+
+def test_scans_change_the_input_hash_only_when_present():
+    kept, gone, delivered = two_points()
+    plain = select_visible(delivered, context()).input_sha256
+    assert select_visible(delivered, with_scans()).input_sha256 == plain
+    assert select_visible(delivered, with_scans(scan([kept.source_record_id, gone.source_record_id], 2))
+                          ).input_sha256 != plain

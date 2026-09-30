@@ -90,6 +90,7 @@ class Selection:
     conflicts: tuple[Conflict, ...]
     tombstoned: tuple[str, ...]
     input_sha256: str
+    withdrawn: tuple[str, ...] = ()
 
     def of(self, kind: type) -> list:
         return [record for record in self.records if isinstance(record, kind)]
@@ -101,6 +102,8 @@ class Selection:
 def select_visible(observations: Iterable[Observation], context: CalculationContext) -> Selection:
     known = utc(context.known_at)
     by_client: dict = {}
+    first_revision: dict[str, int] = {}
+    installations: dict[tuple[str, str], dict[str, int]] = defaultdict(dict)
     for observation in observations:
         if utc(observation.delivered_at) > known:
             continue
@@ -109,10 +112,22 @@ def select_visible(observations: Iterable[Observation], context: CalculationCont
         if prior is not None and _canonical(prior, True) != _canonical(event, True):
             raise CalculationInputError(f"client event ID {event.event_id} was reused with different content")
         by_client[event.event_id] = event
+        scopes = installations[(event.source, event.source_record_id)]
+        for installation, revision in observation.installations:
+            scopes[installation] = max(scopes.get(installation, 0), revision)
+        first_revision[event.source_record_id] = min(first_revision.get(event.source_record_id, observation.revision),
+                                                     observation.revision)
     visible = sorted(by_client.values(), key=lambda event: str(event.event_id))
-    input_sha256 = hashlib.sha256(
-        json.dumps([json_value(event) for event in visible], sort_keys=True, separators=(",", ":")).encode()
-    ).hexdigest()
+    hashed: list = [json_value(event) for event in visible]
+    if context.visibility:  # absent, the hash is unchanged from before scans existed
+        hashed.append(sorted([scan.healthkit_type, utc(scan.scope_start_at).isoformat(), sorted(scan.members),
+                              scan.revision, *([str(scan.installation_id)] if scan.installation_id is not None else []),
+                              *([utc(scan.scope_end_at).isoformat()] if scan.scope_end_at is not None else [])]
+                             for scan in context.visibility))
+        if any(scan.installation_id is not None for scan in context.visibility):
+            hashed.append(sorted([source, record, sorted(scopes.items())]
+                                 for (source, record), scopes in installations.items() if scopes))
+    input_sha256 = hashlib.sha256(json.dumps(hashed, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 
     deleted = {event.source_record_id for event in visible if isinstance(event, DeleteEvent)}
     providers = defaultdict(list)
@@ -120,15 +135,41 @@ def select_visible(observations: Iterable[Observation], context: CalculationCont
         if not isinstance(event, DeleteEvent):
             providers[(event.source, event.source_record_id, event.event_type)].append(event)
 
-    records, conflicts, tombstoned = [], [], set()
-    for (_, record_id, _), members in sorted(providers.items()):
+    members = {id(scan): set(scan.members) for scan in context.visibility}
+    records, conflicts, tombstoned, withdrawn = [], [], set(), set()
+    for (source, record_id, _), versions in sorted(providers.items()):
         if record_id in deleted:
             tombstoned.add(record_id)  # a tombstone wins even over a conflict
             continue
-        if len({_canonical(member, False) for member in members}) > 1:
-            first = members[0]
+        if _withdrawn(versions[0], first_revision[record_id], context, members, installations[(source, record_id)]):
+            withdrawn.add(record_id)
+            continue
+        if len({_canonical(version, False) for version in versions}) > 1:
+            first = versions[0]
             conflicts.append(Conflict(domain_of(first), record_day(first), record_id))
             continue
         # Reimports of the same provider record add no weight; keep one.
-        records.append(min(members, key=lambda member: member.event_id.int))
-    return Selection(tuple(records), tuple(conflicts), tuple(sorted(tombstoned)), input_sha256)
+        records.append(min(versions, key=lambda version: version.event_id.int))
+    return Selection(tuple(records), tuple(conflicts), tuple(sorted(tombstoned)), input_sha256,
+                     tuple(sorted(withdrawn)))
+
+
+def _withdrawn(event: CanonicalEvent, revision: int, context: CalculationContext, members: dict,
+               installations: dict[str, int] | None = None) -> bool:
+    """A provider record is withdrawn only if every installation that observed
+    it has subsequently withdrawn it. Legacy scans govern legacy inputs only.
+    Explicit HealthKit tombstones remain global and are handled before this.
+    """
+    if isinstance(event, DailyActivitySnapshot):
+        return False
+    scopes = installations or {None: revision}
+    for installation, seen_at_revision in scopes.items():
+        governing = [scan for scan in context.visibility
+                     if (str(scan.installation_id) if scan.installation_id else None) == installation
+                     and scan.healthkit_type == event.metadata.healthkit_type
+                     and seen_at_revision < scan.revision
+                     and utc(event.metadata.sample_end_at) > utc(scan.scope_start_at)
+                     and (scan.scope_end_at is None or utc(event.metadata.sample_start_at) < utc(scan.scope_end_at))]
+        if not governing or event.source_record_id in members[id(max(governing, key=lambda s: s.revision))]:
+            return False
+    return True

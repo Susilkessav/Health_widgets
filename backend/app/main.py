@@ -22,7 +22,7 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.exc import InterfaceError, OperationalError
 from starlette.concurrency import run_in_threadpool
 
-from app import store
+from app import accounts, store
 from app.config import Settings, load_settings
 from app.db import make_engine
 from app.features.selection import local_date
@@ -30,6 +30,7 @@ from app.ingest import RequestIdReused, SyncRequest, ingest
 from app.recalc import process_user
 from app.runtime import Clock, Runtime, load_runtime, system_clock
 from app.worker import Worker
+from app.widget_api import install_widget_routes
 
 MAX_BODY_BYTES = 5 * 1024 * 1024
 INLINE_BUDGET_SECONDS = 10
@@ -81,10 +82,22 @@ def create_app(runtime: Runtime | None = None, clock: Clock = system_clock, sett
     async def invalid_request(_: Request, exc: RequestValidationError) -> JSONResponse:
         return error(422, "INVALID_REQUEST", errors=sanitized(exc.errors()))
 
-    def user(x_homeostat_key: str | None = Header(default=None)) -> UUID:
-        if not x_homeostat_key or not hmac.compare_digest(x_homeostat_key.encode(), runtime.api_key.encode()):
-            raise _Unauthorized()
-        return runtime.dev_user_id
+    def user(request: Request, authorization: str | None = Header(default=None),
+             x_homeostat_key: str | None = Header(default=None)) -> UUID:
+        """A device key (Authorization: Bearer). In development the shared
+        enrollment key also signs in, as the development user."""
+        request.state.device_id = None
+        if authorization and authorization.startswith("Bearer "):
+            with engine.connect() as conn:
+                found = accounts.authenticate(conn, authorization.removeprefix("Bearer "))
+            if found is None:
+                raise _Unauthorized()
+            request.state.device_id = found[1]
+            return found[0]
+        if runtime.development and x_homeostat_key \
+                and hmac.compare_digest(x_homeostat_key.encode(), runtime.api_key.encode()):
+            return runtime.dev_user_id
+        raise _Unauthorized()
 
     @app.exception_handler(_Unauthorized)
     async def unauthorized(_: Request, __: Exception) -> JSONResponse:
@@ -154,6 +167,18 @@ def create_app(runtime: Runtime | None = None, clock: Clock = system_clock, sett
                 return error(404, "NO_STATE_YET")
             _, _, zone = store.current_revision(conn, user_id)
         return JSONResponse(content={**run_payload(latest), "is_today": latest.day == local_date(clock(), zone)})
+
+    install_widget_routes(app, engine, user, clock)
+    accounts.install_account_routes(app, engine, user, clock, runtime)
+
+    @app.get("/v1/state/runs/{run_id}")
+    def state_for_run(run_id: int, user_id: UUID = Depends(user)) -> JSONResponse:
+        from app.db import calculation_runs
+        with engine.connect() as conn:
+            row = conn.execute(store._latest_runs(user_id).where(calculation_runs.c.run_id == run_id)).one_or_none()
+        if row is None:
+            return error(404, "NO_STATE_FOR_RUN")
+        return JSONResponse(content={**run_payload(row), "is_today": row.day == local_date(clock(), row.timezone)}, headers={"Cache-Control": "no-store"})
 
     @app.get("/v1/state/{day}")
     def state_for_day(day: date, user_id: UUID = Depends(user)) -> JSONResponse:

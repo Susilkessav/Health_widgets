@@ -19,6 +19,7 @@ from sqlalchemy.engine import Connection
 from app import store
 from app.contracts._types import Frozen, IanaTimezone, utc
 from app.contracts.canonical_events import (
+    HEALTHKIT_TYPES,
     DailyActivitySnapshot,
     DeleteEvent,
     IntervalEvent,
@@ -54,12 +55,48 @@ class CoverageIn(Frozen):
         return self.start_day if self.start_day is not None else local_date(self.start_at, zone)
 
 
+MAX_SCAN_MEMBERS = 100_000
+
+
+class VisibilityIn(Frozen):
+    """A completed fresh scan of one HealthKit type: every visible record ID
+    from scope_start_at on (Step 9-13 plan section 3B). Sent once all of the
+    scan's pages are stored on the device."""
+
+    scan_id: UUID
+    healthkit_type: Literal[tuple(HEALTHKIT_TYPES.values())]  # type: ignore[valid-type]
+    scope_start_at: AwareDatetime
+    scope_end_at: AwareDatetime | None = None
+    members: list[str] = Field(max_length=MAX_SCAN_MEMBERS)
+
+    @model_validator(mode="after")
+    def _unique(self) -> VisibilityIn:
+        if self.scope_end_at is not None and utc(self.scope_end_at) <= utc(self.scope_start_at):
+            raise ValueError("scan interval is reversed")
+        if len(set(self.members)) != len(self.members):
+            raise ValueError("scan members must be unique")
+        return self
+
+
 class SyncRequest(Frozen):
     request_id: UUID
+    installation_id: UUID | None = None
     device_timezone: IanaTimezone
     coverage: tuple[CoverageIn, ...] = ()
+    visibility: tuple[VisibilityIn, ...] = ()
     # Validated one by one, so one bad event never rejects the others.
     events: list[Any] = Field(max_length=MAX_EVENTS)
+
+    @model_validator(mode="after")
+    def _finalization(self):
+        if self.installation_id and self.visibility:
+            if self.events:
+                raise ValueError("visibility finalization must follow event acknowledgements")
+            if any(scan.scope_end_at is None for scan in self.visibility):
+                raise ValueError("installation scans require scope_end_at")
+            if len({scan.healthkit_type for scan in self.visibility}) != len(self.visibility):
+                raise ValueError("one scan per type per finalization")
+        return self
 
 
 class RequestIdReused(Exception):
@@ -128,6 +165,19 @@ def ingest(conn: Connection, user_id: UUID, body: bytes, request: SyncRequest, n
         if revision is None:
             revision, received_at = store.next_revision(conn, user_id, now)
 
+    def observe(event) -> None:
+        """Record that this installation sees the provider record. Only new
+        memberships get a revision, and they only need recalculation where a
+        visibility scan could have withdrawn the record."""
+        if not request.installation_id or isinstance(event, DeleteEvent) \
+                or store.installation_seen(conn, user_id, request.installation_id, event):
+            return
+        allocate()
+        store.record_installation(conn, user_id, request.installation_id, event, revision)
+        if not isinstance(event, DailyActivitySnapshot) \
+                and store.has_scans(conn, user_id, event.metadata.healthkit_type):
+            affected.update(_event_days(conn, user_id, event, zone, received_at))
+
     for index, raw in enumerate(request.events):
         event_id = _readable_event_id(raw)
         try:
@@ -143,6 +193,8 @@ def ingest(conn: Connection, user_id: UUID, body: bytes, request: SyncRequest, n
         if receipt is not None:
             if receipt.payload_sha256 == digest:  # a retry: report what was recorded
                 outcome, code = receipt.outcome, receipt.code
+                if event is not None and receipt.health_event_id:
+                    observe(event)
             else:
                 outcome, code = "rejected", "CLIENT_EVENT_ID_REUSED"
             results.append({"index": index, "client_event_id": str(event_id), "status": outcome,
@@ -162,6 +214,8 @@ def ingest(conn: Connection, user_id: UUID, body: bytes, request: SyncRequest, n
                 version_id = store.insert_version(conn, user_id, event, digest, revision, received_at)
                 affected.update(_event_days(conn, user_id, event, zone, received_at))
                 outcome, code = ("conflict", "CONFLICTING_PROVIDER_RECORD") if conflict else ("accepted", None)
+        if version_id is not None:
+            observe(event)
         if event_id is not None:
             store.save_receipt(conn, user_id, event_id, digest, request.request_id, received_at, outcome, code,
                                version_id)
@@ -173,6 +227,12 @@ def ingest(conn: Connection, user_id: UUID, body: bytes, request: SyncRequest, n
         store.insert_coverage(conn, user_id, [CoverageWindow(**c.model_dump()) for c in request.coverage],
                               revision, received_at)
         affected.update(c.first_day(zone) for c in request.coverage)
+
+    if request.visibility:
+        allocate()
+        if store.insert_scans(conn, user_id, [v.model_dump() for v in request.visibility], revision, received_at, request.installation_id):
+            # A scan can withdraw anything in its scope; recalculate from its start.
+            affected.update(local_date(v.scope_start_at, zone) for v in request.visibility)
 
     today = local_date(now, zone)
     if zone != stored_zone:

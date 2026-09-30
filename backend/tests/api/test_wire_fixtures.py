@@ -120,3 +120,42 @@ def test_swift_encoded_events_validate_through_the_contracts():
             assert raw["source_record_id"] == snapshot_record_id(event.timezone, event.day, event.as_of,
                                                                  event.queried_at, event.steps)
     assert types == {"point_measurement", "interval", "workout", "daily_activity_snapshot", "delete"}
+
+
+@pytest.mark.db
+def test_a_swift_built_request_with_a_scan_is_accepted(db_engine):
+    from app.ingest import SyncRequest
+    body = (FIXTURES / "swift_request.json").read_bytes()
+    request = SyncRequest.model_validate_json(body)
+    member_body = (FIXTURES / "swift_member_request.json").read_bytes()
+    member_request = SyncRequest.model_validate_json(member_body)
+    assert not request.events and request.installation_id == member_request.installation_id
+    assert len(request.visibility) == 1 and request.visibility[0].members == [member_request.events[0]["source_record_id"]]
+    with TestClient(create_app(runtime(), clock=FixedClock(NOW), engine=db_engine)) as client:
+        member_response = client.post("/v1/health/sync", headers={**KEY, "Content-Type": "application/json"}, content=member_body)
+        assert member_response.status_code == 200
+        assert [r["status"] for r in member_response.json()["results"]] == ["accepted"]
+        response = client.post("/v1/health/sync", headers={**KEY, "Content-Type": "application/json"}, content=body)
+    assert response.status_code == 200
+    assert response.json()["results"] == []
+    assert response.json()["revision"] > member_response.json()["revision"]
+
+
+def test_distinct_widget_states_fixture():
+    """Python -> Swift: every distinct widget payload the valid G1 state
+    combinations produce, for the widget's decoding and layout checks."""
+    from app.engine import compute_health_state
+    from app.presentation import map_widget_state
+    from tests.engine.conftest import SETTINGS as ENGINE_SETTINGS, features
+    from tests.engine.test_presentation import COMBOS
+    seen = {}
+    for combo in COMBOS:
+        widget = json_value(map_widget_state(compute_health_state(features(*combo), ENGINE_SETTINGS)))
+        key = json.dumps([widget["presentation"], widget["primary_trait"]], sort_keys=True)
+        seen.setdefault(key, widget)
+    lines = [json.dumps(w, sort_keys=True, ensure_ascii=False) for _, w in sorted(seen.items())]
+    text = "\n".join(lines) + "\n"
+    path = FIXTURES / "widget_states.jsonl"
+    if UPDATE:
+        path.write_text(text, encoding="utf-8")
+    assert path.read_text(encoding="utf-8") == text, "widget_states.jsonl is stale: rerun with UPDATE_WIRE_FIXTURES=1"

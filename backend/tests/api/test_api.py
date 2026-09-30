@@ -175,3 +175,30 @@ def test_partial_day_coverage_round_trips_through_the_api(api, db_engine):
     both = {**partial, "start_day": "2026-09-15", "end_day": "2026-09-22"}
     rejected = client.post("/v1/health/sync", headers=KEY, json=payload(coverage=[both]))
     assert rejected.status_code == 422
+
+
+def test_a_visibility_scan_withdraws_unlisted_records_and_replays(api, db_engine):
+    """Lost-anchor reconciliation (Step 9-13 plan section 3B)."""
+    from app.replay import verify_runs
+    client, clock = api
+    kept, gone = hrv(50, key="kept"), hrv(90, key="gone")
+    client.post("/v1/health/sync", headers=KEY, json=payload(history(20) + [kept, gone]))
+    before = client.get("/v1/debug/features/2026-09-22", headers=KEY).json()
+    scan = {"scan_id": str(uuid4()), "healthkit_type": "HKQuantityTypeIdentifierHeartRateVariabilitySDNN",
+            "scope_start_at": "2026-08-17T05:00:00Z", "members": [kept.source_record_id]}
+    clock.now = NOW + timedelta(minutes=5)
+    body = {**payload(), "visibility": [scan]}
+    response = client.post("/v1/health/sync", headers=KEY, json=body).json()
+    assert response["revision"] == 2 and response["affected_days"][0] == "2026-08-17"
+    after = client.get("/v1/debug/features/2026-09-22", headers=KEY).json()
+    assert after["evidence"]["input"]["withdrawn"][-1] == gone.source_record_id
+    assert kept.source_record_id not in after["evidence"]["input"]["withdrawn"]
+    assert after["features"]["hrv"] != before["features"]["hrv"]
+    # The same scan again (a new request) changes nothing; a duplicate member is invalid.
+    again = client.post("/v1/health/sync", headers=KEY, json={**payload(), "visibility": [scan]}).json()
+    assert client.get("/v1/debug/features/2026-09-22", headers=KEY).json()["evidence"] == after["evidence"] \
+        and again["revision"] == 3
+    bad = {**payload(), "visibility": [{**scan, "scan_id": str(uuid4()), "members": ["a", "a"]}]}
+    assert client.post("/v1/health/sync", headers=KEY, json=bad).status_code == 422
+    checks = verify_runs(db_engine, USER, NOW.date() - timedelta(days=40), NOW.date())
+    assert checks and all(c.status == "identical" for c in checks)

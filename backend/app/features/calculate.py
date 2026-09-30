@@ -73,6 +73,8 @@ def calculate_features(observations: Iterable[Observation], context: Calculation
     diagnostics += [f"conflict:{c.domain}:{c.day}:{c.source_record_id}" for c in selection.conflicts]
     evidence = {domain: outcome.evidence for domain, outcome in outcomes.items()}
     evidence["input"] = {"records": len(selection.records), "tombstoned": list(selection.tombstoned)}
+    if selection.withdrawn:
+        evidence["input"]["withdrawn"] = list(selection.withdrawn)
     return CalculationReport(
         features=features, config_sha256=config_sha256, config=settings_payload(settings), context=context,
         input_sha256=selection.input_sha256, evidence=json_value(evidence), diagnostics=tuple(sorted(diagnostics)),
