@@ -25,15 +25,20 @@ extension LocalStore {
                 return LocalStore.request(from: open)
             }
             let requestID = makeID()
+            let installation = try String.fetchOne(db, sql: "SELECT value FROM sync_state WHERE key = 'installation_id'")!
             var coverage: [(Int64, JSONValue)] = []
             var events: [(Int64, UUID, JSONValue)] = []
+            var scans: [(Int64, JSONValue)] = []
             func encoded() -> Data {
-                JSONValue.object([
+                var body: [String: JSONValue] = [
                     "request_id": .string(requestID.uuidString.lowercased()),
+                    "installation_id": .string(installation),
                     "device_timezone": .string(deviceZone),
                     "coverage": .array(coverage.map(\.1)),
                     "events": .array(events.map(\.2)),
-                ]).encoded()
+                ]
+                if !scans.isEmpty { body["visibility"] = .array(scans.map(\.1)) }
+                return JSONValue.object(body).encoded()
             }
             guard encoded().count <= maxBytes else { throw OutboxError.byteLimitBelowEnvelope }
             let itemLimit = max(1, Int(try String.fetchOne(db,
@@ -59,13 +64,22 @@ extension LocalStore {
                     SELECT DISTINCT state FROM event_outbox WHERE domain = ? AND id <= ?
                     """, arguments: [domain, dependsOn])
                 let unavailable = (row["status"] as String) == "unavailable"
-                if !unavailable && states.contains("dead_letter") {
-                    try db.execute(sql: "UPDATE coverage_outbox SET state = 'withheld' WHERE id = ?", arguments: [id])
-                } else if unavailable || states.isDisjoint(with: ["pending", "assigned"]) {
+                if unavailable || states.isDisjoint(with: ["pending", "assigned"]) {
+                    var start: String = row["start_at"]
+                    // "complete" can't vouch for a record the server rejected, so it
+                    // starts after the latest dead letter instead of never being sent.
+                    if !unavailable && states.contains("dead_letter") {
+                        guard let after = try LocalStore.latestDeadLetterEnd(domain: domain, upTo: dependsOn, in: db),
+                              let end = Instant.parse(row["end_at"]), after < end else {
+                            try db.execute(sql: "UPDATE coverage_outbox SET state = 'withheld' WHERE id = ?", arguments: [id])
+                            continue
+                        }
+                        if let from = Instant.parse(start), from < after { start = after.wire }
+                    }
                     coverage.append((id, .object([
                         "domain": .string(domain), "timezone": .string(row["timezone"]),
                         "status": .string(row["status"]),
-                        "start_at": .string(row["start_at"]), "end_at": .string(row["end_at"]),
+                        "start_at": .string(start), "end_at": .string(row["end_at"]),
                     ])))
                     if encoded().count > maxBytes {
                         coverage.removeLast()
@@ -74,17 +88,56 @@ extension LocalStore {
                     }
                 }
             }
+            for row in try Row.fetchAll(db, sql: "SELECT * FROM visibility_outbox WHERE state = 'pending' ORDER BY id") {
+                if !events.isEmpty { break }
+                if events.count + coverage.count + scans.count >= itemLimit { break }
+                let id: Int64 = row["id"], type: String = row["type"]
+                // A legacy assigned request may return here after a 413 split, and so
+                // may a scan whose generation was replaced while it was in flight.
+                // Only the current generation's scan is accurate, and the server
+                // takes one scan per type per request.
+                guard let scopeEnd: String = row["scope_end_at"],
+                      let sampleType = SampleType(rawValue: type),
+                      try LocalStore.generation(sampleType, in: db) == row["generation_number"] as String else {
+                    try db.execute(sql: "UPDATE visibility_outbox SET state = 'superseded' WHERE id = ?", arguments: [id])
+                    continue
+                }
+                let states = try String.fetchSet(db, sql: "SELECT DISTINCT state FROM event_outbox WHERE domain = ?",
+                                                arguments: [SampleType(rawValue: type)!.domain.rawValue])
+                // A scan is finalization, never part of the batch that delivers
+                // the identities it reconciles. Retryable items must be ACKed first.
+                // Dead letters don't block it: the server never stored them, and the
+                // "complete" coverage that follows the scan starts after them.
+                if !states.isDisjoint(with: ["pending", "assigned"]) { continue }
+                let members = try String.fetchAll(db, sql: """
+                    SELECT source_record_id FROM generation_members WHERE type = ? AND generation = ? ORDER BY source_record_id
+                    """, arguments: [type, row["generation"] as String])
+                scans.append((id, .object([
+                    "scan_id": .string(row["scan_id"]),
+                    "healthkit_type": .string(Normalizer.healthKitTypes[SampleType(rawValue: type)!.domain]!),
+                    "scope_start_at": .string(row["scope_start_at"]),
+                    "scope_end_at": .string(scopeEnd),
+                    "members": .array(members.map(JSONValue.string)),
+                ])))
+                if encoded().count > maxBytes {
+                    scans.removeLast()
+                    if !events.isEmpty || !coverage.isEmpty || !scans.isEmpty { break }
+                    try db.execute(sql: "UPDATE visibility_outbox SET state = 'withheld' WHERE id = ?", arguments: [id])
+                }
+            }
             let zoneChanged = try String.fetchOne(db, sql: "SELECT value FROM sync_state WHERE key = 'sent_zone'")
                 != deviceZone
-            if events.isEmpty && coverage.isEmpty && !zoneChanged { return nil }
+            if events.isEmpty && coverage.isEmpty && scans.isEmpty && !zoneChanged { return nil }
             let body = encoded()
             let eventIDs = events.map { $0.1.uuidString.lowercased() }
             try db.execute(sql: """
-                INSERT INTO upload_requests (request_id, body, event_ids, outbox_ids, coverage_ids, next_attempt_at, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO upload_requests (request_id, body, event_ids, outbox_ids, coverage_ids, visibility_ids,
+                                             next_attempt_at, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """, arguments: [requestID.uuidString.lowercased(), body, eventIDs.joined(separator: ","),
                                  events.map { String($0.0) }.joined(separator: ","),
-                                 coverage.map { String($0.0) }.joined(separator: ","), now.wire, now.wire])
+                                 coverage.map { String($0.0) }.joined(separator: ","),
+                                 scans.map { String($0.0) }.joined(separator: ","), now.wire, now.wire])
             for (id, _, _) in events {
                 try db.execute(sql: "UPDATE event_outbox SET state = 'assigned', request_id = ? WHERE id = ?",
                                arguments: [requestID.uuidString.lowercased(), id])
@@ -93,9 +146,28 @@ extension LocalStore {
                 try db.execute(sql: "UPDATE coverage_outbox SET state = 'assigned', request_id = ? WHERE id = ?",
                                arguments: [requestID.uuidString.lowercased(), id])
             }
+            for (id, _) in scans {
+                try db.execute(sql: "UPDATE visibility_outbox SET state = 'assigned', request_id = ? WHERE id = ?",
+                               arguments: [requestID.uuidString.lowercased(), id])
+            }
             return UploadRequest(requestID: requestID, body: body, eventIDs: events.map(\.1), attempts: 0,
                                  nextAttemptAt: now)
         }
+    }
+
+    /// When the latest dead-lettered event in `domain` (up to outbox `upTo`)
+    /// ended. nil if one has no readable time, so nothing can be vouched for.
+    static func latestDeadLetterEnd(domain: String, upTo: Int64, in db: Database) throws -> Instant? {
+        var latest: Instant?
+        for body in try Data.fetchAll(db, sql: """
+            SELECT body FROM event_outbox WHERE domain = ? AND id <= ? AND state = 'dead_letter'
+            """, arguments: [domain, upTo]) {
+            let json = try JSONDecoder().decode(JSONValue.self, from: body)
+            guard let text = (json["metadata"]?["sample_end_at"] ?? json["as_of"] ?? json["deleted_at"])?.string,
+                  let end = Instant.parse(text) else { return nil }
+            latest = max(latest ?? end, end)
+        }
+        return latest
     }
 
     static func request(from row: Row) -> UploadRequest {
@@ -122,6 +194,28 @@ extension LocalStore {
             }
             try db.execute(sql: "UPDATE coverage_outbox SET state = 'acknowledged' WHERE request_id = ?",
                            arguments: [requestID])
+            // An acknowledged scan of the current generation completes that
+            // type's recovery: the server now knows what is no longer visible.
+            for row in try Row.fetchAll(db, sql: "SELECT * FROM visibility_outbox WHERE request_id = ?",
+                                        arguments: [requestID]) {
+                let type: String = row["type"]
+                if let sampleType = SampleType(rawValue: type),
+                   try LocalStore.generation(sampleType, in: db) == row["generation_number"] as String,
+                   let endText: String = row["scope_end_at"], let end = Instant.parse(endText),
+                   let start = Instant.parse(row["scope_start_at"]) {
+                    try LocalStore.set(nil, "recovery_\(type)", in: db)
+                    let zone = try JSONDecoder().decode(JSONValue.self, from: request.body)["device_timezone"]?.string ?? "UTC"
+                    _ = try LocalStore.enqueueCoverage(.init(domain: sampleType.domain, timezone: zone, start: start,
+                                                             end: end), now: end, in: db)
+                }
+            }
+            try db.execute(sql: "UPDATE visibility_outbox SET state = 'acknowledged' WHERE request_id = ?",
+                           arguments: [requestID])
+            let recovering = try Int.fetchOne(db, sql: "SELECT COUNT(*) FROM sync_state WHERE key LIKE 'recovery\\_%' ESCAPE '\\'") ?? 0
+            if recovering == 0, try String.fetchOne(db, sql: "SELECT value FROM sync_state WHERE key = 'last_anchor_recovery'")?
+                .hasPrefix("Incomplete") == true {
+                try LocalStore.set("Reconciled", "last_anchor_recovery", in: db)
+            }
             try db.execute(sql: "UPDATE upload_requests SET state = 'done', last_error = NULL WHERE request_id = ?",
                            arguments: [requestID])
             if let zone = try JSONDecoder().decode(JSONValue.self, from: request.body)["device_timezone"]?.string {
@@ -158,9 +252,11 @@ extension LocalStore {
                            arguments: [requestID])
             let coverageCount = try Int.fetchOne(db, sql: "SELECT COUNT(*) FROM coverage_outbox WHERE request_id = ?",
                                                  arguments: [requestID]) ?? 0
-            let itemCount = request.eventIDs.count + coverageCount
+            let scanCount = try Int.fetchOne(db, sql: "SELECT COUNT(*) FROM visibility_outbox WHERE request_id = ?",
+                                             arguments: [requestID]) ?? 0
+            let itemCount = request.eventIDs.count + coverageCount + scanCount
             try LocalStore.set(String(max(1, itemCount / 2)), "max_items", in: db)
-            if request.eventIDs.count == 1 && coverageCount == 0 {
+            if request.eventIDs.count == 1 && coverageCount == 0 && scanCount == 0 {
                 try db.execute(sql: "UPDATE event_outbox SET state = 'dead_letter', code = 'TOO_LARGE' WHERE request_id = ?",
                                arguments: [requestID])
             } else {
@@ -170,6 +266,8 @@ extension LocalStore {
             let coverageState = itemCount == 1 && coverageCount == 1 ? "withheld" : "pending"
             try db.execute(sql: "UPDATE coverage_outbox SET state = ?, request_id = NULL WHERE request_id = ?",
                            arguments: [coverageState, requestID])
+            try db.execute(sql: "UPDATE visibility_outbox SET state = ?, request_id = NULL WHERE request_id = ?",
+                           arguments: [itemCount == 1 && scanCount == 1 ? "withheld" : "pending", requestID])
             if itemCount == 0 { try LocalStore.set("ENVELOPE_TOO_LARGE", "paused", in: db) }
         }
     }

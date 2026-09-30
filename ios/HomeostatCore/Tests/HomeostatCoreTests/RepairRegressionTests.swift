@@ -118,7 +118,7 @@ final class RepairRegressionTests: XCTestCase {
             }
             return coverage.count + events.count > 1 ? (413, Data(), [:]) : try await server(request)
         }
-        let sync = SyncEngine(store: store, config: BackendConfig(baseURL: URL(string: "http://localhost")!, apiKey: "k"),
+        let sync = SyncEngine(store: store, config: BackendConfig(baseURL: URL(string: "http://localhost")!, deviceToken: "k"),
                               transport: transport, clock: { NOW }, deviceZone: { CHICAGO })
         let outcomes = await sync.syncAll()
         XCTAssertEqual(outcomes.last, .idle)
@@ -137,7 +137,7 @@ final class RepairRegressionTests: XCTestCase {
             if attempts.make().uuidString.hasSuffix("000000000001") { return (503, Data(), [:]) }
             return try await server(request)
         }
-        let sync = SyncEngine(store: store, config: BackendConfig(baseURL: URL(string: "http://localhost")!, apiKey: "k"),
+        let sync = SyncEngine(store: store, config: BackendConfig(baseURL: URL(string: "http://localhost")!, deviceToken: "k"),
                               transport: transport, deviceZone: { CHICAGO })
         guard case .retryScheduled(let at, _) = await sync.syncOnce() else { return XCTFail() }
         let done = expectation(description: "automatic retry")
@@ -183,7 +183,7 @@ extension RepairRegressionTests {
             }
         }
         let upgraded = try LocalStore(path: path)
-        XCTAssertEqual(try upgraded.counts().pending, 1)
+        XCTAssertEqual(try upgraded.counts().pending, 2) // original + scoped re-delivery
         XCTAssertNil(try upgraded.value("steps_full_refresh_day"))
         XCTAssertEqual(try commit(raw, store: upgraded, zone: "Asia/Tokyo").skippedDuplicates, 1)
         XCTAssertEqual(try upgraded.value("recovery_hrv"), "incomplete")

@@ -110,8 +110,8 @@ final class StoreTests: XCTestCase {
         XCTAssertEqual(try coverage(in: second), 1)
     }
 
-    func testADeadLetteredEventWithholdsItsDomainsCoverage() throws {
-        try commit([hrv(50)])
+    func testADeadLetteredEventLimitsItsDomainsCoverageToAfterIt() throws {
+        try commit([hrv(50)])  // ends 12:00
         try store.enqueueCoverage(.init(domain: .hrv, timezone: CHICAGO, start: NOW.adding(seconds: -86400), end: NOW),
                                   now: NOW)
         let request = try XCTUnwrap(try store.nextRequest(deviceZone: CHICAGO, maxEvents: 250, maxBytes: 1 << 22,
@@ -121,9 +121,20 @@ final class StoreTests: XCTestCase {
         response.results[0].code = "INVALID_UNIT"
         try store.apply(response, to: request)
         try store.setValue(CHICAGO, for: "sent_zone")
+        // Complete coverage can't vouch for the rejected sample: it starts after it.
+        let clipped = try XCTUnwrap(try store.nextRequest(deviceZone: CHICAGO, maxEvents: 250, maxBytes: 1 << 22,
+                                                          now: NOW, makeID: ids.make))
+        let sent = try JSONDecoder().decode(JSONValue.self, from: clipped.body)["coverage"]
+        XCTAssertEqual(sent, .array([.object(["domain": .string("hrv"), "timezone": .string(CHICAGO),
+            "status": .string("complete"), "start_at": .string("2026-09-22T12:00:00Z"), "end_at": .string(NOW.wire)])]))
+        XCTAssertEqual(try store.counts().deadLetter, 1)
+
+        // Nothing left after the rejected sample: withheld.
+        try store.apply(accepted(clipped), to: clipped)
+        try store.enqueueCoverage(.init(domain: .hrv, timezone: CHICAGO, start: NOW.adding(seconds: -86400),
+                                        end: instant("2026-09-22T12:00:00Z")), now: NOW)
         XCTAssertNil(try store.nextRequest(deviceZone: CHICAGO, maxEvents: 250, maxBytes: 1 << 22, now: NOW))
         XCTAssertEqual(try store.counts().coverageWithheld, 1)
-        XCTAssertEqual(try store.counts().deadLetter, 1)
     }
 
     func testAQuarantinedSampleSuppressesCompleteCoverage() throws {

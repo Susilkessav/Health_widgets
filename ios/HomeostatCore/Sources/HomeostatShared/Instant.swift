@@ -114,13 +114,18 @@ public struct LocalDay: Hashable, Comparable, Codable, Sendable, CustomStringCon
         (lhs.year, lhs.month, lhs.day) < (rhs.year, rhs.month, rhs.day)
     }
 
-    public init(from decoder: Decoder) throws {
-        let text = try decoder.singleValueContainer().decode(String.self)
+    /// Parses `YYYY-MM-DD`.
+    public init?(_ text: String) {
         let parts = text.split(separator: "-").compactMap { Int($0) }
-        guard parts.count == 3 else {
+        guard parts.count == 3 else { return nil }
+        self.init(year: parts[0], month: parts[1], day: parts[2])
+    }
+
+    public init(from decoder: Decoder) throws {
+        guard let day = LocalDay(try decoder.singleValueContainer().decode(String.self)) else {
             throw DecodingError.dataCorrupted(.init(codingPath: decoder.codingPath, debugDescription: "not a date"))
         }
-        self.init(year: parts[0], month: parts[1], day: parts[2])
+        self = day
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -158,6 +163,17 @@ public struct Zone: Sendable {
     public func adding(days: Int, to day: LocalDay) -> LocalDay {
         let noon = calendar.date(from: DateComponents(year: day.year, month: day.month, day: day.day, hour: 12))!
         return self.day(of: Instant(calendar.date(byAdding: .day, value: days, to: noon)!))
+    }
+
+    /// The instant of `hour`:00 on a local day (the earlier one if repeated).
+    public func instant(on day: LocalDay, hour: Int) -> Instant {
+        Instant(calendar.date(from: DateComponents(year: day.year, month: day.month, day: day.day, hour: hour))!)
+    }
+
+    /// Seconds since local midnight on the wall clock, ignoring fractions.
+    public func wallSeconds(of instant: Instant) -> Int {
+        let parts = calendar.dateComponents([.hour, .minute, .second], from: instant.date)
+        return parts.hour! * 3600 + parts.minute! * 60 + parts.second!
     }
 
     /// The local wall-clock time of an instant, as (hour, minute).

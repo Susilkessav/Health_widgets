@@ -181,7 +181,7 @@ final class ImportEngineTests: XCTestCase {
             return try await server(request)
         }
         let clock = self.clock!
-        let offline = SyncEngine(store: store, config: BackendConfig(baseURL: URL(string: "http://localhost")!, apiKey: "k"),
+        let offline = SyncEngine(store: store, config: BackendConfig(baseURL: URL(string: "http://localhost")!, deviceToken: "k"),
                                  transport: transport, clock: { clock.now }, random: { 1 }, deviceZone: { CHICAGO })
         guard case .retryScheduled = await offline.syncOnce() else { return XCTFail() }
 
@@ -189,7 +189,7 @@ final class ImportEngineTests: XCTestCase {
         online = true
         clock.advance(seconds: 3)
         let relaunched = SyncEngine(store: store, config: BackendConfig(baseURL: URL(string: "http://localhost")!,
-                                                                        apiKey: "k"),
+                                                                        deviceToken: "k"),
                                     transport: transport, clock: { clock.now }, random: { 1 }, deviceZone: { CHICAGO })
         var outcomes = await relaunched.syncAll()
         while outcomes.last.map({ if case .notDue = $0 { return true } else { return false } }) == true {
@@ -206,5 +206,167 @@ final class ImportEngineTests: XCTestCase {
             return events.compactMap { $0["event_id"]?.string }
         }
         XCTAssertEqual(Set(sent).count, queued)
+    }
+
+    // MARK: - Lost-anchor reconciliation (Step 9-13 plan section 3B)
+
+    func lastCoverageStatus(_ domain: String) throws -> String? {
+        try store.db.read {
+            try String.fetchOne($0, sql: "SELECT status FROM coverage_outbox WHERE domain = ? ORDER BY id DESC LIMIT 1",
+                                arguments: [domain])
+        }
+    }
+
+    func scansInBodies(_ transport: FakeTransport) throws -> [JSONValue] {
+        try transport.bodies.flatMap { body -> [JSONValue] in
+            guard case .array(let scans)? = try JSONDecoder().decode(JSONValue.self, from: body)["visibility"] else { return [] }
+            return scans
+        }
+    }
+
+    func syncEverything(_ transport: FakeTransport) async {
+        let clock = self.clock!
+        let engine = SyncEngine(store: store, config: BackendConfig(baseURL: URL(string: "http://localhost")!, deviceToken: "k"),
+                                transport: transport, clock: { clock.now }, random: { 1 }, deviceZone: { CHICAGO })
+        _ = await engine.syncAll()
+    }
+
+    func test_aCompletedDrainSendsItsScanListingEveryVisibleRecordOnce() async throws {
+        let a = UUID(), b = UUID()
+        let one = sample(.hrvSDNN(milliseconds: 50), start: "2026-09-22T11:59:00Z", end: "2026-09-22T12:00:00Z", uuid: a)
+        let two = sample(.hrvSDNN(milliseconds: 0), start: "2026-09-22T11:59:00Z", end: "2026-09-22T12:00:00Z", uuid: b)
+        source.pages[.hrv] = [AnchoredPage(samples: [one, two], deleted: [], anchor: Data([1]), hasMore: false)]
+        _ = try await engine().drain(.hrv)
+        XCTAssertEqual(try store.counts().scansPending, 1)
+        let transport = FakeTransport(acceptingServer())
+        await syncEverything(transport)
+        let scans = try scansInBodies(transport)
+        XCTAssertEqual(scans.count, 1)
+        // The quarantined sample (0 ms) is still visible, so it is listed too.
+        XCTAssertEqual(scans[0]["members"], .array([a, b].map { .string($0.uuidString.lowercased()) }
+            .sorted { $0.string! < $1.string! }))
+        XCTAssertEqual(scans[0]["healthkit_type"]?.string, "HKQuantityTypeIdentifierHeartRateVariabilitySDNN")
+        XCTAssertEqual(scans[0]["scope_start_at"]?.string, "2026-08-17T05:00:00Z")
+        XCTAssertEqual(try store.counts().scansPending, 0)
+        // A later drain of the same generation doesn't scan again.
+        _ = try await engine().drain(.hrv)
+        XCTAssertEqual(try store.counts().scansPending, 0)
+    }
+
+    func test_recoveryCompletesOnlyWhenTheNewGenerationsScanIsAcknowledged() async throws {
+        let kept = sample(.hrvSDNN(milliseconds: 50), start: "2026-09-22T11:59:00Z", end: "2026-09-22T12:00:00Z")
+        let gone = sample(.hrvSDNN(milliseconds: 60), start: "2026-09-22T10:59:00Z", end: "2026-09-22T11:00:00Z")
+        source.pages[.hrv] = [AnchoredPage(samples: [kept, gone], deleted: [], anchor: Data([1]), hasMore: false),
+                              AnchoredPage(samples: [kept], deleted: [], anchor: Data([2]), hasMore: false)]
+        let sut = engine()
+        _ = try await sut.drain(.hrv)
+        source.corruptAnchorOnce = [.hrv]
+        _ = try await sut.drain(.hrv)  // new generation: "gone" is no longer returned
+        XCTAssertEqual(try store.value("recovery_hrv"), "incomplete")
+        let transport = FakeTransport(acceptingServer())
+        await syncEverything(transport)
+        // Only the new generation's scan is sent; the old one was superseded before sending.
+        let scans = try scansInBodies(transport)
+        XCTAssertEqual(scans.map { $0["members"] }, [.array([.string(kept.uuid.uuidString.lowercased())])])
+        XCTAssertNil(try store.value("recovery_hrv"))
+        XCTAssertEqual(try store.value("last_anchor_recovery"), "Reconciled")
+        // Coverage becomes complete again on the next drain.
+        _ = try await sut.drain(.hrv)
+        XCTAssertEqual(try lastCoverageStatus("hrv"), "complete")
+    }
+
+    func test_aScanFromAnOlderGenerationNeverClearsRecovery() async throws {
+        source.pages[.hrv] = [page([50], anchor: 1, more: false)]
+        let sut = engine()
+        _ = try await sut.drain(.hrv)
+        let transport = FakeTransport(acceptingServer())
+        let clock = self.clock!
+        let sync = SyncEngine(store: store, config: BackendConfig(baseURL: URL(string: "http://localhost")!, deviceToken: "k"),
+                              transport: transport, clock: { clock.now }, random: { 1 }, deviceZone: { CHICAGO })
+        let request = try store.nextRequest(deviceZone: CHICAGO, maxEvents: 250, maxBytes: 1 << 22, now: clock.now)
+        try store.apply(accepted(try XCTUnwrap(request)), to: try XCTUnwrap(request))
+        let scanRequest = try store.nextRequest(deviceZone: CHICAGO, maxEvents: 250, maxBytes: 1 << 22, now: clock.now)
+        XCTAssertNotNil(scanRequest)  // the generation-1 scan is now assigned
+        try store.beginAnchorRecovery(type: .hrv, lower: try await sut.lowerBound(), zone: CHICAGO, now: clock.now)
+        _ = await sync.syncAll()  // the open request (old scan) is still sent and acknowledged
+        XCTAssertEqual(try store.value("recovery_hrv"), "incomplete")
+    }
+
+    func test_legacyScanReturnedToQueueAfterSplitCannotFinalizeRecovery() throws {
+        try store.setValue("incomplete", for: "recovery_hrv")
+        try store.setValue(CHICAGO, for: "sent_zone")
+        try store.enqueueScan(type: .hrv, generation: "legacy", scopeStart: NOW.adding(seconds: -86400), now: NOW)
+        try store.enqueueCoverage(.init(domain: .hrv, timezone: CHICAGO, start: NOW.adding(seconds: -86400),
+                                       end: NOW, status: "unavailable"), now: NOW)
+        let request = try XCTUnwrap(store.nextRequest(deviceZone: CHICAGO, maxEvents: 250, maxBytes: 1 << 22, now: NOW))
+        // v3 rows have no end time. The old frozen request is still retryable,
+        // but a 413 forces its contents to be reconsidered in a new envelope.
+        try store.db.write { try $0.execute(sql: "UPDATE visibility_outbox SET scope_end_at = NULL") }
+        try store.split(request)
+        let retry = try XCTUnwrap(store.nextRequest(deviceZone: CHICAGO, maxEvents: 250, maxBytes: 1 << 22, now: NOW))
+        try store.apply(accepted(retry), to: retry)
+        XCTAssertNil(try store.nextRequest(deviceZone: CHICAGO, maxEvents: 250, maxBytes: 1 << 22, now: NOW))
+        XCTAssertEqual(try store.value("recovery_hrv"), "incomplete")
+        XCTAssertEqual(try store.counts().scansPending, 0)
+    }
+
+    /// Swift -> Python: a real request with a scan, validated by the backend's SyncRequest.
+    func test_writesTheSwiftRequestFixture() async throws {
+        let ids = IDs()
+        try store.setValue("aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa", for: "installation_id")
+        let one = sample(.hrvSDNN(milliseconds: 50), start: "2026-09-22T11:59:00Z", end: "2026-09-22T12:00:00Z",
+                         uuid: UUID(uuidString: "11111111-1111-4111-8111-111111111111")!)
+        try store.commitPage(type: "hrv", domain: .hrv, predicateVersion: "g", samples: [one], deleted: [],
+                             newAnchor: Data([1]), normalizer: Normalizer(deviceZone: CHICAGO), now: NOW, makeID: ids.make)
+        try store.enqueueScan(type: .hrv, generation: "g", scopeStart: instant("2026-08-17T05:00:00Z"), now: NOW,
+                              makeID: ids.make)
+        let request = try store.nextRequest(deviceZone: CHICAGO, maxEvents: 250, maxBytes: 1 << 22, now: NOW,
+                                            makeID: ids.make)!
+        // Finalization is a second request, after its member upload is ACKed.
+        try store.apply(accepted(request), to: request)
+        let scanRequest = try XCTUnwrap(try store.nextRequest(deviceZone: CHICAGO, maxEvents: 250, maxBytes: 1 << 22,
+                                                              now: NOW, makeID: ids.make))
+        let text = String(decoding: scanRequest.body, as: UTF8.self) + "\n"
+        let eventText = String(decoding: request.body, as: UTF8.self) + "\n"
+        let eventPath = fixtures.appendingPathComponent("swift_member_request.json")
+        if ProcessInfo.processInfo.environment["UPDATE_WIRE_FIXTURES"] == "1" {
+            try eventText.write(to: eventPath, atomically: true, encoding: .utf8)
+        }
+        XCTAssertEqual(try String(contentsOf: eventPath, encoding: .utf8), eventText)
+        let path = fixtures.appendingPathComponent("swift_request.json")
+        if ProcessInfo.processInfo.environment["UPDATE_WIRE_FIXTURES"] == "1" {
+            try text.write(to: path, atomically: true, encoding: .utf8)
+        }
+        XCTAssertEqual(try String(contentsOf: path, encoding: .utf8), text,
+                       "swift_request.json is stale: rerun with UPDATE_WIRE_FIXTURES=1, then the Python test")
+    }
+}
+
+extension ImportEngineTests {
+    func testScanWaitsUntilQueuedMissingSampleAndKeptSampleAreAcknowledged() async throws {
+        let kept = sample(.hrvSDNN(milliseconds: 50), start: "2026-09-22T11:59:00Z", end: "2026-09-22T12:00:00Z")
+        let gone = sample(.hrvSDNN(milliseconds: 60), start: "2026-09-22T10:59:00Z", end: "2026-09-22T11:00:00Z")
+        source.pages[.hrv] = [.init(samples: [kept, gone], deleted: [], anchor: Data([1]), hasMore: false),
+                              .init(samples: [kept], deleted: [], anchor: Data([2]), hasMore: false)]
+        let sut = engine()
+        _ = try await sut.drain(.hrv)
+        source.corruptAnchorOnce = [.hrv]
+        _ = try await sut.drain(.hrv)
+        var sent: [UploadRequest] = []
+        for _ in 0..<8 {
+            guard let request = try store.nextRequest(deviceZone: CHICAGO, maxEvents: 1, maxBytes: 1 << 22, now: NOW) else { break }
+            let body = try JSONDecoder().decode(JSONValue.self, from: request.body)
+            if case .array(let scans)? = body["visibility"], !scans.isEmpty {
+                XCTAssertTrue(request.eventIDs.isEmpty)
+                XCTAssertEqual(try store.counts().acknowledged, 2)
+                XCTAssertEqual(scans[0]["members"], .array([.string(kept.uuid.uuidString.lowercased())]))
+                XCTAssertNotNil(scans[0]["scope_end_at"])
+            }
+            sent.append(request)
+            try store.apply(accepted(request), to: request)
+        }
+        XCTAssertGreaterThan(sent.count, 2)
+        XCTAssertNil(try store.value("recovery_hrv"))
+        XCTAssertEqual(try lastCoverageStatus("hrv"), "complete") // no second drain required
     }
 }

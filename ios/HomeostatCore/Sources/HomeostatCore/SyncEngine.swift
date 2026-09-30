@@ -5,26 +5,22 @@ public protocol HTTPTransport: Sendable {
 }
 
 public struct URLSessionTransport: HTTPTransport {
-    let session: URLSession
-
-    public init(session: URLSession = .shared) {
-        self.session = session
-    }
+    public init() {}
 
     public func send(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
-        let (data, response) = try await session.data(for: request)
-        guard let http = response as? HTTPURLResponse else { throw URLError(.badServerResponse) }
-        return (data, http)
+        // The server can spend its inline recalculation budget before answering.
+        try await BoundedHTTP.send(request, maxBytes: 5 * 1024 * 1024, timeout: request.timeoutInterval)
     }
 }
 
 public struct BackendConfig: Sendable {
     public var baseURL: URL
-    public var apiKey: String
+    /// This device's key (`Authorization: Bearer`), from registration or pairing.
+    public var deviceToken: String
 
-    public init(baseURL: URL, apiKey: String) {
+    public init(baseURL: URL, deviceToken: String) {
         self.baseURL = baseURL
-        self.apiKey = apiKey
+        self.deviceToken = deviceToken
     }
 }
 
@@ -86,6 +82,7 @@ public actor SyncEngine {
 
     /// Sends at most one request: the open one if any (exact bytes), else a new one.
     public func syncOnce() async -> SyncOutcome {
+        if Task.isCancelled { return .idle }
         if uploading { return .busy }
         uploading = true
         defer { uploading = false }
@@ -122,7 +119,7 @@ public actor SyncEngine {
         http.httpMethod = "POST"
         http.httpBody = request.body
         http.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        http.setValue(config.apiKey, forHTTPHeaderField: "X-Homeostat-Key")
+        http.setValue("Bearer \(config.deviceToken)", forHTTPHeaderField: "Authorization")
         http.timeoutInterval = 60
         let data: Data, response: HTTPURLResponse
         do {
@@ -173,10 +170,19 @@ public actor SyncEngine {
         return protocolError ? .protocolError(reason: reason) : .retryScheduled(at: next, reason: reason)
     }
 
+    /// Fetch an exact explanation without replacing the current state.
+    public func state(runID: Int64) async -> ReturnedState? {
+        var request = URLRequest(url: config.baseURL.appendingPathComponent("v1/state/runs/\(runID)"))
+        request.setValue("Bearer \(config.deviceToken)", forHTTPHeaderField: "Authorization")
+        guard let (data, response) = try? await transport.send(request), response.statusCode == 200,
+              let state = try? JSONDecoder().decode(ReturnedState.self, from: data), state.runID == runID else { return nil }
+        return state
+    }
+
     /// Reads `GET /v1/state/current`. Stored only if not older than what we have.
     public func refreshState() async -> StateRefresh {
         var http = URLRequest(url: config.baseURL.appendingPathComponent("v1/state/current"))
-        http.setValue(config.apiKey, forHTTPHeaderField: "X-Homeostat-Key")
+        http.setValue("Bearer \(config.deviceToken)", forHTTPHeaderField: "Authorization")
         http.timeoutInterval = 30
         do {
             let (data, response) = try await transport.send(http)

@@ -82,6 +82,13 @@ public actor ImportEngine {
     let deviceZone: @Sendable () -> String
     public let lookbackDays: Int
     public let pageLimit: Int
+    private var stepsTask: Task<Int, Error>?
+    private var stepsTaskID = UUID()
+    private var stepsThrough: Instant?
+    private var stepsFull = false
+    private var cycleTask: Task<[String: String], Error>?
+    private var sharedWaiters: [AnyHashable: (waiting: Int, cancelled: Int)] = [:]
+    private var cycleAgain = false
     var running: Set<SampleType> = []
     var rerun: Set<SampleType> = []
 
@@ -124,7 +131,7 @@ public actor ImportEngine {
 
     /// Drains every available page for one type. If a drain for the type is
     /// already running, this request is folded into one more pass of it.
-    public func drain(_ type: SampleType) async throws -> DrainOutcome {
+    public func drain(_ type: SampleType, through: Instant? = nil, maxPages: Int = 100) async throws -> DrainOutcome {
         if running.contains(type) {
             rerun.insert(type)
             return .coalesced
@@ -134,15 +141,16 @@ public actor ImportEngine {
         var totals = PageTotals()
         repeat {
             rerun.remove(type)
-            try await drainOnce(type, into: &totals)
-        } while rerun.contains(type)
+            try await drainOnce(type, through: through ?? clock(), maxPages: maxPages, into: &totals)
+        } while rerun.contains(type) && totals.pages < maxPages
         return .drained(totals)
     }
 
-    func drainOnce(_ type: SampleType, into totals: inout PageTotals) async throws {
+    func drainOnce(_ type: SampleType, through: Instant, maxPages: Int, into totals: inout PageTotals) async throws {
         let lower = try lowerBound()
         var queriedAt = clock()
         while true {
+            try Task.checkCancellation()
             let version = try predicateVersion(type)
             let anchor = try store.anchor(type: type.rawValue, predicateVersion: version)
             let page: AnchoredPage
@@ -154,6 +162,7 @@ public actor ImportEngine {
                 if anchor == nil { throw HealthSourceError.corruptAnchor }
                 continue
             }
+            try Task.checkCancellation()
             queriedAt = clock()
             let result = try store.commitPage(
                 type: type.rawValue, domain: type.domain, predicateVersion: version, samples: page.samples,
@@ -164,57 +173,180 @@ public actor ImportEngine {
             totals.deletions += result.deletions
             totals.quarantined += result.quarantined
             if !page.hasMore { break }
+            if totals.pages >= maxPages {
+                try store.setValue("pending", for: "import_deferred")
+                throw ImportDeferred.pageLimit
+            }
         }
         try store.setValue(queriedAt.wire, for: "last_query_\(type.rawValue)")
+        // The generation's first full drain is its scan (Step 9-13 plan section 3B).
+        try store.enqueueScan(type: type, generation: try predicateVersion(type), scopeStart: lower, now: through)
         totals.coverageQueued = try store.enqueueCoverage(
-            .init(domain: type.domain, timezone: deviceZone(), start: lower, end: queriedAt,
+            .init(domain: type.domain, timezone: deviceZone(), start: lower, end: through,
                   status: try store.value("recovery_\(type.rawValue)") == nil ? "complete" : "unavailable"), now: queriedAt)
+        // On-device coverage: a full drain of the current generation has seen
+        // everything visible up to `through`. (A new generation clears it.)
+        try store.setValue(through.wire, for: "covered_through_\(type.rawValue)")
+        try store.setValue(try predicateVersion(type), for: "covered_generation_\(type.rawValue)")
+        // Once every type's current generation has been fully re-read, the
+        // phone has reconciled; a server (if used) is told by the scan upload.
+        if try store.value("last_anchor_recovery")?.hasPrefix("Incomplete") == true,
+           try SampleType.allCases.allSatisfy({ try store.value("covered_through_\($0.rawValue)") != nil }) {
+            try store.setValue("Reconciled on this iPhone", for: "last_anchor_recovery")
+        }
     }
 
     /// Refreshes cumulative step history: the whole import window (`full`) or
     /// just yesterday and today. Only changed totals are enqueued.
     @discardableResult
-    public func refreshSteps(full: Bool) async throws -> Int {
+    public func refreshSteps(full: Bool, through: Instant? = nil) async throws -> Int {
+        let requestedThrough = through ?? clock()
+        if let stepsTask {
+            let id = stepsTaskID
+            let matches = stepsThrough == requestedThrough && (stepsFull || !full)
+            let count = try await join(stepsTask)
+            if matches { return count }
+            try Task.checkCancellation()
+            if stepsTaskID == id { self.stepsTask = nil }
+            return try await refreshSteps(full: full, through: requestedThrough)
+        }
+        let id = UUID()
+        stepsTaskID = id; stepsThrough = requestedThrough; stepsFull = full
+        let task = Task { try await self.refreshStepsOnce(full: full, through: requestedThrough) }
+        stepsTask = task
+        defer { if stepsTaskID == id { stepsTask = nil } }
+        return try await join(task)
+    }
+
+    private func refreshStepsOnce(full: Bool, through: Instant) async throws -> Int {
         let zoneID = deviceZone()
         guard let zone = Zone(zoneID) else { return 0 }
-        let now = clock()
-        let lower = try lowerBound()
+        let now = through
         let today = zone.day(of: now)
-        var day = full ? zone.day(of: lower) : zone.adding(days: -1, to: today)
+        var day = full ? try stepHistoryStart(today: today, zone: zone) : zone.adding(days: -1, to: today)
         var perDay: [(LocalDay, [HourlyBucket])] = []
         while day <= today {
+            try Task.checkCancellation()
             let start = zone.start(of: day)
             let end = min(now, zone.start(of: zone.adding(days: 1, to: day)))
             perDay.append((day, try await source.hourlySteps(from: start, to: end, zone: zoneID)))
             day = zone.adding(days: 1, to: day)
         }
+        try Task.checkCancellation()
         let queriedAt = clock()
         let snapshots = perDay.flatMap { day, buckets in
             stepSnapshots(day: day, zone: zone, buckets: buckets, through: min(now, zone.start(of: zone.adding(days: 1, to: day))),
                           queriedAt: queriedAt)
         }
         let coverageStart = zone.start(of: perDay.first!.0)
-        return try store.commitSnapshots(
+        let added = try store.commitSnapshots(
             snapshots, coverage: .init(domain: .movement, timezone: zoneID, start: coverageStart, end: now),
             now: queriedAt, fullRefreshDay: full ? "\(zoneID)|\(today.description)" : nil)
+        try store.setValue(now.wire, for: "covered_through_steps")
+        return added
     }
 
     /// Foreground/launch catch-up: every type, plus steps (the whole window once
     /// per local day, otherwise yesterday and today). Returns per-part errors.
-    public func catchUp() async -> [String: String] {
+    public enum ImportDeferred: Error { case pageLimit }
+
+    public func catchUp(repairHistory: Bool = true) async -> [String: String] {
+        if let cycleTask {
+            cycleAgain = true
+            try? store.setValue("pending", for: "import_deferred")
+            return (try? await join(cycleTask)) ?? ["cycle": "cancelled"]
+        }
+        let task = Task<[String: String], Error> {
+            var errors: [String: String] = [:]
+            for pass in 0..<2 {
+                self.cycleAgain = false
+                errors = await self.currentCycle(repairHistory: repairHistory && pass == 0)
+                if Task.isCancelled || !self.cycleAgain { break }
+            }
+            if self.cycleAgain { try? self.store.setValue("pending", for: "import_deferred") }
+            return errors
+        }
+        cycleTask = task
+        defer { cycleTask = nil }
+        return (try? await join(task)) ?? ["cycle": "cancelled"]
+    }
+
+    /// Callers share one import. A cancelled caller keeps waiting for the shared
+    /// result, and the import stops only once every caller is cancelled, so a
+    /// background task's expiry can't cancel a foreground Sync.
+    private func join<T: Sendable>(_ task: Task<T, Error>) async throws -> T {
+        sharedWaiters[task, default: (0, 0)].waiting += 1
+        defer { sharedWaiters[task] = nil }  // it has finished; later cancellations are moot
+        return try await withTaskCancellationHandler { try await task.value } onCancel: {
+            Task { await self.waiterCancelled(task) }
+        }
+    }
+
+    private func waiterCancelled<T>(_ task: Task<T, Error>) {
+        guard var counts = sharedWaiters[task] else { return }
+        counts.cancelled += 1
+        sharedWaiters[task] = counts
+        if counts.cancelled >= counts.waiting { task.cancel() }
+    }
+
+    private func currentCycle(repairHistory: Bool) async -> [String: String] {
+        let through = clock()
         var errors: [String: String] = [:]
-        do { try store.reprocessQuarantine(normalizer: Normalizer(deviceZone: deviceZone()), now: clock()) }
-        catch { errors["quarantine"] = String(describing: error) }
+        try? store.setValue("pending", for: "import_deferred")
+        do { try store.reprocessQuarantine(normalizer: Normalizer(deviceZone: deviceZone()), now: through) }
+        catch { errors["quarantine"] = "local_store" }
         for type in SampleType.allCases {
-            do { _ = try await drain(type) } catch { errors[type.rawValue] = String(describing: error) }
+            if Task.isCancelled { errors["cycle"] = "cancelled"; break }
+            do { _ = try await drain(type, through: through, maxPages: 20) }
+            catch { errors[type.rawValue] = "\((error as NSError).domain):\((error as NSError).code)" }
         }
-        do {
-            let zone = Zone(deviceZone()) ?? Zone("UTC")!
-            let full = try store.value("steps_full_refresh_day") != "\(zone.identifier)|\(zone.day(of: clock()).description)"
-            try await refreshSteps(full: full)
-        } catch {
-            errors["steps"] = String(describing: error)
+        if repairHistory && !Task.isCancelled {
+            do { try await repairStepHistory(through: through, maxDays: 7) }
+            catch { errors["history"] = "\((error as NSError).domain):\((error as NSError).code)" }
         }
+        if !Task.isCancelled {
+            do { try await refreshSteps(full: false, through: through) }
+            catch { errors["steps"] = "\((error as NSError).domain):\((error as NSError).code)" }
+        } else { errors["cycle"] = "cancelled" }
+        try? store.setValue(errors.isEmpty ? nil : "pending", for: "import_deferred")
+        try? store.setValue(through.wire, for: "last_import_cycle")
+        let encoded = try? JSONEncoder().encode(errors)
+        try? store.setValue(encoded.flatMap { String(data: $0, encoding: .utf8) }, for: "import_errors")
         return errors
+    }
+
+    /// Step re-reads go back as far as the first import did. The import lower
+    /// bound never moves, so reading from it would grow by a day every day.
+    func stepHistoryStart(today: LocalDay, zone: Zone) throws -> LocalDay {
+        max(zone.day(of: try lowerBound()), zone.adding(days: -(lookbackDays + 1), to: today))
+    }
+
+    /// History repairs checkpoint each day and resume after interruption. The
+    /// current-day query always follows so historical coverage cannot pin now.
+    private func repairStepHistory(through: Instant, maxDays: Int) async throws {
+        let zone = Zone(deviceZone()) ?? Zone("UTC")!
+        let today = zone.day(of: through)
+        let marker = "\(zone.identifier)|\(today.description)"
+        if try store.value("steps_full_refresh_day") == marker { return }
+        let cursorKey = "steps_history_cursor_\(zone.identifier)"
+        let first = try stepHistoryStart(today: today, zone: zone)
+        var day = max(try store.value(cursorKey).flatMap(LocalDay.init) ?? first, first)
+        for _ in 0..<maxDays {
+            try Task.checkCancellation()
+            guard day < today else {
+                try store.setValue(marker, for: "steps_full_refresh_day")
+                try store.setValue(nil, for: cursorKey)
+                return
+            }
+            let start = zone.start(of: day)
+            let end = zone.start(of: zone.adding(days: 1, to: day))
+            let buckets = try await source.hourlySteps(from: start, to: end, zone: zone.identifier)
+            try Task.checkCancellation()
+            let queried = clock()
+            _ = try store.commitSnapshots(stepSnapshots(day: day, zone: zone, buckets: buckets, through: end, queriedAt: queried),
+                coverage: .init(domain: .movement, timezone: zone.identifier, start: start, end: end), now: queried)
+            day = zone.adding(days: 1, to: day)
+            try store.setValue(day.description, for: cursorKey)
+        }
     }
 }

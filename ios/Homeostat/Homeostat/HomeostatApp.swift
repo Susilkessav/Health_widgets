@@ -3,29 +3,30 @@ import SwiftUI
 
 @main
 struct HomeostatApp: App {
-    @StateObject private var model = AppModel()
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var delegate
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some Scene {
         WindowGroup {
             DebugView()
-                .environmentObject(model)
+                .environmentObject(delegate.model)
                 .task {
-                    model.setForeground(scenePhase == .active)
-                    // Observers are registered early on launch once access was requested.
-                    if model.snapshot.ledger.contains(where: { $0.status == "requested" }) || model.isConfigured {
-                        model.refresh()
-                        if model.snapshot.ledger.contains(where: { $0.status == "requested" }) {
-                            model.registerObservers()
-                        }
+                    delegate.model.setForeground(scenePhase == .active)
+                    if scenePhase == .active, delegate.model.snapshot.ledger.contains(where: { $0.status == "requested" }) {
+                        await delegate.model.foregroundCatchUp()
                     }
+                }
+                .onOpenURL { url in
+                    if url.host() == "explain" { delegate.model.openExplanation() }
                 }
         }
         .onChange(of: scenePhase) { _, phase in
-            model.setForeground(phase == .active)
+            delegate.model.setForeground(phase == .active)
             // Foreground catch-up is the guaranteed path; background delivery is best effort.
-            if phase == .active, model.snapshot.ledger.contains(where: { $0.status == "requested" }) {
-                Task { await model.catchUp() }
+            guard phase == .active else { return }
+            delegate.model.publishWidget(foreground: true)
+            if delegate.model.snapshot.ledger.contains(where: { $0.status == "requested" }) {
+                Task { await delegate.model.foregroundCatchUp() }
             }
         }
     }

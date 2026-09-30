@@ -12,6 +12,7 @@
 		6CE0107130638A0A00DF579A /* HomeostatWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6CE0106130638A0800DF579A /* HomeostatWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6CE0107D3063947C00DF579A /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 6CE0107C3063947C00DF579A /* GRDB */; };
 		6CE0109000000000000000A3 /* HomeostatCore in Frameworks */ = {isa = PBXBuildFile; productRef = 6CE0109000000000000000A2 /* HomeostatCore */; };
+		6CE0109000000000000000A5 /* HomeostatShared in Frameworks */ = {isa = PBXBuildFile; productRef = 6CE0109000000000000000A4 /* HomeostatShared */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,11 +53,21 @@
 			);
 			target = 6CE0106030638A0800DF579A /* HomeostatWidgetExtension */;
 		};
+		6CE0109000000000000000A6 /* Exceptions for "Homeostat" folder in "Homeostat" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 6CE0104E3063888E00DF579A /* Homeostat */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		6CE010513063888E00DF579A /* Homeostat */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				6CE0109000000000000000A6 /* Exceptions for "Homeostat" folder in "Homeostat" target */,
+			);
 			path = Homeostat;
 			sourceTree = "<group>";
 		};
@@ -83,6 +94,7 @@
 			files = (
 				6CE0106630638A0800DF579A /* SwiftUI.framework in Frameworks */,
 				6CE0106430638A0800DF579A /* WidgetKit.framework in Frameworks */,
+				6CE0109000000000000000A5 /* HomeostatShared in Frameworks */,
 			);
 		};
 /* End PBXFrameworksBuildPhase section */
@@ -160,6 +172,9 @@
 				6CE0106730638A0800DF579A /* HomeostatWidget */,
 			);
 			name = HomeostatWidgetExtension;
+			packageProductDependencies = (
+				6CE0109000000000000000A4 /* HomeostatShared */,
+			);
 			productName = HomeostatWidgetExtension;
 			productReference = 6CE0106130638A0800DF579A /* HomeostatWidgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -373,6 +388,7 @@
 				DEVELOPMENT_TEAM = 9PCD962NB9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Homeostat/Info.plist;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "Homeostat reads your sleep, steps, heart rate, HRV and workouts to show how your day compares to your personal baseline.";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Homeostat connects to your development server on the local network.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -410,6 +426,7 @@
 				DEVELOPMENT_TEAM = 9PCD962NB9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Homeostat/Info.plist;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "Homeostat reads your sleep, steps, heart rate, HRV and workouts to show how your day compares to your personal baseline.";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Homeostat connects to your development server on the local network.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -556,6 +573,10 @@
 		6CE0109000000000000000A2 /* HomeostatCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = HomeostatCore;
+		};
+		6CE0109000000000000000A4 /* HomeostatShared */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = HomeostatShared;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -110,6 +110,70 @@ public final class LocalStore: Sendable {
             // The old refresh flag was not committed atomically. Revalidate it.
             try db.execute(sql: "DELETE FROM sync_state WHERE key = 'steps_full_refresh_day'")
         }
+        migrator.registerMigration("v3_visibility_scans") { db in
+            try db.execute(sql: """
+                CREATE TABLE generation_members (
+                    type TEXT NOT NULL, generation TEXT NOT NULL, source_record_id TEXT NOT NULL,
+                    PRIMARY KEY (type, generation, source_record_id));
+                CREATE TABLE visibility_outbox (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT NOT NULL, generation TEXT NOT NULL,
+                    generation_number TEXT NOT NULL, scan_id TEXT NOT NULL UNIQUE, scope_start_at TEXT NOT NULL,
+                    state TEXT NOT NULL DEFAULT 'pending'
+                        CHECK (state IN ('pending', 'assigned', 'acknowledged', 'superseded', 'withheld')),
+                    request_id TEXT, created_at TEXT NOT NULL, UNIQUE (type, generation));
+                ALTER TABLE upload_requests ADD COLUMN visibility_ids TEXT NOT NULL DEFAULT '';
+                """)
+            // Earlier generations recorded no membership. Start new ones, so the
+            // next drain re-reads every visible record (duplicates aren't re-sent)
+            // and its scan lists them all.
+            if try Bool.fetchOne(db, sql: "SELECT 1 FROM query_anchors LIMIT 1") ?? false {
+                for type in SampleType.allCases { try LocalStore.newGeneration(type, in: db) }
+            }
+        }
+        migrator.registerMigration("v4_installation_visibility") { db in
+            try db.execute(sql: "ALTER TABLE visibility_outbox ADD COLUMN scope_end_at TEXT")
+            try LocalStore.set(UUID().uuidString.lowercased(), "installation_id", in: db)
+            // Re-deliver locally known provider versions under this installation.
+            // Existing immutable requests and their receipt IDs remain untouched.
+            for row in try Row.fetchAll(db, sql: """
+                SELECT e.domain, e.body FROM provider_records p JOIN event_outbox e
+                ON e.client_event_id = p.client_event_id ORDER BY e.id
+                """) {
+                let body: Data = row["body"]
+                guard case .object(var fields) = try JSONDecoder().decode(JSONValue.self, from: body) else { continue }
+                let id = UUID().uuidString.lowercased()
+                fields["event_id"] = .string(id)
+                try db.execute(sql: """
+                    INSERT INTO event_outbox (client_event_id, domain, event_type, body, created_at)
+                    VALUES (?, ?, ?, ?, ?)
+                    """, arguments: [id, row["domain"] as String, fields["event_type"]!.string!,
+                                     JSONValue.object(fields).encoded(), Instant(Date()).wire])
+            }
+            if try Bool.fetchOne(db, sql: "SELECT 1 FROM query_anchors LIMIT 1") ?? false {
+                let now = Instant(Date())
+                let lower = try String.fetchOne(db, sql: "SELECT value FROM sync_state WHERE key = 'import_lower_bound'")
+                    .flatMap(Instant.parse)
+                for type in SampleType.allCases {
+                    try LocalStore.newGeneration(type, in: db)
+                    try LocalStore.set("incomplete", "recovery_\(type.rawValue)", in: db)
+                    if let lower, lower < now {
+                        _ = try LocalStore.enqueueCoverage(.init(domain: type.domain, timezone: "UTC", start: lower,
+                                                                 end: now, status: "unavailable"), now: now, in: db)
+                    }
+                }
+                try LocalStore.set("Incomplete: upgrading installation visibility", "last_anchor_recovery", in: db)
+            }
+        }
+        migrator.registerMigration("v5_release_dead_letter_scans") { db in
+            // Dead letters used to withhold scans forever, pinning recovery. Only
+            // the current generation's scan is still accurate enough to send.
+            for type in SampleType.allCases {
+                try db.execute(sql: """
+                    UPDATE visibility_outbox SET state = 'pending'
+                    WHERE type = ? AND state = 'withheld' AND generation_number = ? AND scope_end_at IS NOT NULL
+                    """, arguments: [type.rawValue, try LocalStore.generation(type, in: db)])
+            }
+        }
         return migrator
     }
 
@@ -221,6 +285,16 @@ public final class LocalStore: Sendable {
                 try LocalStore.insertOutbox(event, domain: domain, now: now, in: db)
                 result.deletions += 1
             }
+            // Membership of this generation's scan: everything the query returned,
+            // including duplicates and quarantined samples, minus deletions.
+            for sample in samples {
+                try db.execute(sql: "INSERT OR IGNORE INTO generation_members VALUES (?, ?, ?)",
+                               arguments: [type, predicateVersion, sample.uuid.uuidString.lowercased()])
+            }
+            for uuid in deleted {
+                try db.execute(sql: "DELETE FROM generation_members WHERE type = ? AND generation = ? AND source_record_id = ?",
+                               arguments: [type, predicateVersion, uuid.uuidString.lowercased()])
+            }
             if !samples.isEmpty {
                 try db.execute(sql: """
                     INSERT INTO authorization_ledger (type, status, first_visible_at, last_visible_at)
@@ -277,13 +351,27 @@ public final class LocalStore: Sendable {
         }
     }
 
+    static func generation(_ type: SampleType, in db: Database) throws -> String {
+        try String.fetchOne(db, sql: "SELECT value FROM sync_state WHERE key = ?",
+                            arguments: ["query_generation_\(type.rawValue)"])
+            ?? String.fetchOne(db, sql: "SELECT value FROM sync_state WHERE key = 'query_generation'") ?? "1"
+    }
+
+    /// A new query generation re-reads from no anchor. Its unsent scan of the
+    /// old generation is dropped: only the new, complete scan may be sent.
+    static func newGeneration(_ type: SampleType, in db: Database) throws {
+        let old = try generation(type, in: db)
+        try LocalStore.set(String((Int(old) ?? 1) + 1), "query_generation_\(type.rawValue)", in: db)
+        try db.execute(sql: "UPDATE visibility_outbox SET state = 'superseded' WHERE type = ? AND state = 'pending'",
+                       arguments: [type.rawValue])
+        // The new generation hasn't seen everything yet: unknown, not complete.
+        try LocalStore.set(nil, "covered_through_\(type.rawValue)", in: db)
+    }
+
     /// Invalidates the affected domain immediately, even if the fresh query fails.
     public func beginAnchorRecovery(type: SampleType, lower: Instant, zone: String, now: Instant) throws {
         try db.write { db in
-            let key = "query_generation_\(type.rawValue)"
-            let old = try String.fetchOne(db, sql: "SELECT value FROM sync_state WHERE key = ?", arguments: [key])
-                ?? String.fetchOne(db, sql: "SELECT value FROM sync_state WHERE key = 'query_generation'") ?? "1"
-            try LocalStore.set(String((Int(old) ?? 1) + 1), key, in: db)
+            try LocalStore.newGeneration(type, in: db)
             try LocalStore.set("incomplete", "recovery_\(type.rawValue)", in: db)
             try LocalStore.set("Incomplete: \(type.rawValue) at \(now.wire); deletion reconciliation required",
                                "last_anchor_recovery", in: db)
@@ -381,11 +469,31 @@ public final class LocalStore: Sendable {
         return true
     }
 
+    // MARK: - Visibility scans (Step 9-13 plan section 3B)
+
+    /// Queues the scan of a generation once its first full drain has finished.
+    /// Its members are read when the request is built, so records added later
+    /// in the same generation are listed too. Returns whether it was queued.
+    @discardableResult
+    public func enqueueScan(type: SampleType, generation: String, scopeStart: Instant, now: Instant,
+                            makeID: () -> UUID = UUID.init) throws -> Bool {
+        try db.write { db in
+            if try Bool.fetchOne(db, sql: "SELECT 1 FROM visibility_outbox WHERE type = ? AND generation = ?",
+                                 arguments: [type.rawValue, generation]) ?? false { return false }
+            try db.execute(sql: """
+                INSERT INTO visibility_outbox (type, generation, generation_number, scan_id, scope_start_at, scope_end_at, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+                """, arguments: [type.rawValue, generation, try LocalStore.generation(type, in: db),
+                                 makeID().uuidString.lowercased(), scopeStart.wire, now.wire, now.wire])
+            return true
+        }
+    }
+
     // MARK: - Counts for the debug screen
 
     public struct Counts: Equatable, Sendable {
         public var pending = 0, assigned = 0, acknowledged = 0, conflict = 0, deadLetter = 0
-        public var quarantined = 0, coveragePending = 0, coverageWithheld = 0, openRequests = 0
+        public var quarantined = 0, coveragePending = 0, coverageWithheld = 0, openRequests = 0, scansPending = 0
         public init() {}
     }
 
@@ -407,6 +515,8 @@ public final class LocalStore: Sendable {
                 db, sql: "SELECT COUNT(*) FROM coverage_outbox WHERE state IN ('pending', 'assigned')") ?? 0
             counts.coverageWithheld = try Int.fetchOne(
                 db, sql: "SELECT COUNT(*) FROM coverage_outbox WHERE state = 'withheld'") ?? 0
+            counts.scansPending = try Int.fetchOne(
+                db, sql: "SELECT COUNT(*) FROM visibility_outbox WHERE state IN ('pending', 'assigned')") ?? 0
             counts.openRequests = try Int.fetchOne(
                 db, sql: "SELECT COUNT(*) FROM upload_requests WHERE state IN ('pending', 'paused', 'quarantined')") ?? 0
             return counts

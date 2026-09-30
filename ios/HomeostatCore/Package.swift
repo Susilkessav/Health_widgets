@@ -7,13 +7,20 @@ import PackageDescription
 let package = Package(
     name: "HomeostatCore",
     platforms: [.iOS(.v17), .macOS(.v14)],
-    products: [.library(name: "HomeostatCore", targets: ["HomeostatCore"])],
+    products: [
+        .library(name: "HomeostatCore", targets: ["HomeostatCore"]),
+        // For the widget extension: WidgetState, the App Group cache and the
+        // display policy. No GRDB, no queue, no health payloads.
+        .library(name: "HomeostatShared", targets: ["HomeostatShared"]),
+    ],
     dependencies: [.package(url: "https://github.com/groue/GRDB.swift", from: "7.0.0")],
     targets: [
-        .target(name: "HomeostatCore", dependencies: [.product(name: "GRDB", package: "GRDB.swift")]),
+        .target(name: "HomeostatShared"),
+        .target(name: "HomeostatCore", dependencies: ["HomeostatShared", .product(name: "GRDB", package: "GRDB.swift")]),
         // Fixtures are read from the source tree (see TestSupport.swift) so the
         // cross-language golden files can be regenerated in place.
         .testTarget(name: "HomeostatCoreTests", dependencies: ["HomeostatCore"], exclude: ["Fixtures"]),
+        .testTarget(name: "HomeostatSharedTests", dependencies: ["HomeostatShared"]),
     ],
     swiftLanguageModes: [.v5]
 )

@@ -54,36 +54,6 @@ public struct StateBlock: Codable, Hashable, Sendable {
     }
 }
 
-/// The widget payload (backend `widget_state.py`).
-public struct WidgetState: Codable, Hashable, Sendable {
-    public var version: String
-    public var effectiveAt: Instant
-    public var presentation: Presentation
-    public var primaryTrait: PrimaryTrait
-    public var freshness: Freshness
-
-    public struct Presentation: Codable, Hashable, Sendable {
-        public var icon: String
-        public var headline: String
-        public var detail: String?
-        public var secondary: String?
-    }
-
-    public struct PrimaryTrait: Codable, Hashable, Sendable {
-        public var id: String
-        public var explainable: Bool
-    }
-
-    public struct Freshness: Codable, Hashable, Sendable {
-        public var lastUpdatedAt: Instant
-        enum CodingKeys: String, CodingKey { case lastUpdatedAt = "last_updated_at" }
-    }
-
-    enum CodingKeys: String, CodingKey {
-        case version, effectiveAt = "effective_at", presentation, primaryTrait = "primary_trait", freshness
-    }
-}
-
 /// `GET /v1/state/current`.
 public struct ReturnedState: Codable, Hashable, Sendable {
     public var day: String

@@ -6,7 +6,7 @@ import XCTest
 final class SyncEngineTests: XCTestCase {
     var store: LocalStore!
     var clock: TestClock!
-    let config = BackendConfig(baseURL: URL(string: "http://localhost:8000")!, apiKey: "test-key")
+    let config = BackendConfig(baseURL: URL(string: "http://localhost:8000")!, deviceToken: "test-key")
 
     override func setUpWithError() throws {
         store = try LocalStore(path: nil)
@@ -47,7 +47,7 @@ final class SyncEngineTests: XCTestCase {
         let outcome = await engine(transport).syncOnce()
         guard case .sent(_, "published") = outcome else { return XCTFail("\(outcome)") }
         XCTAssertEqual(try states(), ["acknowledged", "acknowledged", "acknowledged"])
-        XCTAssertEqual(transport.requests.first?.value(forHTTPHeaderField: "X-Homeostat-Key"), "test-key")
+        XCTAssertEqual(transport.requests.first?.value(forHTTPHeaderField: "Authorization"), "Bearer test-key")
         let second = await engine(transport).syncOnce()
         XCTAssertEqual(second, .idle)
     }
@@ -201,4 +201,59 @@ final class SyncEngineTests: XCTestCase {
         let none = await engine(FakeTransport { _ in (404, Data(#"{"code":"NO_STATE_YET"}"#.utf8), [:]) }).refreshState()
         XCTAssertEqual(none, .noStateYet)
     }
+
+    func testAnOldDeadLetterNoLongerPinsRecovery() async throws {
+        let lower = instant("2026-08-17T05:00:00Z")
+        let rejected = sample(.hrvSDNN(milliseconds: 40), start: "2026-09-01T10:00:00Z", end: "2026-09-01T10:01:00Z")
+        _ = try store.commitPage(type: "hrv", domain: .hrv, predicateVersion: "g1", samples: [rejected], deleted: [],
+                                 newAnchor: Data([1]), normalizer: Normalizer(deviceZone: CHICAGO), now: NOW)
+        try sql("UPDATE event_outbox SET state = 'dead_letter'")
+        try store.beginAnchorRecovery(type: .hrv, lower: lower, zone: CHICAGO, now: NOW)
+        try store.enqueueScan(type: .hrv, generation: "g2", scopeStart: lower, now: NOW)
+
+        let transport = FakeTransport(acceptingServer())
+        _ = await engine(transport).syncAll()
+
+        XCTAssertNil(try store.value("recovery_hrv"))
+        let sent = try transport.bodies.map { try JSONDecoder().decode(JSONValue.self, from: $0) }
+        XCTAssertTrue(sent.contains { $0["visibility"] != nil })
+        // The coverage the scan unlocks is sent, starting after the rejected sample.
+        let complete = sent.flatMap { body -> [JSONValue] in
+            guard case .array(let items)? = body["coverage"] else { return [] }
+            return items.filter { $0["status"]?.string == "complete" }
+        }
+        XCTAssertEqual(complete.map { $0["start_at"]?.string }, [rejected.end.wire])
+        XCTAssertEqual(try count("SELECT COUNT(*) FROM coverage_outbox WHERE state = 'withheld'"), 0)
+    }
+
+    func testAScanReplacedWhileInFlightIsNotSentBesideItsReplacement() async throws {
+        let lower = instant("2026-08-17T05:00:00Z")
+        try store.enqueueScan(type: .hrv, generation: "g1", scopeStart: lower, now: NOW)
+        // A second item, so the 413 split requeues the scan instead of withholding it.
+        try store.enqueueCoverage(.init(domain: .sleep, timezone: CHICAGO, start: lower, end: NOW), now: NOW)
+        var first = true
+        let accept = acceptingServer()
+        let transport = FakeTransport { request in
+            if first {
+                first = false
+                // While the g1 scan is in flight, the anchor is lost and g2 completes.
+                try self.store.beginAnchorRecovery(type: .hrv, lower: lower, zone: CHICAGO, now: NOW)
+                try self.store.enqueueScan(type: .hrv, generation: "g2", scopeStart: lower, now: NOW)
+                return (413, Data(), [:])
+            }
+            return try await accept(request)
+        }
+        _ = await engine(transport).syncAll()
+
+        let scans = try transport.bodies.dropFirst().map { body -> Int in
+            guard case .array(let items)? = try JSONDecoder().decode(JSONValue.self, from: body)["visibility"] else { return 0 }
+            return items.count
+        }
+        XCTAssertEqual(scans.reduce(0, +), 1)  // only g2, never both in one request (the server rejects that)
+        XCTAssertEqual(try count("SELECT COUNT(*) FROM visibility_outbox WHERE generation = 'g1' AND state = 'superseded'"), 1)
+        XCTAssertNil(try store.value("recovery_hrv"))
+    }
+
+    func sql(_ statement: String) throws { try store.db.write { try $0.execute(sql: statement) } }
+    func count(_ query: String) throws -> Int? { try store.db.read { try Int.fetchOne($0, sql: query) } }
 }
