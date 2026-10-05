@@ -515,7 +515,7 @@ final class AppModel: ObservableObject {
                     let generation = self.uploadGeneration
                     // Acquire the allowance before releasing HealthKit's wake.
                     let work = Task { @MainActor in await self.handleObserverUpdate(type) }
-                    let allowance = UIApplication.shared.beginBackgroundTask(withName: "homeostat.import") { [weak self] in
+                    let allowance = BackgroundAllowance("homeostat.import") { [weak self] in
                         work.cancel()
                         if self?.uploadGeneration == generation { self?.backgroundRunner.cancel() }
                     }
@@ -528,7 +528,7 @@ final class AppModel: ObservableObject {
                     completion()
                     if !work.isCancelled, generation == self.uploadGeneration { await self.syncAfterChange() }
                     deadline.cancel()
-                    if allowance != .invalid { UIApplication.shared.endBackgroundTask(allowance) }
+                    allowance.end()
                 }
             }
             healthStore.execute(query)
@@ -593,11 +593,9 @@ final class AppModel: ObservableObject {
     func backgroundSync() async -> Bool {
         guard uploadEnabled, let syncer, !Task.isCancelled else { return false }
         let generation = uploadGeneration
-        let taskID = UIApplication.shared.beginBackgroundTask(withName: "homeostat.sync") { [weak self] in
-            Task { @MainActor in
-                guard let self, self.uploadGeneration == generation else { return }
-                self.backgroundRunner.cancel()
-            }
+        let allowance = BackgroundAllowance("homeostat.sync") { [weak self] in
+            guard let self, self.uploadGeneration == generation else { return }
+            self.backgroundRunner.cancel()
         }
         let completed = await backgroundRunner.run(client: syncer) { [weak self] in
             guard let self, self.uploadEnabled, self.uploadGeneration == generation else { return }
@@ -605,7 +603,7 @@ final class AppModel: ObservableObject {
             self.publishWidget(foreground: false)
         }
         if uploadGeneration == generation { scheduleRefresh() }
-        if taskID != .invalid { UIApplication.shared.endBackgroundTask(taskID) }
+        allowance.end()
         return completed
     }
 
@@ -730,5 +728,29 @@ final class AppModel: ObservableObject {
         }
         refresh()
         publishWidget(foreground: UIApplication.shared.applicationState == .active)
+    }
+}
+
+/// Background time from iOS, released exactly once: when the work ends, or
+/// when iOS says time is up. Holding it past expiry gets the app terminated,
+/// and work that is still finishing (a shared import) mustn't delay that.
+@MainActor
+final class BackgroundAllowance {
+    private var id = UIBackgroundTaskIdentifier.invalid
+
+    init(_ name: String, onExpiry: @escaping @MainActor () -> Void) {
+        id = UIApplication.shared.beginBackgroundTask(withName: name) { [weak self] in
+            // UIKit calls this on the main thread.
+            MainActor.assumeIsolated {
+                onExpiry()
+                self?.end()
+            }
+        }
+    }
+
+    func end() {
+        guard id != .invalid else { return }
+        UIApplication.shared.endBackgroundTask(id)
+        id = .invalid
     }
 }
