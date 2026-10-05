@@ -9,6 +9,7 @@ from typing import Literal
 from pydantic import AwareDatetime
 
 from app.contracts._types import Frozen, NonEmptyStr
+from app.contracts.avatar_state import AvatarState
 
 
 class Presentation(Frozen):
@@ -28,9 +29,11 @@ class Freshness(Frozen):
 
 
 class WidgetState(Frozen):
-    version: Literal["widget-state@0.1.0"] = "widget-state@0.1.0"
+    # 0.2.0 adds `avatar` (G2). The widget still reads 0.1.x caches.
+    version: Literal["widget-state@0.2.0"] = "widget-state@0.2.0"
     effective_at: AwareDatetime
 
     presentation: Presentation
     primary_trait: PrimaryTrait
     freshness: Freshness
+    avatar: AvatarState

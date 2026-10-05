@@ -779,6 +779,18 @@ def widget_state(**overrides) -> dict:
                          "secondary": "Strength workout completed recently"},
         "primary_trait": {"id": "sleep", "explainable": True},
         "freshness": {"last_updated_at": NOW},
+        "avatar": avatar_state(),
+        **overrides,
+    }
+
+
+def avatar_state(**overrides) -> dict:
+    return {
+        "eyes": "tired", "eyes_intensity": 0.6, "posture": "neutral", "motion": "typical",
+        "activity": "strength", "uncertainty": "none",
+        "effects": [{"kind": "sweat", "peak": 0.9, "started_at": NOW, "half_life_minutes": 20},
+                    {"kind": "glow", "peak": 0.9, "started_at": NOW, "half_life_minutes": 160}],
+        "evidence": {"eyes": ["sleep_duration"], "workout": ["last_workout"]},
         **overrides,
     }
 
@@ -795,6 +807,27 @@ def test_widget_state_validates_and_round_trips():
         {"presentation": {"icon": " ", "headline": "Shorter sleep"}},
         {"primary_trait": {"id": "", "explainable": True}},
         {"freshness": {"last_updated_at": datetime(2026, 9, 22, 13, 20)}},
+        {"version": "widget-state@0.1.0"},
+        {"avatar": None},
+        {"avatar": avatar_state(eyes="neutral")},                         # neutral eyes have intensity 0
+        {"avatar": avatar_state(eyes="tired", eyes_intensity=0)},
+        {"avatar": avatar_state(eyes_intensity=1.5)},
+        {"avatar": avatar_state(activity="none")},                         # glow needs an activity
+        {"avatar": avatar_state(effects=[])},                              # activity needs a glow
+        {"avatar": avatar_state(posture="slumped")},
+        {"avatar": avatar_state(effects=[{"kind": "glow", "peak": 1, "started_at": NOW, "half_life_minutes": 0}])},
+        {"avatar": avatar_state(effects=[{"kind": "glow", "peak": 1, "started_at": NOW, "half_life_minutes": 0.5}])},
+        {"avatar": avatar_state(effects=[{"kind": "glow", "peak": 1, "started_at": NOW, "half_life_minutes": 10_081}])},
+        {"avatar": avatar_state(effects=[{"kind": "glow", "peak": 1, "started_at": datetime(2026, 9, 22, 13),
+                                          "half_life_minutes": 360}])},  # naive time
+        {"avatar": {**avatar_state(), "identity": {"hair": "black"}}},     # appearance never enters
+        {"avatar": avatar_state(evidence={"workout": ["last_workout"]})},   # tired eyes need their reading
+        {"avatar": avatar_state(evidence={"eyes": ["sleep_duration"], "workout": ["last_workout"],
+                                          "posture": ["resting_hr"]})},     # neutral posture has none
+        {"avatar": avatar_state(evidence={"eyes": [""], "workout": ["last_workout"]})},
+        {"avatar": avatar_state(missing_inputs=["hrv", "sleep"])},          # fixed order
+        {"avatar": avatar_state(missing_inputs=["hrv", "hrv"])},
+        {"avatar": avatar_state(missing_inputs=["steps"])},
     ],
 )
 def test_widget_state_rejects(overrides):

@@ -666,6 +666,25 @@
       "is_today": true,
       "run_id": 37,
       "widget_state": {
+        "avatar": {
+          "activity": "none",
+          "effects": [],
+          "evidence": {
+            "eyes": [],
+            "motion": [],
+            "posture": [],
+            "workout": []
+          },
+          "eyes": "neutral",
+          "eyes_intensity": 0.0,
+          "missing_inputs": [
+            "hrv"
+          ],
+          "motion": "typical",
+          "posture": "neutral",
+          "uncertainty": "calibrating",
+          "version": "avatar-state@0.1.0"
+        },
         "effective_at": "2026-09-22T18:00:00Z",
         "freshness": {
           "last_updated_at": "2026-09-22T18:00:00Z"
@@ -680,7 +699,7 @@
           "explainable": false,
           "id": "calibration"
         },
-        "version": "widget-state@0.1.0"
+        "version": "widget-state@0.2.0"
       }
     },
     "status": 200
@@ -825,6 +844,25 @@
         "run_id": 37,
         "status": "published",
         "widget_state": {
+          "avatar": {
+            "activity": "none",
+            "effects": [],
+            "evidence": {
+              "eyes": [],
+              "motion": [],
+              "posture": [],
+              "workout": []
+            },
+            "eyes": "neutral",
+            "eyes_intensity": 0.0,
+            "missing_inputs": [
+              "hrv"
+            ],
+            "motion": "typical",
+            "posture": "neutral",
+            "uncertainty": "calibrating",
+            "version": "avatar-state@0.1.0"
+          },
           "effective_at": "2026-09-22T18:00:00Z",
           "freshness": {
             "last_updated_at": "2026-09-22T18:00:00Z"
@@ -839,7 +877,7 @@
             "explainable": false,
             "id": "calibration"
           },
-          "version": "widget-state@0.1.0"
+          "version": "widget-state@0.2.0"
         }
       }
     },
@@ -2035,6 +2073,23 @@
         "run_id": 36,
         "status": "published",
         "widget_state": {
+          "avatar": {
+            "activity": "none",
+            "effects": [],
+            "evidence": {
+              "eyes": [],
+              "motion": [],
+              "posture": [],
+              "workout": []
+            },
+            "eyes": "neutral",
+            "eyes_intensity": 0.0,
+            "missing_inputs": [],
+            "motion": "typical",
+            "posture": "neutral",
+            "uncertainty": "calibrating",
+            "version": "avatar-state@0.1.0"
+          },
           "effective_at": "2026-09-22T18:00:00Z",
           "freshness": {
             "last_updated_at": "2026-09-22T18:00:00Z"
@@ -2049,7 +2104,7 @@
             "explainable": false,
             "id": "calibration"
           },
-          "version": "widget-state@0.1.0"
+          "version": "widget-state@0.2.0"
         }
       }
     },
@@ -3190,6 +3245,23 @@
         "run_id": 36,
         "status": "published",
         "widget_state": {
+          "avatar": {
+            "activity": "none",
+            "effects": [],
+            "evidence": {
+              "eyes": [],
+              "motion": [],
+              "posture": [],
+              "workout": []
+            },
+            "eyes": "neutral",
+            "eyes_intensity": 0.0,
+            "missing_inputs": [],
+            "motion": "typical",
+            "posture": "neutral",
+            "uncertainty": "calibrating",
+            "version": "avatar-state@0.1.0"
+          },
           "effective_at": "2026-09-22T18:00:00Z",
           "freshness": {
             "last_updated_at": "2026-09-22T18:00:00Z"
@@ -3204,7 +3276,7 @@
             "explainable": false,
             "id": "calibration"
           },
-          "version": "widget-state@0.1.0"
+          "version": "widget-state@0.2.0"
         }
       }
     },
@@ -4330,6 +4402,23 @@
         "run_id": 36,
         "status": "unchanged",
         "widget_state": {
+          "avatar": {
+            "activity": "none",
+            "effects": [],
+            "evidence": {
+              "eyes": [],
+              "motion": [],
+              "posture": [],
+              "workout": []
+            },
+            "eyes": "neutral",
+            "eyes_intensity": 0.0,
+            "missing_inputs": [],
+            "motion": "typical",
+            "posture": "neutral",
+            "uncertainty": "calibrating",
+            "version": "avatar-state@0.1.0"
+          },
           "effective_at": "2026-09-22T18:00:00Z",
           "freshness": {
             "last_updated_at": "2026-09-22T18:00:00Z"
@@ -4344,7 +4433,7 @@
             "explainable": false,
             "id": "calibration"
           },
-          "version": "widget-state@0.1.0"
+          "version": "widget-state@0.2.0"
         }
       }
     },

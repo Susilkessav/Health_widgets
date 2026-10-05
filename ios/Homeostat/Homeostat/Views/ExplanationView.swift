@@ -19,6 +19,9 @@ struct ExplanationView: View {
                 if !state.widgetState.primaryTrait.explainable {
                     Text("Not enough data to explain this").foregroundStyle(.secondary)
                 }
+                if let missing = state.widgetState.avatar?.missingInputs, !missing.isEmpty {
+                    LabeledContent("No reading today", value: missing.map(\.displayName).joined(separator: ", "))
+                }
                 LabeledContent("Day", value: state.isToday ? "\(state.day) (today)" : state.day)
                 LabeledContent("Data as of", value: state.effectiveAt.date.formatted(date: .abbreviated, time: .shortened))
             }

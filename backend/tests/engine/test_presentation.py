@@ -8,12 +8,17 @@ from hypothesis import given, settings, strategies as st
 from app.contracts.widget_state import WidgetState
 from app.engine import compute_health_state
 from app.presentation import (
+    ACTIVITY_GROUPS,
+    EFFECT_CUTOFF,
+    GLOW_HALF_LIFE_MINUTES,
+    SWEAT_HALF_LIFE_MINUTES,
     MIN_DISPLAY_CONFIDENCE,
     RULES,
     WORKOUT_LABELS,
     format_hours,
     format_steps,
     join,
+    map_avatar_state,
     map_widget_state,
     workout_label,
 )
@@ -158,3 +163,143 @@ def test_unknown_workout_types_show_as_workout_but_keep_the_raw_type():
     state = compute_health_state(data, SETTINGS)
     assert map_widget_state(state).presentation.detail == "Workout"
     assert state.workout.type == "kitesurfing"
+
+
+# ---------------------------------------------------------------------------
+# AvatarState (Plan/G2_plan.md section 4 and decision D7)
+# ---------------------------------------------------------------------------
+
+def avatar(*states, **kwargs):
+    return map_avatar_state(compute_health_state(features(*states, **kwargs), SETTINGS))
+
+
+@settings(max_examples=400, deadline=None)
+@given(combo=st.sampled_from(COMBOS), sleep=CONFIDENCES, hrv=CONFIDENCES, rhr=CONFIDENCES,
+       movement=CONFIDENCES, workout=CONFIDENCES)
+def test_uncertain_domains_never_change_the_avatar(combo, sleep, hrv, rhr, movement, workout):
+    state = compute_health_state(features(*combo, confidence={"sleep": sleep, "hrv": hrv, "rhr": rhr,
+                                                             "movement": movement, "workout": workout}), SETTINGS)
+    a = map_avatar_state(state)
+    hidden = {d for d in ("sleep", "recovery", "movement", "workout")
+              if getattr(state, d).confidence < MIN_DISPLAY_CONFIDENCE}
+    if "sleep" in hidden:
+        assert (a.eyes, a.eyes_intensity) == ("neutral", 0)
+    if "recovery" in hidden:
+        assert a.posture == "neutral"
+    if "movement" in hidden:
+        assert a.motion == "typical"
+    if "workout" in hidden:
+        assert (a.activity, a.effects) == ("none", ())
+    if hidden - {"workout"}:
+        assert a.uncertainty != "none"
+    assert map_widget_state(state).avatar == a
+
+
+@pytest.mark.parametrize(("states", "expected"), [
+    ((), {"eyes": "neutral", "posture": "neutral", "motion": "typical", "activity": "none", "uncertainty": "none"}),
+    (("below_baseline",), {"eyes": "tired"}),
+    (("above_baseline",), {"eyes": "rested"}),
+    (("below_baseline", "below_usual", "above_usual"), {"posture": "low"}),
+    (("typical", "above_usual", "below_usual"), {"posture": "upright"}),
+    (("typical", "typical", "typical", "behind_usual"), {"motion": "low"}),
+    (("typical", "typical", "typical", "ahead_of_usual"), {"motion": "high"}),
+    (("calibrating", "calibrating", "calibrating", "calibrating"), {"uncertainty": "calibrating", "eyes": "neutral"}),
+    (("missing",), {"uncertainty": "low_confidence", "eyes": "neutral"}),
+])
+def test_each_channel_follows_its_domain(states, expected):
+    a = avatar(*states)
+    assert {key: getattr(a, key) for key in expected} == expected
+
+
+def test_tired_eyes_scale_with_severity_and_confidence():
+    state = compute_health_state(features("below_baseline", confidence={"sleep": 0.8}), SETTINGS)
+    assert map_avatar_state(state).eyes_intensity == pytest.approx(state.sleep.severity * 0.8)
+
+
+def test_workout_effects_start_when_the_workout_ended():
+    state = compute_health_state(features(workout="just_completed"), SETTINGS)
+    a = map_avatar_state(state)
+    end = next(d.observed_at for d in state.drivers if d.domain == "workout")
+    assert a.activity == "strength"
+    assert [(e.kind, e.started_at, e.half_life_minutes) for e in a.effects] == [("sweat", end, 20), ("glow", end, 160)]
+    recent = avatar(workout="recent_workout")
+    assert [e.kind for e in recent.effects] == ["glow"]
+    assert (avatar(workout="none_recent").effects, avatar(workout="missing").effects) == ((), ())
+
+
+def test_unknown_workout_types_get_no_activity_art():
+    data = features().model_validate({**features().model_dump(),
+                                      "workout": workout_block("just_completed", workout_type="kitesurfing")})
+    a = map_avatar_state(compute_health_state(data, SETTINGS))
+    assert a.activity == "none" and [e.kind for e in a.effects] == ["sweat"]
+    assert set(ACTIVITY_GROUPS) == set(WORKOUT_LABELS)
+
+
+def test_effects_fade_out_before_their_workout_state_ends():
+    """A cached avatar and a fresh calculation must agree: each effect is below
+    the cutoff (at full peak) before the mapper would stop emitting it."""
+    from math import log2
+    fade_hours = {kind: half_life * log2(1 / EFFECT_CUTOFF) / 60
+                  for kind, half_life in (("sweat", SWEAT_HALF_LIFE_MINUTES), ("glow", GLOW_HALF_LIFE_MINUTES))}
+    assert fade_hours["sweat"] < SETTINGS.workout.just_completed_hours
+    assert fade_hours["glow"] < SETTINGS.workout.recent_hours
+
+
+@pytest.mark.parametrize(("states", "expected"), [
+    ((), {}),
+    (("below_baseline",), {"eyes": ("sleep_duration",)}),
+    (("below_baseline", "below_usual", "above_usual"),
+     {"eyes": ("sleep_duration",), "posture": ("sleep_duration", "hrv_sdnn", "resting_hr")}),
+    (("typical", "above_usual", "below_usual", "ahead_of_usual"),
+     {"posture": ("sleep_duration", "hrv_sdnn", "resting_hr"), "motion": ("steps_so_far",)}),
+    (("typical", "typical", "typical", "typical", "recent_workout"), {"workout": ("last_workout",)}),
+])
+def test_evidence_names_the_readings_behind_each_shown_channel(states, expected):
+    evidence = avatar(*states).evidence
+    assert {k: v for k, v in evidence.model_dump().items() if v} == expected
+
+
+def test_posture_evidence_lists_only_the_recovery_inputs_that_counted():
+    state = compute_health_state(features("below_baseline", "missing", "above_usual"), SETTINGS)
+    a = map_avatar_state(state)
+    assert a.posture == "low" and a.evidence.posture == ("sleep_duration", "resting_hr")
+
+
+@pytest.mark.parametrize(("states", "confidence", "channel", "shown"), [
+    (("below_baseline",), {"sleep": 0.5}, "eyes", "tired"),
+    (("below_baseline",), {"sleep": 0.49}, "eyes", "neutral"),
+    (("typical", "typical", "typical", "behind_usual"), {"movement": 0.5}, "motion", "low"),
+    (("typical", "typical", "typical", "behind_usual"), {"movement": 0.49}, "motion", "typical"),
+    # Recovery confidence is min(input confidence) x inputs used / 3: three inputs at c give c.
+    (("below_baseline", "below_usual", "above_usual"), {"sleep": 0.5, "hrv": 0.5, "rhr": 0.5}, "posture", "low"),
+    (("below_baseline", "below_usual", "above_usual"), {"sleep": 0.49, "hrv": 0.49, "rhr": 0.49}, "posture", "neutral"),
+    (("typical",) * 4 + ("just_completed",), {"workout": 0.5}, "activity", "strength"),
+    (("typical",) * 4 + ("just_completed",), {"workout": 0.49}, "activity", "none"),
+])
+def test_the_display_threshold_is_inclusive_for_every_channel(states, confidence, channel, shown):
+    assert getattr(avatar(*states, confidence=confidence), channel) == shown
+
+
+def test_eye_intensity_is_severity_times_confidence_and_reaches_one():
+    full = compute_health_state(features("below_baseline"), SETTINGS)
+    assert full.sleep.severity == 1 and map_avatar_state(full).eyes_intensity == 1
+    state = compute_health_state(features("above_baseline", confidence={"sleep": 0.6}), SETTINGS)
+    a = map_avatar_state(state)
+    assert a.eyes == "rested" and a.eyes_intensity == pytest.approx(state.sleep.severity * 0.6)
+
+
+@pytest.mark.parametrize("workout_type", sorted(WORKOUT_LABELS))
+def test_every_known_workout_type_has_activity_art(workout_type):
+    data = features().model_validate({**features().model_dump(),
+                                      "workout": workout_block("recent_workout", workout_type=workout_type)})
+    assert map_avatar_state(compute_health_state(data, SETTINGS)).activity == ACTIVITY_GROUPS[workout_type]
+
+
+
+def test_missing_inputs_are_named_without_raising_the_marker():
+    """Decided 2026-10-05: recovery from sleep and resting HR shows no marker,
+    but the missing HRV reading is recorded for the explanation."""
+    a = avatar("typical", "missing", "typical")
+    assert a.missing_inputs == ("hrv",) and a.uncertainty == "none"
+    assert avatar().missing_inputs == ()
+    assert avatar("missing", "missing", "missing", "missing").missing_inputs == ("sleep", "hrv", "rhr", "movement")

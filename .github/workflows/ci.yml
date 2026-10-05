@@ -1,0 +1,49 @@
+# Backend tests (with PostgreSQL), the Swift package tests (including the
+# Python/Swift engine parity fixture) and an app + widget simulator build.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      db:  # mirrors docker-compose.yml so tests/conftest.py's default URL works
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: homeostat
+        ports: ["5433:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres -d homeostat"
+          --health-interval 5s --health-retries 10
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --locked
+      # Includes the fixture checks: a stale engine_parity.json, widget_states.jsonl
+      # or demo_states.json fails here rather than drifting from the Swift side.
+      - run: uv run pytest -q
+
+  swift:
+    # The package and app need the Xcode that ships the iOS 27 SDK; if the
+    # hosted image lags, pin a newer macOS image or a self-hosted runner.
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Swift package tests (engine parity, widget cache, avatar)
+        working-directory: ios/HomeostatCore
+        run: swift test
+      - name: App and widget build
+        working-directory: ios/Homeostat
+        run: >-
+          xcodebuild -project Homeostat.xcodeproj -scheme Homeostat
+          -destination 'generic/platform=iOS Simulator' -configuration Debug
+          CODE_SIGNING_ALLOWED=NO build

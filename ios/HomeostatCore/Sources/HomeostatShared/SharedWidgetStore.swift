@@ -32,7 +32,7 @@ public struct WidgetCache: Codable, Hashable, Sendable {
 public struct SharedWidgetStore: Sendable {
     public static let appGroup = "group.com.susil.homeostat"
     /// widget-state versions this build can render (plan section 4).
-    public static let supportedVersionPrefixes = ["widget-state@0.1."]
+    public static let supportedVersionPrefixes = ["widget-state@0.1.", "widget-state@0.2."]
 
     public let fileURL: URL
 
@@ -178,6 +178,7 @@ public struct SharedWidgetStore: Sendable {
             || previous.widgetState.primaryTrait != next.widgetState.primaryTrait
             || previous.day != next.day
             || previous.widgetState.freshness != next.widgetState.freshness
+            || previous.widgetState.avatar != next.widgetState.avatar
             || WidgetPolicy.isStale(previous, now: now)  // a fresh time must replace a stale look
     }
 

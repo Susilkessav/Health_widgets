@@ -30,13 +30,44 @@ public enum WidgetPolicy {
         }
     }
 
-    /// The instants at which the display changes: now, when it turns stale and
-    /// the next local midnight. Strictly increasing.
+    /// The avatar a display draws (decided 2026-10-05). Today's result keeps its
+    /// traits, dimmed by the widget once stale; an earlier day's keeps only the
+    /// clock-driven workout effects. A missing or invalid avatar draws `.unknown`.
+    ///
+    /// When iOS redacts private content (Lock Screen, StandBy), the avatar is
+    /// neutral: the person's look and the lighting, no health traits, effects or
+    /// marker, since tired eyes say as much as the hidden text (decided 2026-10-05).
+    public static func avatar(_ display: Display, redacted: Bool = false) -> AvatarState? {
+        if redacted { return avatar(display).map { _ in AvatarState() } }
+        return switch display {
+        case .fresh(let cache), .stale(let cache): cache.widgetState.avatar ?? .unknown
+        case .earlierDay(let cache): (cache.widgetState.avatar ?? .unknown).withoutDailyTraits
+        case .empty, .unreadable: nil
+        }
+    }
+
+    /// The instants at which the display changes: now, when it turns stale, the
+    /// next local midnight, the next lighting change and the avatar's fading
+    /// steps (one half-life apart until faded) up to that midnight. Strictly increasing.
     public static func timelineDates(_ result: SharedWidgetStore.ReadResult, now: Instant, zone: Zone) -> [Instant] {
         var dates = [now]
         if case .state(let cache) = result {
+            let midnight = nextMidnight(after: now, zone: zone)
             dates.append(cache.widgetState.freshness.lastUpdatedAt.adding(seconds: staleAfterSeconds + 1))
-            dates.append(nextMidnight(after: now, zone: zone))
+            dates.append(midnight)
+            let today = zone.day(of: now)
+            dates += Lighting.boundaries.map { zone.instant(on: today, hour: $0) }
+            // Only valid effects: a sub-minute half-life would make a zero step and loop forever.
+            for effect in cache.widgetState.avatar?.effects ?? [] where effect.isValid {
+                let step = Int64(effect.halfLifeMinutes * 60)
+                var at = effect.startedAt.adding(seconds: step)
+                while at <= effect.fadedAt, at < midnight {
+                    dates.append(at)
+                    at = at.adding(seconds: step)
+                }
+                dates.append(effect.fadedAt)
+            }
+            dates = dates.filter { $0 <= midnight }
         }
         return Array(Set(dates.filter { $0 >= now })).sorted()
     }

@@ -1,7 +1,7 @@
 import Foundation
 
 // Swift port of backend/app/engine.py (DailyFeatures -> HealthState) and
-// backend/app/presentation.py (HealthState -> WidgetState). Pure; checked
+// backend/app/presentation.py (HealthState -> WidgetState and AvatarState). Pure; checked
 // against the Python output by EngineParityTests.
 
 public let engineVersion = "state-engine@0.1.0"
@@ -144,6 +144,61 @@ func joinNames(_ names: [String]) -> String {
 
 func workoutLabel(_ type: String?) -> String { workoutLabels[type ?? ""] ?? "Workout" }
 
+// Avatar tuning (Plan/G2_plan.md D8), as in presentation.py.
+let activityGroups: [String: AvatarState.Activity] = [
+    "traditional_strength_training": .strength, "functional_strength_training": .strength,
+    "running": .cardio, "walking": .cardio, "cycling": .cardio, "swimming": .cardio, "hiking": .cardio,
+    "yoga": .mobility,
+]
+// Each fades out before its workout state ends (2 h / 12 h), as presentation.py.
+let sweatHalfLifeMinutes = 20.0, glowHalfLifeMinutes = 160.0
+
+/// One channel per domain; below the display threshold a channel stays neutral.
+public func mapAvatarState(_ s: HealthState) -> AvatarState {
+    func displayable(_ domain: String) -> Bool { s.block(domain).confidence >= minDisplayConfidence }
+    func shown(_ domain: String, _ state: String) -> Bool { s.block(domain).state == state && displayable(domain) }
+
+    var avatar = AvatarState()
+    for (state, look) in [("below_baseline", AvatarState.Eyes.tired), ("above_baseline", .rested)] where shown("sleep", state) {
+        avatar.eyes = look
+        avatar.eyesIntensity = s.sleep.severity! * s.sleep.confidence
+    }
+    avatar.posture = shown("recovery", "strained") ? .low : shown("recovery", "favorable") ? .upright : .neutral
+    avatar.motion = shown("movement", "behind_usual") ? .low : shown("movement", "ahead_of_usual") ? .high : .typical
+
+    if let end = s.drivers.first(where: { $0.domain == "workout" })?.observedAt, displayable("workout") {
+        let w = s.workout
+        if ["active", "just_completed"].contains(w.state) {
+            avatar.effects.append(.init(kind: .sweat, peak: w.confidence, startedAt: end, halfLifeMinutes: sweatHalfLifeMinutes))
+        }
+        if ["active", "just_completed", "recent_workout"].contains(w.state) {
+            avatar.activity = activityGroups[w.type ?? ""] ?? .none
+            if avatar.activity != .none {
+                avatar.effects.append(.init(kind: .glow, peak: w.confidence, startedAt: end, halfLifeMinutes: glowHalfLifeMinutes))
+            }
+        }
+    }
+
+    // Evidence: the readings behind each channel that differs from neutral.
+    func ids(_ domains: [String]) -> [String] { s.drivers.filter { domains.contains($0.domain) }.map(\.id) }
+    let used = s.drivers.filter { inputNames[$0.domain] != nil && $0.value != nil && $0.baseline != nil
+                                  && $0.confidence > 0 }.map(\.domain)
+    avatar.evidence = .init(eyes: avatar.eyes != .neutral ? ids(["sleep"]) : [],
+                            posture: avatar.posture != .neutral ? ids(used) : [],
+                            motion: avatar.motion != .typical ? ids(["movement"]) : [],
+                            workout: avatar.effects.isEmpty ? [] : ids(["workout"]))
+
+    let measured = Set(s.drivers.filter { $0.value != nil }.map(\.domain))
+    avatar.missingInputs = AvatarState.Input.allCases.filter { !measured.contains($0.rawValue) }
+
+    if !s.calibrationReady {
+        avatar.uncertainty = .calibrating
+    } else if ["sleep", "recovery", "movement"].contains(where: { !displayable($0) || s.block($0).state == "missing" }) {
+        avatar.uncertainty = .lowConfidence
+    }
+    return avatar
+}
+
 public func mapWidgetState(_ s: HealthState) -> WidgetState {
     func displayable(_ domain: String) -> Bool { s.block(domain).confidence >= minDisplayConfidence }
     func driver(_ domain: String) -> Driver? { s.drivers.first { $0.domain == domain } }
@@ -189,7 +244,7 @@ public func mapWidgetState(_ s: HealthState) -> WidgetState {
     return WidgetState(effectiveAt: s.effectiveAt,
                        presentation: .init(icon: icon, headline: headline, detail: detail, secondary: secondary),
                        primaryTrait: .init(id: trait, explainable: !named.isEmpty && named.allSatisfy(supported)),
-                       freshness: .init(lastUpdatedAt: s.effectiveAt))
+                       freshness: .init(lastUpdatedAt: s.effectiveAt), avatar: mapAvatarState(s))
 }
 
 // MARK: - JSON, in the backend's shapes (health_state.py, features.py)

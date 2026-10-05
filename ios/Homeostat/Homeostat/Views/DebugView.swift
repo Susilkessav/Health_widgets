@@ -109,6 +109,11 @@ struct DebugView: View {
     @ViewBuilder var stateSection: some View {
         Section("State") {
             if let state = model.snapshot.state {
+                // An earlier day's result doesn't show its eyes, posture or movement as today's.
+                let avatar = state.widgetState.avatar ?? .unknown
+                LiveAvatarView(identity: model.identity, avatar: state.isToday ? avatar : avatar.withoutDailyTraits)
+                    .frame(height: 260)
+                    .listRowInsets(EdgeInsets())
                 let widget = state.widgetState.presentation
                 Text("\(widget.icon) \(widget.headline)").font(.headline)
                 if let detail = widget.detail { Text(detail) }
@@ -121,6 +126,10 @@ struct DebugView: View {
             } else {
                 Text("No result yet. Request Health access and sync.")
             }
+        }
+        Section("Avatar") {
+            NavigationLink("Customize avatar") { AvatarEditorView() }
+            NavigationLink("Avatar demo") { AvatarDemoView() }
         }
     }
 

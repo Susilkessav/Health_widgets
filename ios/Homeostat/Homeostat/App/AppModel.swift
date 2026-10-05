@@ -40,6 +40,8 @@ final class AppModel: ObservableObject {
     @Published var explanationMessage: String?
     @Published var savingSettings = false
     @Published var widgetDiagnostics: WidgetManifest?
+    /// The user's avatar appearance (G2 decision D5): device-only, shared with the widget.
+    @Published private(set) var identity = AvatarIdentityStore.shared()?.read() ?? AvatarIdentity()
 
     private struct ActiveSettings: Codable {
         var widget: WidgetBackendConfiguration
@@ -375,6 +377,27 @@ final class AppModel: ObservableObject {
     /// Writes the stored state to the App Group and reloads the widget when it
     /// would look different. In the foreground every change reloads: those
     /// reloads don't count against the widget's daily budget.
+    /// Set when the last appearance change couldn't be saved; the shown look is then unchanged.
+    @Published private(set) var identitySaveError: String?
+
+    /// Shows a new look only once it is saved, so the app and widget never disagree.
+    func saveIdentity(_ identity: AvatarIdentity) {
+        guard let store = AvatarIdentityStore.shared() else {
+            identitySaveError = "Couldn't save your avatar: this build can't reach the shared App Group."
+            log.error("avatar identity not saved: no App Group container")
+            return
+        }
+        do {
+            try store.write(identity)
+            self.identity = identity.valid
+            identitySaveError = nil
+            WidgetCenter.shared.reloadTimelines(ofKind: Self.widgetKind)
+        } catch {
+            identitySaveError = "Couldn't save your avatar. Try again."
+            log.error("avatar identity not saved: \((error as NSError).code, privacy: .public)")
+        }
+    }
+
     func publishWidget(foreground: Bool) {
         guard let store, let scope, let shared = SharedWidgetStore.shared(),
               let state = try? store.storedLocalState(), let day = LocalDay(state.day) else { return }

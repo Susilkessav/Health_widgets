@@ -1,4 +1,4 @@
-"""G1 Step 5 dummy presentation mapper: HealthState -> WidgetState.
+"""Presentation mapper: HealthState -> WidgetState, including the G2 AvatarState.
 
 The only place health meaning becomes icons and text (Plan/Step_4_plan.md
 sections 5-6). Its constants are presentation policy: changing them never
@@ -9,11 +9,12 @@ from __future__ import annotations
 from dataclasses import dataclass
 from math import floor
 
+from app.contracts.avatar_state import AvatarState, Effect, Evidence
 from app.contracts.health_state import Driver, HealthState
 from app.contracts.widget_state import Freshness, Presentation, PrimaryTrait, WidgetState
 
 # Recorded on every stored run: wording can change without engine or feature changes.
-PRESENTATION_VERSION = "presentation@0.1.0"
+PRESENTATION_VERSION = "presentation@0.2.0"
 MIN_DISPLAY_CONFIDENCE = 0.5
 # Known labels only. Any other type shows as "Workout" so no unvetted provider
 # identifier reaches the widget; the raw type stays in HealthState and drivers.
@@ -28,6 +29,24 @@ WORKOUT_LABELS = {
     "hiking": "Hike",
 }
 INPUT_NAMES = {"sleep": "sleep", "hrv": "HRV", "rhr": "resting HR"}
+# Avatar tuning (Plan/G2_plan.md D8): constants here, not homeostat.yaml, so
+# they never change settings_sha256. Unknown workout types get no activity art.
+ACTIVITY_GROUPS = {
+    "traditional_strength_training": "strength",
+    "functional_strength_training": "strength",
+    "running": "cardio",
+    "walking": "cardio",
+    "cycling": "cardio",
+    "swimming": "cardio",
+    "hiking": "cardio",
+    "yoga": "mobility",
+}
+# Each effect fades below EFFECT_CUTOFF (the widget's AvatarState.Effect.cutoff)
+# before its workout state ends (2 h just_completed, 12 h recent), so a cached
+# avatar and a fresh calculation never disagree about it (decided 2026-10-05).
+EFFECT_CUTOFF = 0.05
+SWEAT_HALF_LIFE_MINUTES = 20.0   # gone after 86 min
+GLOW_HALF_LIFE_MINUTES = 160.0   # gone after 11.5 h
 
 
 @dataclass(frozen=True)
@@ -107,6 +126,55 @@ def detail(state: HealthState, rule: Rule) -> str:
     return "Based on " + join([INPUT_NAMES[d] for d in recovery_inputs(state)])
 
 
+def map_avatar_state(state: HealthState) -> AvatarState:
+    """One channel per domain (Plan/G2_plan.md section 4). Below the display
+    threshold a channel stays neutral, so uncertain data never looks negative."""
+    def shown(domain: str, value: str) -> bool:
+        return getattr(state, domain).state == value and displayable(state, domain)
+
+    def ids(domains: tuple[str, ...]) -> tuple[str, ...]:
+        return tuple(d.id for d in state.drivers if d.domain in domains)
+
+    eyes, intensity = "neutral", 0.0
+    for value, look in (("below_baseline", "tired"), ("above_baseline", "rested")):
+        if shown("sleep", value):
+            eyes, intensity = look, state.sleep.severity * state.sleep.confidence
+    posture = "low" if shown("recovery", "strained") else "upright" if shown("recovery", "favorable") else "neutral"
+    motion = "low" if shown("movement", "behind_usual") else "high" if shown("movement", "ahead_of_usual") \
+        else "typical"
+
+    activity, effects = "none", []
+    workout, last = state.workout, driver(state, "workout")
+    if last is not None and last.observed_at is not None and displayable(state, "workout"):
+        if workout.state in ("active", "just_completed"):
+            effects.append(Effect(kind="sweat", peak=workout.confidence, started_at=last.observed_at,
+                                  half_life_minutes=SWEAT_HALF_LIFE_MINUTES))
+        if workout.state in ("active", "just_completed", "recent_workout"):
+            activity = ACTIVITY_GROUPS.get(workout.type or "", "none")
+            if activity != "none":
+                effects.append(Effect(kind="glow", peak=workout.confidence, started_at=last.observed_at,
+                                      half_life_minutes=GLOW_HALF_LIFE_MINUTES))
+
+    if state.calibration.status == "calibrating":
+        uncertainty = "calibrating"
+    elif any(not displayable(state, d) or getattr(state, d).state == "missing"
+             for d in ("sleep", "recovery", "movement")):
+        uncertainty = "low_confidence"
+    else:
+        uncertainty = "none"
+    used = tuple(recovery_inputs(state))
+    evidence = Evidence(
+        eyes=ids(("sleep",)) if eyes != "neutral" else (),
+        posture=tuple(d.id for d in state.drivers if d.domain in used) if posture != "neutral" else (),
+        motion=ids(("movement",)) if motion != "typical" else (),
+        workout=(last.id,) if effects else (),
+    )
+    measured = {d.domain for d in state.drivers if d.value is not None}
+    missing = tuple(d for d in ("sleep", "hrv", "rhr", "movement") if d not in measured)
+    return AvatarState(eyes=eyes, eyes_intensity=intensity, posture=posture, motion=motion, activity=activity,
+                       effects=tuple(effects), uncertainty=uncertainty, evidence=evidence, missing_inputs=missing)
+
+
 def map_widget_state(state: HealthState) -> WidgetState:
     matches = [r for r in RULES if getattr(state, r.domain).state == r.state and displayable(state, r.domain)]
     secondary = None
@@ -140,4 +208,5 @@ def map_widget_state(state: HealthState) -> WidgetState:
         presentation=Presentation(icon=icon, headline=headline, detail=text, secondary=secondary),
         primary_trait=PrimaryTrait(id=trait, explainable=bool(named) and all(supported(state, d) for d in named)),
         freshness=Freshness(last_updated_at=state.effective_at),
+        avatar=map_avatar_state(state),
     )

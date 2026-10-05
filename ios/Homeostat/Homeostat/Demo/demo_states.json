@@ -1,0 +1,679 @@
+[
+  {
+    "checkpoint": "2026-08-28_08",
+    "dataset": "demo",
+    "name": "Typical day",
+    "timezone": "America/Chicago",
+    "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
+      "effective_at": "2026-08-28T13:00:00Z",
+      "freshness": {
+        "last_updated_at": "2026-08-28T13:00:00Z"
+      },
+      "presentation": {
+        "detail": "Sleep, recovery and movement as usual",
+        "headline": "Typical day",
+        "icon": "🙂",
+        "secondary": null
+      },
+      "primary_trait": {
+        "explainable": true,
+        "id": "typical"
+      },
+      "version": "widget-state@0.2.0"
+    }
+  },
+  {
+    "checkpoint": "evaluation",
+    "dataset": "scenarios/short_sleep",
+    "name": "Shorter sleep",
+    "timezone": "America/Chicago",
+    "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [
+            "sleep_duration"
+          ],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "tired",
+        "eyes_intensity": 1.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
+      "effective_at": "2026-09-22T18:00:00Z",
+      "freshness": {
+        "last_updated_at": "2026-09-22T18:00:00Z"
+      },
+      "presentation": {
+        "detail": "5h 30m",
+        "headline": "Shorter sleep",
+        "icon": "😴",
+        "secondary": null
+      },
+      "primary_trait": {
+        "explainable": true,
+        "id": "sleep"
+      },
+      "version": "widget-state@0.2.0"
+    }
+  },
+  {
+    "checkpoint": "2026-09-12_08",
+    "dataset": "demo",
+    "name": "Short sleep, recovery below usual",
+    "timezone": "America/Chicago",
+    "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [
+            "sleep_duration"
+          ],
+          "motion": [],
+          "posture": [
+            "sleep_duration",
+            "hrv_sdnn",
+            "resting_hr"
+          ],
+          "workout": []
+        },
+        "eyes": "tired",
+        "eyes_intensity": 0.8916666666666667,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "low",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
+      "effective_at": "2026-09-12T13:00:00Z",
+      "freshness": {
+        "last_updated_at": "2026-09-12T13:00:00Z"
+      },
+      "presentation": {
+        "detail": "5h 30m",
+        "headline": "Shorter sleep",
+        "icon": "😴",
+        "secondary": "Recovery signals below usual"
+      },
+      "primary_trait": {
+        "explainable": true,
+        "id": "sleep"
+      },
+      "version": "widget-state@0.2.0"
+    }
+  },
+  {
+    "checkpoint": "2026-09-12_19",
+    "dataset": "demo",
+    "name": "Short sleep, evening workout",
+    "timezone": "America/Chicago",
+    "widget_state": {
+      "avatar": {
+        "activity": "strength",
+        "effects": [
+          {
+            "half_life_minutes": 20.0,
+            "kind": "sweat",
+            "peak": 1.0,
+            "started_at": "2026-09-12T23:00:00Z"
+          },
+          {
+            "half_life_minutes": 160.0,
+            "kind": "glow",
+            "peak": 1.0,
+            "started_at": "2026-09-12T23:00:00Z"
+          }
+        ],
+        "evidence": {
+          "eyes": [
+            "sleep_duration"
+          ],
+          "motion": [],
+          "posture": [
+            "sleep_duration",
+            "hrv_sdnn",
+            "resting_hr"
+          ],
+          "workout": [
+            "last_workout"
+          ]
+        },
+        "eyes": "tired",
+        "eyes_intensity": 0.8916666666666667,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "low",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
+      "effective_at": "2026-09-13T00:00:00Z",
+      "freshness": {
+        "last_updated_at": "2026-09-13T00:00:00Z"
+      },
+      "presentation": {
+        "detail": "5h 30m",
+        "headline": "Shorter sleep",
+        "icon": "😴",
+        "secondary": "Strength training completed recently"
+      },
+      "primary_trait": {
+        "explainable": true,
+        "id": "sleep"
+      },
+      "version": "widget-state@0.2.0"
+    }
+  },
+  {
+    "checkpoint": "2026-09-07_08",
+    "dataset": "demo",
+    "name": "Recovery signals below usual",
+    "timezone": "America/Chicago",
+    "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [
+            "sleep_duration",
+            "hrv_sdnn",
+            "resting_hr"
+          ],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "low",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
+      "effective_at": "2026-09-07T13:00:00Z",
+      "freshness": {
+        "last_updated_at": "2026-09-07T13:00:00Z"
+      },
+      "presentation": {
+        "detail": "Based on sleep, HRV and resting HR",
+        "headline": "Recovery signals below usual",
+        "icon": "🪫",
+        "secondary": null
+      },
+      "primary_trait": {
+        "explainable": true,
+        "id": "recovery"
+      },
+      "version": "widget-state@0.2.0"
+    }
+  },
+  {
+    "checkpoint": "2026-09-15_08",
+    "dataset": "demo",
+    "name": "Recovery signals above usual",
+    "timezone": "America/Chicago",
+    "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [
+            "sleep_duration",
+            "hrv_sdnn",
+            "resting_hr"
+          ],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "upright",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
+      "effective_at": "2026-09-15T13:00:00Z",
+      "freshness": {
+        "last_updated_at": "2026-09-15T13:00:00Z"
+      },
+      "presentation": {
+        "detail": "Based on sleep, HRV and resting HR",
+        "headline": "Recovery signals above usual",
+        "icon": "🔋",
+        "secondary": null
+      },
+      "primary_trait": {
+        "explainable": true,
+        "id": "recovery"
+      },
+      "version": "widget-state@0.2.0"
+    }
+  },
+  {
+    "checkpoint": "evaluation",
+    "dataset": "scenarios/favorable_without_sleep",
+    "name": "Recovery without sleep data",
+    "timezone": "America/Chicago",
+    "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [
+            "hrv_sdnn",
+            "resting_hr"
+          ],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [
+          "sleep"
+        ],
+        "motion": "typical",
+        "posture": "upright",
+        "uncertainty": "low_confidence",
+        "version": "avatar-state@0.1.0"
+      },
+      "effective_at": "2026-09-22T18:00:00Z",
+      "freshness": {
+        "last_updated_at": "2026-09-22T18:00:00Z"
+      },
+      "presentation": {
+        "detail": "Based on HRV and resting HR",
+        "headline": "Recovery signals above usual",
+        "icon": "🔋",
+        "secondary": null
+      },
+      "primary_trait": {
+        "explainable": true,
+        "id": "recovery"
+      },
+      "version": "widget-state@0.2.0"
+    }
+  },
+  {
+    "checkpoint": "evaluation",
+    "dataset": "scenarios/missing_hrv",
+    "name": "Missing HRV",
+    "timezone": "America/Chicago",
+    "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [
+          "hrv"
+        ],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
+      "effective_at": "2026-09-22T18:00:00Z",
+      "freshness": {
+        "last_updated_at": "2026-09-22T18:00:00Z"
+      },
+      "presentation": {
+        "detail": "Sleep, recovery and movement as usual",
+        "headline": "Typical day",
+        "icon": "🙂",
+        "secondary": null
+      },
+      "primary_trait": {
+        "explainable": true,
+        "id": "typical"
+      },
+      "version": "widget-state@0.2.0"
+    }
+  },
+  {
+    "checkpoint": "2026-09-17_08",
+    "dataset": "demo",
+    "name": "Less active than usual",
+    "timezone": "America/Chicago",
+    "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [
+            "steps_so_far"
+          ],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "low",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
+      "effective_at": "2026-09-17T13:00:00Z",
+      "freshness": {
+        "last_updated_at": "2026-09-17T13:00:00Z"
+      },
+      "presentation": {
+        "detail": "1,450 steps",
+        "headline": "Less active than usual",
+        "icon": "🚶",
+        "secondary": null
+      },
+      "primary_trait": {
+        "explainable": true,
+        "id": "movement"
+      },
+      "version": "widget-state@0.2.0"
+    }
+  },
+  {
+    "checkpoint": "2026-09-18_08",
+    "dataset": "demo",
+    "name": "More active than usual",
+    "timezone": "America/Chicago",
+    "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [
+            "steps_so_far"
+          ],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "high",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
+      "effective_at": "2026-09-18T13:00:00Z",
+      "freshness": {
+        "last_updated_at": "2026-09-18T13:00:00Z"
+      },
+      "presentation": {
+        "detail": "4,250 steps",
+        "headline": "More active than usual",
+        "icon": "🚶",
+        "secondary": null
+      },
+      "primary_trait": {
+        "explainable": true,
+        "id": "movement"
+      },
+      "version": "widget-state@0.2.0"
+    }
+  },
+  {
+    "checkpoint": "evaluation",
+    "dataset": "scenarios/workout_45m",
+    "name": "Workout 45 minutes ago",
+    "timezone": "America/Chicago",
+    "widget_state": {
+      "avatar": {
+        "activity": "strength",
+        "effects": [
+          {
+            "half_life_minutes": 20.0,
+            "kind": "sweat",
+            "peak": 1.0,
+            "started_at": "2026-09-22T17:15:00Z"
+          },
+          {
+            "half_life_minutes": 160.0,
+            "kind": "glow",
+            "peak": 1.0,
+            "started_at": "2026-09-22T17:15:00Z"
+          }
+        ],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": [
+            "last_workout"
+          ]
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
+      "effective_at": "2026-09-22T18:00:00Z",
+      "freshness": {
+        "last_updated_at": "2026-09-22T18:00:00Z"
+      },
+      "presentation": {
+        "detail": "Strength training",
+        "headline": "Workout complete",
+        "icon": "🏋️",
+        "secondary": null
+      },
+      "primary_trait": {
+        "explainable": true,
+        "id": "workout"
+      },
+      "version": "widget-state@0.2.0"
+    }
+  },
+  {
+    "checkpoint": "evaluation",
+    "dataset": "scenarios/workout_6h",
+    "name": "Workout 6 hours ago",
+    "timezone": "America/Chicago",
+    "widget_state": {
+      "avatar": {
+        "activity": "strength",
+        "effects": [
+          {
+            "half_life_minutes": 160.0,
+            "kind": "glow",
+            "peak": 1.0,
+            "started_at": "2026-09-22T12:00:00Z"
+          }
+        ],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": [
+            "last_workout"
+          ]
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
+      "effective_at": "2026-09-22T18:00:00Z",
+      "freshness": {
+        "last_updated_at": "2026-09-22T18:00:00Z"
+      },
+      "presentation": {
+        "detail": "Strength training",
+        "headline": "Recent workout",
+        "icon": "🏋️",
+        "secondary": null
+      },
+      "primary_trait": {
+        "explainable": true,
+        "id": "workout"
+      },
+      "version": "widget-state@0.2.0"
+    }
+  },
+  {
+    "checkpoint": "evaluation",
+    "dataset": "scenarios/workout_24h",
+    "name": "Workout yesterday",
+    "timezone": "America/Chicago",
+    "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
+      "effective_at": "2026-09-22T18:00:00Z",
+      "freshness": {
+        "last_updated_at": "2026-09-22T18:00:00Z"
+      },
+      "presentation": {
+        "detail": "Sleep, recovery and movement as usual",
+        "headline": "Typical day",
+        "icon": "🙂",
+        "secondary": null
+      },
+      "primary_trait": {
+        "explainable": true,
+        "id": "typical"
+      },
+      "version": "widget-state@0.2.0"
+    }
+  },
+  {
+    "checkpoint": "2026-08-14_08",
+    "dataset": "demo",
+    "name": "Learning your baseline",
+    "timezone": "America/Chicago",
+    "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
+      "effective_at": "2026-08-14T13:00:00Z",
+      "freshness": {
+        "last_updated_at": "2026-08-14T13:00:00Z"
+      },
+      "presentation": {
+        "detail": "0 / 14 usable days",
+        "headline": "Learning your baseline",
+        "icon": "🙂",
+        "secondary": null
+      },
+      "primary_trait": {
+        "explainable": false,
+        "id": "calibration"
+      },
+      "version": "widget-state@0.2.0"
+    }
+  },
+  {
+    "checkpoint": "evaluation",
+    "dataset": "scenarios/no_visible_data",
+    "name": "No data yet",
+    "timezone": "America/Chicago",
+    "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [
+          "sleep",
+          "hrv",
+          "rhr",
+          "movement"
+        ],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
+      "effective_at": "2026-09-22T18:00:00Z",
+      "freshness": {
+        "last_updated_at": "2026-09-22T18:00:00Z"
+      },
+      "presentation": {
+        "detail": "Open Homeostat to sync Health data",
+        "headline": "Waiting for new data",
+        "icon": "⏳",
+        "secondary": null
+      },
+      "primary_trait": {
+        "explainable": false,
+        "id": "no_data"
+      },
+      "version": "widget-state@0.2.0"
+    }
+  }
+]

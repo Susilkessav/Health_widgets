@@ -168,6 +168,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-14T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-14T13:00:00Z"
@@ -182,7 +199,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -354,6 +371,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-14T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-14T18:00:00Z"
@@ -368,7 +402,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -540,6 +574,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-15T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-15T00:00:00Z"
@@ -554,7 +605,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -726,6 +777,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-15T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-15T13:00:00Z"
@@ -740,7 +808,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -912,6 +980,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-15T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-15T18:00:00Z"
@@ -926,7 +1011,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -1098,6 +1183,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-16T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-16T00:00:00Z"
@@ -1112,7 +1214,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -1284,6 +1386,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-16T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-16T13:00:00Z"
@@ -1298,7 +1417,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -1470,6 +1589,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-16T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-16T18:00:00Z"
@@ -1484,7 +1620,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -1656,6 +1792,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-17T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-17T00:00:00Z"
@@ -1670,7 +1823,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -1842,6 +1995,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-17T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-17T13:00:00Z"
@@ -1856,7 +2026,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -2028,6 +2198,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-17T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-17T18:00:00Z"
@@ -2042,7 +2229,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -2214,6 +2401,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-18T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-18T00:00:00Z"
@@ -2228,7 +2432,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -2400,6 +2604,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-18T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-18T13:00:00Z"
@@ -2414,7 +2635,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -2586,6 +2807,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-18T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-18T18:00:00Z"
@@ -2600,7 +2838,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -2772,6 +3010,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-19T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-19T00:00:00Z"
@@ -2786,7 +3041,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -2958,6 +3213,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-19T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-19T13:00:00Z"
@@ -2972,7 +3244,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -3144,6 +3416,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-19T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-19T18:00:00Z"
@@ -3158,7 +3447,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -3330,6 +3619,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-20T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-20T00:00:00Z"
@@ -3344,7 +3650,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -3527,6 +3833,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-20T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-20T13:00:00Z"
@@ -3541,7 +3864,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -3724,6 +4047,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-20T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-20T18:00:00Z"
@@ -3738,7 +4078,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -3921,6 +4261,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-21T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-21T00:00:00Z"
@@ -3935,7 +4292,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -4118,6 +4475,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-21T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-21T13:00:00Z"
@@ -4132,7 +4506,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -4315,6 +4689,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-21T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-21T18:00:00Z"
@@ -4329,7 +4720,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -4512,6 +4903,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-22T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-22T00:00:00Z"
@@ -4526,7 +4934,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -4709,6 +5117,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-22T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-22T13:00:00Z"
@@ -4723,7 +5148,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -4906,6 +5331,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-22T18:00:00Z"
@@ -4920,7 +5362,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -5103,6 +5545,38 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "strength",
+        "effects": [
+          {
+            "half_life_minutes": 20.0,
+            "kind": "sweat",
+            "peak": 1.0,
+            "started_at": "2026-08-22T23:00:00Z"
+          },
+          {
+            "half_life_minutes": 160.0,
+            "kind": "glow",
+            "peak": 1.0,
+            "started_at": "2026-08-22T23:00:00Z"
+          }
+        ],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": [
+            "last_workout"
+          ]
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-23T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-23T00:00:00Z"
@@ -5117,7 +5591,7 @@
         "explainable": true,
         "id": "workout"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -5300,6 +5774,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-23T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-23T13:00:00Z"
@@ -5314,7 +5805,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -5497,6 +5988,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-23T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-23T18:00:00Z"
@@ -5511,7 +6019,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -5694,6 +6202,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-24T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-24T00:00:00Z"
@@ -5708,7 +6233,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -5891,6 +6416,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-24T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-24T13:00:00Z"
@@ -5905,7 +6447,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -6088,6 +6630,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-24T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-24T18:00:00Z"
@@ -6102,7 +6661,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -6285,6 +6844,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-25T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-25T00:00:00Z"
@@ -6299,7 +6875,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -6482,6 +7058,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-25T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-25T13:00:00Z"
@@ -6496,7 +7089,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -6679,6 +7272,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-25T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-25T18:00:00Z"
@@ -6693,7 +7303,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -6876,6 +7486,38 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "strength",
+        "effects": [
+          {
+            "half_life_minutes": 20.0,
+            "kind": "sweat",
+            "peak": 1.0,
+            "started_at": "2026-08-25T23:00:00Z"
+          },
+          {
+            "half_life_minutes": 160.0,
+            "kind": "glow",
+            "peak": 1.0,
+            "started_at": "2026-08-25T23:00:00Z"
+          }
+        ],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": [
+            "last_workout"
+          ]
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-26T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-26T00:00:00Z"
@@ -6890,7 +7532,7 @@
         "explainable": true,
         "id": "workout"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -7073,6 +7715,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-26T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-26T13:00:00Z"
@@ -7087,7 +7746,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -7270,6 +7929,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-26T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-26T18:00:00Z"
@@ -7284,7 +7960,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -7467,6 +8143,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-27T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-27T00:00:00Z"
@@ -7481,7 +8174,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -7664,6 +8357,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-27T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-27T13:00:00Z"
@@ -7678,7 +8388,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -7861,6 +8571,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-27T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-27T18:00:00Z"
@@ -7875,7 +8602,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -8058,6 +8785,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-28T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-28T00:00:00Z"
@@ -8072,7 +8816,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -8255,6 +8999,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-28T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-28T13:00:00Z"
@@ -8269,7 +9030,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -8452,6 +9213,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-28T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-28T18:00:00Z"
@@ -8466,7 +9244,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -8649,6 +9427,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-29T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-29T00:00:00Z"
@@ -8663,7 +9458,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -8846,6 +9641,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-29T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-29T13:00:00Z"
@@ -8860,7 +9672,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -9043,6 +9855,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-29T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-29T18:00:00Z"
@@ -9057,7 +9886,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -9240,6 +10069,38 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "strength",
+        "effects": [
+          {
+            "half_life_minutes": 20.0,
+            "kind": "sweat",
+            "peak": 1.0,
+            "started_at": "2026-08-29T23:00:00Z"
+          },
+          {
+            "half_life_minutes": 160.0,
+            "kind": "glow",
+            "peak": 1.0,
+            "started_at": "2026-08-29T23:00:00Z"
+          }
+        ],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": [
+            "last_workout"
+          ]
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-30T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-30T00:00:00Z"
@@ -9254,7 +10115,7 @@
         "explainable": true,
         "id": "workout"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -9437,6 +10298,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-30T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-30T13:00:00Z"
@@ -9451,7 +10329,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -9634,6 +10512,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-30T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-30T18:00:00Z"
@@ -9648,7 +10543,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -9831,6 +10726,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-31T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-31T00:00:00Z"
@@ -9845,7 +10757,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -10028,6 +10940,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-31T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-31T13:00:00Z"
@@ -10042,7 +10971,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -10225,6 +11154,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-08-31T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-08-31T18:00:00Z"
@@ -10239,7 +11185,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -10422,6 +11368,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-01T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-01T00:00:00Z"
@@ -10436,7 +11399,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -10619,6 +11582,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-01T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-01T13:00:00Z"
@@ -10633,7 +11613,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -10816,6 +11796,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-01T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-01T18:00:00Z"
@@ -10830,7 +11827,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -11013,6 +12010,38 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "strength",
+        "effects": [
+          {
+            "half_life_minutes": 20.0,
+            "kind": "sweat",
+            "peak": 1.0,
+            "started_at": "2026-09-01T23:00:00Z"
+          },
+          {
+            "half_life_minutes": 160.0,
+            "kind": "glow",
+            "peak": 1.0,
+            "started_at": "2026-09-01T23:00:00Z"
+          }
+        ],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": [
+            "last_workout"
+          ]
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-02T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-02T00:00:00Z"
@@ -11027,7 +12056,7 @@
         "explainable": true,
         "id": "workout"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -11210,6 +12239,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-02T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-02T13:00:00Z"
@@ -11224,7 +12270,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -11407,6 +12453,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-02T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-02T18:00:00Z"
@@ -11421,7 +12484,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -11604,6 +12667,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-03T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-03T00:00:00Z"
@@ -11618,7 +12698,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -11801,6 +12881,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-03T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-03T13:00:00Z"
@@ -11815,7 +12912,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -11998,6 +13095,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-03T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-03T18:00:00Z"
@@ -12012,7 +13126,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -12195,6 +13309,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-04T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-04T00:00:00Z"
@@ -12209,7 +13340,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -12392,6 +13523,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-04T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-04T13:00:00Z"
@@ -12406,7 +13554,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -12589,6 +13737,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-04T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-04T18:00:00Z"
@@ -12603,7 +13768,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -12786,6 +13951,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-05T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-05T00:00:00Z"
@@ -12800,7 +13982,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -12983,6 +14165,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-05T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-05T13:00:00Z"
@@ -12997,7 +14196,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -13180,6 +14379,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-05T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-05T18:00:00Z"
@@ -13194,7 +14410,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -13377,6 +14593,38 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "strength",
+        "effects": [
+          {
+            "half_life_minutes": 20.0,
+            "kind": "sweat",
+            "peak": 1.0,
+            "started_at": "2026-09-05T23:00:00Z"
+          },
+          {
+            "half_life_minutes": 160.0,
+            "kind": "glow",
+            "peak": 1.0,
+            "started_at": "2026-09-05T23:00:00Z"
+          }
+        ],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": [
+            "last_workout"
+          ]
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-06T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-06T00:00:00Z"
@@ -13391,7 +14639,7 @@
         "explainable": true,
         "id": "workout"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -13574,6 +14822,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-06T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-06T13:00:00Z"
@@ -13588,7 +14853,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -13771,6 +15036,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-06T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-06T18:00:00Z"
@@ -13785,7 +15067,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -13968,6 +15250,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-07T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-07T00:00:00Z"
@@ -13982,7 +15281,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -14165,6 +15464,27 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [
+            "sleep_duration",
+            "hrv_sdnn",
+            "resting_hr"
+          ],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "low",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-07T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-07T13:00:00Z"
@@ -14179,7 +15499,7 @@
         "explainable": true,
         "id": "recovery"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -14362,6 +15682,27 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [
+            "sleep_duration",
+            "hrv_sdnn",
+            "resting_hr"
+          ],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "low",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-07T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-07T18:00:00Z"
@@ -14376,7 +15717,7 @@
         "explainable": true,
         "id": "recovery"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -14559,6 +15900,27 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [
+            "sleep_duration",
+            "hrv_sdnn",
+            "resting_hr"
+          ],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "low",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-08T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-08T00:00:00Z"
@@ -14573,7 +15935,7 @@
         "explainable": true,
         "id": "recovery"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -14756,6 +16118,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-08T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-08T13:00:00Z"
@@ -14770,7 +16149,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -14953,6 +16332,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-08T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-08T18:00:00Z"
@@ -14967,7 +16363,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -15150,6 +16546,38 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "strength",
+        "effects": [
+          {
+            "half_life_minutes": 20.0,
+            "kind": "sweat",
+            "peak": 1.0,
+            "started_at": "2026-09-08T23:00:00Z"
+          },
+          {
+            "half_life_minutes": 160.0,
+            "kind": "glow",
+            "peak": 1.0,
+            "started_at": "2026-09-08T23:00:00Z"
+          }
+        ],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": [
+            "last_workout"
+          ]
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-09T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-09T00:00:00Z"
@@ -15164,7 +16592,7 @@
         "explainable": true,
         "id": "workout"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -15347,6 +16775,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-09T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-09T13:00:00Z"
@@ -15361,7 +16806,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -15544,6 +16989,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-09T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-09T18:00:00Z"
@@ -15558,7 +17020,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -15741,6 +17203,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-10T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-10T00:00:00Z"
@@ -15755,7 +17234,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -15938,6 +17417,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-10T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-10T13:00:00Z"
@@ -15952,7 +17448,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -16135,6 +17631,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-10T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-10T18:00:00Z"
@@ -16149,7 +17662,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -16332,6 +17845,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-11T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-11T00:00:00Z"
@@ -16346,7 +17876,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -16529,6 +18059,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-11T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-11T13:00:00Z"
@@ -16543,7 +18090,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -16726,6 +18273,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-11T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-11T18:00:00Z"
@@ -16740,7 +18304,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -16923,6 +18487,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-12T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-12T00:00:00Z"
@@ -16937,7 +18518,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -17120,6 +18701,29 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [
+            "sleep_duration"
+          ],
+          "motion": [],
+          "posture": [
+            "sleep_duration",
+            "hrv_sdnn",
+            "resting_hr"
+          ],
+          "workout": []
+        },
+        "eyes": "tired",
+        "eyes_intensity": 0.8916666666666667,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "low",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-12T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-12T13:00:00Z"
@@ -17134,7 +18738,7 @@
         "explainable": true,
         "id": "sleep"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -17317,6 +18921,29 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [
+            "sleep_duration"
+          ],
+          "motion": [],
+          "posture": [
+            "sleep_duration",
+            "hrv_sdnn",
+            "resting_hr"
+          ],
+          "workout": []
+        },
+        "eyes": "tired",
+        "eyes_intensity": 0.8916666666666667,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "low",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-12T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-12T18:00:00Z"
@@ -17331,7 +18958,7 @@
         "explainable": true,
         "id": "sleep"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -17514,6 +19141,44 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "strength",
+        "effects": [
+          {
+            "half_life_minutes": 20.0,
+            "kind": "sweat",
+            "peak": 1.0,
+            "started_at": "2026-09-12T23:00:00Z"
+          },
+          {
+            "half_life_minutes": 160.0,
+            "kind": "glow",
+            "peak": 1.0,
+            "started_at": "2026-09-12T23:00:00Z"
+          }
+        ],
+        "evidence": {
+          "eyes": [
+            "sleep_duration"
+          ],
+          "motion": [],
+          "posture": [
+            "sleep_duration",
+            "hrv_sdnn",
+            "resting_hr"
+          ],
+          "workout": [
+            "last_workout"
+          ]
+        },
+        "eyes": "tired",
+        "eyes_intensity": 0.8916666666666667,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "low",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-13T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-13T00:00:00Z"
@@ -17528,7 +19193,7 @@
         "explainable": true,
         "id": "sleep"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -17711,6 +19376,25 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [
+          "hrv"
+        ],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-13T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-13T13:00:00Z"
@@ -17725,7 +19409,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -17908,6 +19592,25 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [
+          "hrv"
+        ],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-13T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-13T18:00:00Z"
@@ -17922,7 +19625,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -18105,6 +19808,25 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [
+          "hrv"
+        ],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-14T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-14T00:00:00Z"
@@ -18119,7 +19841,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -18302,6 +20024,27 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [
+            "sleep_duration",
+            "hrv_sdnn",
+            "resting_hr"
+          ],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "low",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-14T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-14T13:00:00Z"
@@ -18316,7 +20059,7 @@
         "explainable": true,
         "id": "recovery"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -18499,6 +20242,27 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [
+            "sleep_duration",
+            "hrv_sdnn",
+            "resting_hr"
+          ],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "low",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-14T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-14T18:00:00Z"
@@ -18513,7 +20277,7 @@
         "explainable": true,
         "id": "recovery"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -18696,6 +20460,27 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [
+            "sleep_duration",
+            "hrv_sdnn",
+            "resting_hr"
+          ],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "low",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-15T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-15T00:00:00Z"
@@ -18710,7 +20495,7 @@
         "explainable": true,
         "id": "recovery"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -18893,6 +20678,27 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [
+            "sleep_duration",
+            "hrv_sdnn",
+            "resting_hr"
+          ],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "upright",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-15T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-15T13:00:00Z"
@@ -18907,7 +20713,7 @@
         "explainable": true,
         "id": "recovery"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -19090,6 +20896,27 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [
+            "sleep_duration",
+            "hrv_sdnn",
+            "resting_hr"
+          ],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "upright",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-15T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-15T18:00:00Z"
@@ -19104,7 +20931,7 @@
         "explainable": true,
         "id": "recovery"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -19287,6 +21114,42 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "strength",
+        "effects": [
+          {
+            "half_life_minutes": 20.0,
+            "kind": "sweat",
+            "peak": 1.0,
+            "started_at": "2026-09-15T23:00:00Z"
+          },
+          {
+            "half_life_minutes": 160.0,
+            "kind": "glow",
+            "peak": 1.0,
+            "started_at": "2026-09-15T23:00:00Z"
+          }
+        ],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [
+            "sleep_duration",
+            "hrv_sdnn",
+            "resting_hr"
+          ],
+          "workout": [
+            "last_workout"
+          ]
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "upright",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-16T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-16T00:00:00Z"
@@ -19301,7 +21164,7 @@
         "explainable": true,
         "id": "workout"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -19484,6 +21347,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-16T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-16T13:00:00Z"
@@ -19498,7 +21378,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -19681,6 +21561,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-16T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-16T18:00:00Z"
@@ -19695,7 +21592,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -19878,6 +21775,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-17T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-17T00:00:00Z"
@@ -19892,7 +21806,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -20075,6 +21989,25 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [
+            "steps_so_far"
+          ],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "low",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-17T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-17T13:00:00Z"
@@ -20089,7 +22022,7 @@
         "explainable": true,
         "id": "movement"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -20272,6 +22205,25 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [
+            "steps_so_far"
+          ],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "low",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-17T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-17T18:00:00Z"
@@ -20286,7 +22238,7 @@
         "explainable": true,
         "id": "movement"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -20469,6 +22421,25 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [
+            "steps_so_far"
+          ],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "low",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-18T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-18T00:00:00Z"
@@ -20483,7 +22454,7 @@
         "explainable": true,
         "id": "movement"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -20666,6 +22637,25 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [
+            "steps_so_far"
+          ],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "high",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-18T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-18T13:00:00Z"
@@ -20680,7 +22670,7 @@
         "explainable": true,
         "id": "movement"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -20863,6 +22853,25 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [
+            "steps_so_far"
+          ],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "high",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-18T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-18T18:00:00Z"
@@ -20877,7 +22886,7 @@
         "explainable": true,
         "id": "movement"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -21060,6 +23069,25 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [
+            "steps_so_far"
+          ],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "high",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-19T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-19T00:00:00Z"
@@ -21074,7 +23102,7 @@
         "explainable": true,
         "id": "movement"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -21257,6 +23285,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-19T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-19T13:00:00Z"
@@ -21271,7 +23316,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -21454,6 +23499,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-19T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-19T18:00:00Z"
@@ -21468,7 +23530,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -21651,6 +23713,38 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "strength",
+        "effects": [
+          {
+            "half_life_minutes": 20.0,
+            "kind": "sweat",
+            "peak": 1.0,
+            "started_at": "2026-09-19T23:00:00Z"
+          },
+          {
+            "half_life_minutes": 160.0,
+            "kind": "glow",
+            "peak": 1.0,
+            "started_at": "2026-09-19T23:00:00Z"
+          }
+        ],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": [
+            "last_workout"
+          ]
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-20T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-20T00:00:00Z"
@@ -21665,7 +23759,7 @@
         "explainable": true,
         "id": "workout"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -21848,6 +23942,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-20T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-20T13:00:00Z"
@@ -21862,7 +23973,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -22045,6 +24156,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-20T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-20T18:00:00Z"
@@ -22059,7 +24187,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -22242,6 +24370,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-21T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-21T00:00:00Z"
@@ -22256,7 +24401,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -22439,6 +24584,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-21T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-21T13:00:00Z"
@@ -22453,7 +24615,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -22636,6 +24798,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-21T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-21T18:00:00Z"
@@ -22650,7 +24829,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -22833,6 +25012,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T00:00:00Z"
@@ -22847,7 +25043,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -23030,6 +25226,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T13:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T13:00:00Z"
@@ -23044,7 +25257,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -23227,6 +25440,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -23241,7 +25471,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -23424,6 +25654,38 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "strength",
+        "effects": [
+          {
+            "half_life_minutes": 20.0,
+            "kind": "sweat",
+            "peak": 1.0,
+            "started_at": "2026-09-22T23:00:00Z"
+          },
+          {
+            "half_life_minutes": 160.0,
+            "kind": "glow",
+            "peak": 1.0,
+            "started_at": "2026-09-22T23:00:00Z"
+          }
+        ],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": [
+            "last_workout"
+          ]
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-23T00:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-23T00:00:00Z"
@@ -23438,7 +25700,7 @@
         "explainable": true,
         "id": "workout"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -23599,6 +25861,25 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [
+          "hrv"
+        ],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -23613,7 +25894,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -23785,6 +26066,29 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [
+            "sleep_duration"
+          ],
+          "motion": [],
+          "posture": [
+            "sleep_duration",
+            "hrv_sdnn",
+            "resting_hr"
+          ],
+          "workout": []
+        },
+        "eyes": "tired",
+        "eyes_intensity": 1.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "low",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -23799,7 +26103,7 @@
         "explainable": true,
         "id": "sleep"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -23971,6 +26275,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -23985,7 +26306,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -24157,6 +26478,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -24171,7 +26509,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -24343,6 +26681,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -24357,7 +26712,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -24529,6 +26884,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -24543,7 +26915,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -24715,6 +27087,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -24729,7 +27118,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -24856,6 +27245,28 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [
+          "sleep",
+          "hrv",
+          "rhr",
+          "movement"
+        ],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -24870,7 +27281,7 @@
         "explainable": false,
         "id": "no_data"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -25009,6 +27420,27 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [
+          "sleep",
+          "rhr",
+          "movement"
+        ],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -25023,7 +27455,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -25195,6 +27627,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -25209,7 +27658,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -25348,6 +27797,27 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [
+          "sleep",
+          "rhr",
+          "movement"
+        ],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -25362,7 +27832,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -25501,6 +27971,27 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [
+          "sleep",
+          "rhr",
+          "movement"
+        ],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -25515,7 +28006,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -25654,6 +28145,27 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [
+          "sleep",
+          "rhr",
+          "movement"
+        ],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -25668,7 +28180,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -25807,6 +28319,27 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [
+          "sleep",
+          "rhr",
+          "movement"
+        ],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -25821,7 +28354,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -25971,6 +28504,26 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [
+          "hrv",
+          "rhr"
+        ],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-11-01T19:00:00Z",
       "freshness": {
         "last_updated_at": "2026-11-01T19:00:00Z"
@@ -25985,7 +28538,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -26135,6 +28688,26 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [
+          "hrv",
+          "rhr"
+        ],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-03-08T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-03-08T18:00:00Z"
@@ -26149,7 +28722,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -26321,6 +28894,27 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [
+            "sleep_duration",
+            "hrv_sdnn",
+            "resting_hr"
+          ],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "upright",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -26335,7 +28929,7 @@
         "explainable": true,
         "id": "recovery"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -26507,6 +29101,28 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [
+            "hrv_sdnn",
+            "resting_hr"
+          ],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [
+          "sleep"
+        ],
+        "motion": "typical",
+        "posture": "upright",
+        "uncertainty": "low_confidence",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -26521,7 +29137,7 @@
         "explainable": true,
         "id": "recovery"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -26693,6 +29309,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -26707,7 +29340,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -26879,6 +29512,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -26893,7 +29543,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -27065,6 +29715,25 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [
+          "sleep"
+        ],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "low_confidence",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -27079,7 +29748,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -27251,6 +29920,26 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [
+          "hrv",
+          "rhr"
+        ],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "low_confidence",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -27265,7 +29954,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -27437,6 +30126,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -27451,7 +30157,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -27623,6 +30329,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -27637,7 +30360,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -27809,6 +30532,25 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [
+          "hrv"
+        ],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -27823,7 +30565,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -27995,6 +30737,25 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [
+            "steps_so_far"
+          ],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "low",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -28009,7 +30770,7 @@
         "explainable": true,
         "id": "movement"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -28181,6 +30942,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -28195,7 +30973,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -28367,6 +31145,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -28381,7 +31176,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -28508,6 +31303,28 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [
+          "sleep",
+          "hrv",
+          "rhr",
+          "movement"
+        ],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -28522,7 +31339,7 @@
         "explainable": false,
         "id": "no_data"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -28672,6 +31489,26 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [
+          "sleep",
+          "movement"
+        ],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -28686,7 +31523,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -28858,6 +31695,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -28872,7 +31726,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -29044,6 +31898,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -29058,7 +31929,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -29230,6 +32101,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -29244,7 +32132,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -29416,6 +32304,25 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [
+            "sleep_duration"
+          ],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "tired",
+        "eyes_intensity": 1.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -29430,7 +32337,7 @@
         "explainable": true,
         "id": "sleep"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -29559,6 +32466,28 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [
+          "sleep",
+          "hrv",
+          "rhr",
+          "movement"
+        ],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -29573,7 +32502,7 @@
         "explainable": false,
         "id": "no_data"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -29702,6 +32631,28 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [
+          "sleep",
+          "hrv",
+          "rhr",
+          "movement"
+        ],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -29716,7 +32667,7 @@
         "explainable": false,
         "id": "no_data"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -29855,6 +32806,27 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [
+          "sleep",
+          "hrv",
+          "rhr"
+        ],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -29869,7 +32841,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -30008,6 +32980,27 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [
+          "sleep",
+          "hrv",
+          "rhr"
+        ],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -30022,7 +33015,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -30161,6 +33154,27 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [
+          "sleep",
+          "hrv",
+          "rhr"
+        ],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -30175,7 +33189,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -30347,6 +33361,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -30361,7 +33392,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -30500,6 +33531,27 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [
+          "sleep",
+          "hrv",
+          "rhr"
+        ],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -30514,7 +33566,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -30653,6 +33705,27 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [
+          "sleep",
+          "hrv",
+          "rhr"
+        ],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -30667,7 +33740,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -30839,6 +33912,28 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [
+            "hrv_sdnn",
+            "resting_hr"
+          ],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [
+          "sleep"
+        ],
+        "motion": "typical",
+        "posture": "low",
+        "uncertainty": "low_confidence",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -30853,7 +33948,7 @@
         "explainable": true,
         "id": "recovery"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -31003,6 +34098,26 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [
+          "hrv",
+          "rhr"
+        ],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "calibrating",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T20:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T20:00:00Z"
@@ -31017,7 +34132,7 @@
         "explainable": false,
         "id": "calibration"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -31189,6 +34304,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -31203,7 +34335,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -31386,6 +34518,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -31400,7 +34549,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -31583,6 +34732,38 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "strength",
+        "effects": [
+          {
+            "half_life_minutes": 20.0,
+            "kind": "sweat",
+            "peak": 1.0,
+            "started_at": "2026-09-22T17:15:00Z"
+          },
+          {
+            "half_life_minutes": 160.0,
+            "kind": "glow",
+            "peak": 1.0,
+            "started_at": "2026-09-22T17:15:00Z"
+          }
+        ],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": [
+            "last_workout"
+          ]
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -31597,7 +34778,7 @@
         "explainable": true,
         "id": "workout"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -31780,6 +34961,32 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "strength",
+        "effects": [
+          {
+            "half_life_minutes": 160.0,
+            "kind": "glow",
+            "peak": 1.0,
+            "started_at": "2026-09-22T12:00:00Z"
+          }
+        ],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": [
+            "last_workout"
+          ]
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -31794,7 +35001,7 @@
         "explainable": true,
         "id": "workout"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -31966,6 +35173,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -31980,7 +35204,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   },
   {
@@ -32152,6 +35376,23 @@
       }
     },
     "widget_state": {
+      "avatar": {
+        "activity": "none",
+        "effects": [],
+        "evidence": {
+          "eyes": [],
+          "motion": [],
+          "posture": [],
+          "workout": []
+        },
+        "eyes": "neutral",
+        "eyes_intensity": 0.0,
+        "missing_inputs": [],
+        "motion": "typical",
+        "posture": "neutral",
+        "uncertainty": "none",
+        "version": "avatar-state@0.1.0"
+      },
       "effective_at": "2026-09-22T18:00:00Z",
       "freshness": {
         "last_updated_at": "2026-09-22T18:00:00Z"
@@ -32166,7 +35407,7 @@
         "explainable": true,
         "id": "typical"
       },
-      "version": "widget-state@0.1.0"
+      "version": "widget-state@0.2.0"
     }
   }
 ]
