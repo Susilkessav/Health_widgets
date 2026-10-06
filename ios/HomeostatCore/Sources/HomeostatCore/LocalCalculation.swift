@@ -93,11 +93,12 @@ extension LocalStore {
                 SELECT source_record_id FROM generation_members WHERE type = ? AND generation = ?
                 """, arguments: [type.rawValue, generation]))
         }
-        // ponytail: parses the whole log each run; prune events older than the
-        // 28-day baseline + 7-day workout window if this ever shows up in profiles.
+        // ponytail: parses the whole log each run (~1,700 events: about 0.1 s on a
+        // phone after the 2026-10-06 parsing fixes); prune events older than the
+        // 28-day baseline + 7-day workout window if a profile shows it matters again.
         return try Row.fetchAll(db, sql: "SELECT body, created_at FROM event_outbox ORDER BY id").compactMap { row in
             let body: Data = row["body"]
-            guard let event = try? EngineEvent(json: JSONDecoder().decode(JSONValue.self, from: body)),
+            guard let event = try? EngineEvent(json: JSONValue.parse(body)),
                   let at = Instant.parse(row["created_at"]) else { return nil }
             if let meta = event.meta, let ids = visible[meta.healthKitType], !ids.contains(event.recordID) {
                 return nil

@@ -23,7 +23,7 @@ final class AvatarRenderTests: XCTestCase {
                         eyes: eyes, eyesIntensity: eyes == .neutral ? 0 : 0.8, posture: posture, motion: .high,
                         activity: activity,
                         effects: [.init(kind: .sweat, peak: 1, startedAt: end, halfLifeMinutes: 20)]
-                            + (activity == .none ? [] : [.init(kind: .glow, peak: 1, startedAt: end, halfLifeMinutes: 360)]),
+                            + (activity == .none ? [] : [.init(kind: .glow, peak: 1, startedAt: end, halfLifeMinutes: 160)]),
                         uncertainty: .calibrating)
                     for framing in [AvatarFraming.fullBody, .waistUp] {
                         let image = pixels(AvatarView(identity: AvatarIdentity(), avatar: avatar, time: NOW, zone: CHICAGO,
@@ -85,6 +85,72 @@ final class AvatarRenderTests: XCTestCase {
         let renderer = ImageRenderer(content: sheet)
         renderer.scale = 2
         let bitmap = NSBitmapImageRep(cgImage: try XCTUnwrap(renderer.cgImage))
+        try XCTUnwrap(bitmap.representation(using: .png, properties: [:])).write(to: URL(fileURLWithPath: path))
+    }
+}
+
+/// Display modes (review item 13) for visual review: set AVATAR_MODES_SHEET=/path.png.
+/// Tinted is simulated as iOS draws it: only opacity survives, in one tint colour.
+@MainActor
+final class AvatarModesSheetTests: XCTestCase {
+    func tinted(_ image: CGImage) throws -> CGImage {
+        let w = image.width, h = image.height
+        var pixels = [UInt8](repeating: 0, count: w * h * 4)
+        let space = CGColorSpaceCreateDeviceRGB(), info = CGImageAlphaInfo.premultipliedLast.rawValue
+        let context = try XCTUnwrap(CGContext(data: &pixels, width: w, height: h, bitsPerComponent: 8, bytesPerRow: w * 4,
+                                              space: space, bitmapInfo: info))
+        context.draw(image, in: CGRect(x: 0, y: 0, width: w, height: h))
+        for i in stride(from: 0, to: pixels.count, by: 4) {  // tint (0.55, 0.75, 1.0) over a dark background
+            let a = Double(pixels[i + 3]) / 255
+            pixels[i] = UInt8(30 + a * (140 - 30)); pixels[i + 1] = UInt8(34 + a * (190 - 34))
+            pixels[i + 2] = UInt8(48 + a * (255 - 48)); pixels[i + 3] = 255
+        }
+        let out = try XCTUnwrap(CGContext(data: &pixels, width: w, height: h, bitsPerComponent: 8, bytesPerRow: w * 4,
+                                          space: space, bitmapInfo: info))
+        return try XCTUnwrap(out.makeImage())
+    }
+
+    func testModesSheet() throws {
+        guard let path = ProcessInfo.processInfo.environment["AVATAR_MODES_SHEET"] else { throw XCTSkip("set AVATAR_MODES_SHEET") }
+        let start = NOW.adding(seconds: -600)
+        let scenes: [AvatarState] = [
+            AvatarState(posture: .upright, evidence: .init(posture: ["hrv_sdnn"])),
+            AvatarState(evidence: .init()),
+            AvatarState(eyes: .tired, eyesIntensity: 0.9, posture: .low, uncertainty: .lowConfidence,
+                        evidence: .init(eyes: ["sleep_duration"], posture: ["sleep_duration"])),
+            AvatarState(motion: .low, evidence: .init(motion: ["steps_so_far"])),
+            AvatarState(motion: .high, evidence: .init(motion: ["steps_so_far"])),
+            AvatarState(activity: .strength, effects: [.init(kind: .sweat, peak: 1, startedAt: start, halfLifeMinutes: 20),
+                                                        .init(kind: .glow, peak: 1, startedAt: start, halfLifeMinutes: 160)],
+                        evidence: .init(workout: ["last_workout"])),
+        ]
+        let identity = AvatarIdentity(skinTone: 4, hairStyle: 1, glasses: true, outfit: 1)
+        var rows: [[CGImage]] = []
+        for mode in 0..<4 {  // standard, dark, increased contrast, tinted
+            var row: [CGImage] = []
+            for avatar in scenes {
+                let view = AvatarView(identity: identity, avatar: avatar, time: NOW, zone: CHICAGO, accented: mode == 3)
+                    .frame(width: 92, height: 158)
+                    .environment(\.colorScheme, mode == 1 ? .dark : .light)
+                    .environment(\._colorSchemeContrast, mode == 2 ? .increased : .standard)
+                let renderer = ImageRenderer(content: view)
+                renderer.scale = 2
+                let image = try XCTUnwrap(renderer.cgImage)
+                row.append(mode == 3 ? try tinted(image) : image)
+            }
+            rows.append(row)
+        }
+        let cellW = rows[0][0].width, cellH = rows[0][0].height, gap = 12
+        let w = scenes.count * (cellW + gap), h = rows.count * (cellH + gap)
+        let canvas = try XCTUnwrap(CGContext(data: nil, width: w, height: h, bitsPerComponent: 8, bytesPerRow: 0,
+                                             space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue))
+        canvas.setFillColor(CGColor(gray: 1, alpha: 1)); canvas.fill(CGRect(x: 0, y: 0, width: w, height: h))
+        for (r, row) in rows.enumerated() {
+            for (c, image) in row.enumerated() {
+                canvas.draw(image, in: CGRect(x: c * (cellW + gap), y: h - (r + 1) * (cellH + gap), width: cellW, height: cellH))
+            }
+        }
+        let bitmap = NSBitmapImageRep(cgImage: try XCTUnwrap(canvas.makeImage()))
         try XCTUnwrap(bitmap.representation(using: .png, properties: [:])).write(to: URL(fileURLWithPath: path))
     }
 }

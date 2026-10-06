@@ -53,6 +53,7 @@ public struct AvatarState: Codable, Hashable, Sendable {
 
         /// peak · 0.5^(elapsed / half-life); 0 before the start (beyond the grace) and once faded.
         public func intensity(at time: Instant) -> Double {
+            guard isValid else { return 0 }
             let elapsed = time.microseconds - startedAt.microseconds
             guard elapsed >= -Self.clockGraceSeconds * 1_000_000 else { return 0 }
             let minutes = max(0, Double(elapsed) / 60_000_000)
@@ -62,9 +63,22 @@ public struct AvatarState: Codable, Hashable, Sendable {
 
         /// When the effect drops below the cutoff.
         public var fadedAt: Instant {
-            guard peak >= Self.cutoff else { return startedAt }
+            guard isValid, peak >= Self.cutoff else { return startedAt }
             let minutes = halfLifeMinutes * log2(peak / Self.cutoff)
-            return startedAt.adding(seconds: Int64((minutes * 60).rounded(.up)))
+            var at = startedAt.adding(seconds: Int64((minutes * 60).rounded(.up)))
+            // At an exact half-life boundary the value may still equal the
+            // cutoff. Schedule the first whole second which actually hides it.
+            while intensity(at: at) > 0 { at = at.adding(seconds: 1) }
+            return at
+        }
+
+        /// First whole-second render time where a categorical threshold ends.
+        func firstAtOrBelow(_ threshold: Double) -> Instant {
+            guard peak > threshold else { return startedAt }
+            let seconds = halfLifeMinutes * 60 * log2(peak / threshold)
+            var at = startedAt.adding(seconds: Int64(seconds.rounded(.up)))
+            while intensity(at: at) > threshold { at = at.adding(seconds: 1) }
+            return at
         }
 
         enum CodingKeys: String, CodingKey {

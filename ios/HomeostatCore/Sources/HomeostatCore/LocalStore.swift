@@ -14,6 +14,16 @@ import GRDB
 public final class LocalStore: Sendable {
     public let db: DatabaseQueue
 
+    /// A consistent diagnostic/replay copy, including committed WAL contents.
+    /// Refuse to overwrite an existing export. The caller chooses where to share it.
+    public func exportSnapshot(to url: URL) throws {
+        guard !FileManager.default.fileExists(atPath: url.path) else {
+            throw CocoaError(.fileWriteFileExists)
+        }
+        let destination = try DatabaseQueue(path: url.path)
+        try db.backup(to: destination)
+    }
+
     /// `path == nil` opens an in-memory store (tests).
     public init(path: String?) throws {
         var configuration = Configuration()

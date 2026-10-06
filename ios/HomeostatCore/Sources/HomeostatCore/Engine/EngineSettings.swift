@@ -1,17 +1,27 @@
 import CryptoKit
 import Foundation
 
-/// The calculation settings (backend/config/homeostat.yaml, all defaults).
+/// Immutable phone settings (backend/config/homeostat.yaml, all defaults).
+/// Custom settings are not supported by this port: values cannot be mutated
+/// while retaining the default configuration identity.
 /// Product policies, not clinical thresholds. The phone uses exactly these;
 /// `canonicalJSON` is the backend's canonical text of the same values, so the
 /// config hash matches the Python engine (checked in EngineParityTests).
 public struct EngineSettings: Sendable {
     public struct SourceGroup: Sendable {
-        public var id: String
-        public var bundleID: String?
-        public var bundlePrefix: String?
-        public var productTypePrefix: String?
-        public var weight = 1.0
+        public let id: String
+        public let bundleID: String?
+        public let bundlePrefix: String?
+        public let productTypePrefix: String?
+        public let weight = 1.0
+
+        init(id: String, bundleID: String? = nil, bundlePrefix: String? = nil,
+             productTypePrefix: String? = nil) {
+            self.id = id
+            self.bundleID = bundleID
+            self.bundlePrefix = bundlePrefix
+            self.productTypePrefix = productTypePrefix
+        }
 
         func matches(bundleID: String, productType: String?) -> Bool {
             if let id = self.bundleID, bundleID != id { return false }
@@ -21,27 +31,27 @@ public struct EngineSettings: Sendable {
         }
     }
 
-    public struct Freshness: Sendable { public var fullHours: Double, zeroHours: Double }
+    public struct Freshness: Sendable { public let fullHours: Double, zeroHours: Double }
 
-    public var windowDays = 28
-    public var minimumValidDays = 14
-    public var sleepBelowMinutes = 60.0
-    public var sleepAboveMinutes = 60.0
-    public var episodeGapMinutes = 90.0
+    public let windowDays = 28
+    public let minimumValidDays = 14
+    public let sleepBelowMinutes = 60.0
+    public let sleepAboveMinutes = 60.0
+    public let episodeGapMinutes = 90.0
     /// The overnight window: this hour on the previous local day to `overnightEndHour` on the wake day.
-    public var overnightStartHour = 18
-    public var overnightEndHour = 12
-    public var sourcePolicyVersion = "sleep-source-policy@0.1.0"
-    public var zLower = -1.0, zUpper = 1.0, scaleFloor = 1.0  // HRV and resting HR alike
-    public var behindRatio = 0.70, aheadRatio = 1.30, comparisonWindowMinutes = 60.0
-    public var justCompletedHours = 2.0, recentHours = 12.0, totalsDays = 7
-    public var sleepSeverityFullMinutes = 120.0
-    public var freshness: [Domain: Freshness] = [
+    public let overnightStartHour = 18
+    public let overnightEndHour = 12
+    public let sourcePolicyVersion = "sleep-source-policy@0.1.0"
+    public let zLower = -1.0, zUpper = 1.0, scaleFloor = 1.0  // HRV and resting HR alike
+    public let behindRatio = 0.70, aheadRatio = 1.30, comparisonWindowMinutes = 60.0
+    public let justCompletedHours = 2.0, recentHours = 12.0, totalsDays = 7
+    public let sleepSeverityFullMinutes = 120.0
+    public let freshness: [Domain: Freshness] = [
         .sleep: .init(fullHours: 24, zeroHours: 48), .hrv: .init(fullHours: 24, zeroHours: 48),
         .rhr: .init(fullHours: 24, zeroHours: 48), .movement: .init(fullHours: 1, zeroHours: 3),
     ]
     /// Matched in order (first match wins); the order is also source priority.
-    public var sourceGroups: [SourceGroup] = [
+    public let sourceGroups: [SourceGroup] = [
         .init(id: "apple_watch", bundlePrefix: "com.apple.health.", productTypePrefix: "Watch"),
         .init(id: "synthetic_watch", bundleID: "org.homeostat.synthetic.watch"),
         .init(id: "apple_iphone", bundlePrefix: "com.apple.health.", productTypePrefix: "iPhone"),

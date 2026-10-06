@@ -61,34 +61,60 @@ public struct Instant: Hashable, Comparable, Codable, Sendable {
         try container.encode(wire)
     }
 
-    /// Parses ISO 8601 with an offset or `Z`, keeping up to six fractional digits.
+    /// Parses `YYYY-MM-DDTHH:MM:SS[.fraction](Z|±HH:MM)`, keeping up to six fractional
+    /// digits (truncated). Rejects impossible dates and times, as the Python contracts do.
+    /// Hand-written: every stored event carries several timestamps, and the earlier
+    /// regex + Calendar version made loading the event log take ~0.45 s on a phone.
     public static func parse(_ text: String) -> Instant? {
-        let pattern = #"^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,9}))?(Z|[+-]\d{2}:\d{2})$"#
-        guard let match = text.wholeMatch(of: try! Regex(pattern)) else { return nil }
-        func group(_ index: Int) -> String? {
-            match.output[index].substring.map(String.init)
+        let b = Array(text.utf8)
+        func digits(_ at: Int, _ count: Int) -> Int? {
+            guard at + count <= b.count else { return nil }
+            var value = 0
+            for i in at..<(at + count) {
+                let d = Int(b[i]) - 48
+                guard (0...9).contains(d) else { return nil }
+                value = value * 10 + d
+            }
+            return value
         }
-        var components = DateComponents()
-        components.year = Int(group(1)!)
-        components.month = Int(group(2)!)
-        components.day = Int(group(3)!)
-        components.hour = Int(group(4)!)
-        components.minute = Int(group(5)!)
-        components.second = Int(group(6)!)
-        guard let base = utcCalendar.date(from: components) else { return nil }
-        var micros = Int64(base.timeIntervalSince1970) * 1_000_000
-        if let fraction = group(7) {
-            let padded = (fraction + "000000").prefix(6)
-            micros += Int64(padded)!
+        func at(_ i: Int, _ c: Character) -> Bool { i < b.count && b[i] == c.asciiValue! }
+        guard b.count >= 20, at(4, "-"), at(7, "-"), at(10, "T"), at(13, ":"), at(16, ":"),
+              let year = digits(0, 4), let month = digits(5, 2), let day = digits(8, 2),
+              let hour = digits(11, 2), let minute = digits(14, 2), let second = digits(17, 2),
+              year >= 1, (1...12).contains(month), hour < 24, minute < 60, second < 60 else { return nil }
+        let leap = year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)
+        let monthDays = [31, leap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month - 1]
+        guard (1...monthDays).contains(day) else { return nil }
+
+        var i = 19
+        var micros: Int64 = 0
+        if at(i, ".") {
+            i += 1
+            let start = i
+            while i < b.count, (48...57).contains(b[i]) { i += 1 }
+            let count = i - start
+            guard (1...9).contains(count) else { return nil }
+            for k in 0..<6 { micros = micros * 10 + (k < count ? Int64(b[start + k] - 48) : 0) }
         }
-        let zone = group(8)!
-        if zone != "Z" {
-            let sign: Int64 = zone.hasPrefix("-") ? -1 : 1
-            let hours = Int64(zone.dropFirst().prefix(2))!
-            let minutes = Int64(zone.suffix(2))!
-            micros -= sign * (hours * 3600 + minutes * 60) * 1_000_000
+        var offset: Int64 = 0
+        if at(i, "Z") {
+            i += 1
+        } else if at(i, "+") || at(i, "-") {
+            guard at(i + 3, ":"), let h = digits(i + 1, 2), let m = digits(i + 4, 2), h < 24, m < 60 else { return nil }
+            offset = (at(i, "-") ? -1 : 1) * Int64(h * 3600 + m * 60)
+            i += 6
+        } else {
+            return nil
         }
-        return Instant(microseconds: micros)
+        guard i == b.count else { return nil }
+
+        // Days since 1970-01-01 (Howard Hinnant's days_from_civil).
+        let y = Int64(month <= 2 ? year - 1 : year), era = (y >= 0 ? y : y - 399) / 400
+        let yoe = y - era * 400, mp = Int64((month + 9) % 12)
+        let doy = (153 * mp + 2) / 5 + Int64(day) - 1
+        let days = era * 146_097 + yoe * 365 + yoe / 4 - yoe / 100 + doy - 719_468
+        let seconds = days * 86_400 + Int64(hour * 3600 + minute * 60 + second) - offset
+        return Instant(microseconds: seconds * 1_000_000 + micros)
     }
 
     static let utcCalendar: Calendar = {

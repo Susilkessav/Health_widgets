@@ -43,6 +43,35 @@ public indirect enum JSONValue: Codable, Hashable, Sendable {
         }
     }
 
+    /// The same value as `JSONDecoder().decode(JSONValue.self, from:)`, about 15x faster
+    /// (the whole event log is parsed on every calculation). Follows the decoder's
+    /// number rule: an integral number that fits Int64 is `.int` (also `1.0`, `1e2`),
+    /// anything else `.double`. Integers beyond 2^53 written with a fraction or
+    /// exponent can differ in the last digit; health events don't contain them.
+    public static func parse(_ data: Data) throws -> JSONValue {
+        try JSONValue(foundation: JSONSerialization.jsonObject(with: data, options: [.fragmentsAllowed]))
+    }
+
+    init(foundation value: Any) {
+        switch value {
+        case let number as NSNumber:
+            if CFGetTypeID(number) == CFBooleanGetTypeID() {
+                self = .bool(number.boolValue)
+            } else if !CFNumberIsFloatType(number) {
+                // "Q": an unsigned value above Int64.max, which the decoder reads as a double.
+                self = String(cString: number.objCType) == "Q" && number.uint64Value > UInt64(Int64.max)
+                    ? .double(number.doubleValue) : .int(number.int64Value)
+            } else {
+                let d = number.doubleValue
+                self = d.rounded() == d ? Int64(exactly: d).map(JSONValue.int) ?? .double(d) : .double(d)
+            }
+        case let text as String: self = .string(text)
+        case let array as [Any]: self = .array(array.map(JSONValue.init(foundation:)))
+        case let object as [String: Any]: self = .object(object.mapValues(JSONValue.init(foundation:)))
+        default: self = .null  // NSNull
+        }
+    }
+
     public subscript(key: String) -> JSONValue? {
         if case .object(let object) = self { return object[key] }
         return nil

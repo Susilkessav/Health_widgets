@@ -54,6 +54,28 @@ def test_auth_is_required_except_for_healthz(api):
     assert client.get("/v1/state/current", headers={"X-Homeostat-Key": "wrong"}).json() == {"code": "UNAUTHORIZED"}
 
 
+@pytest.mark.parametrize("declared", [None, "1", "not-a-length"])
+def test_oversized_stream_cannot_bypass_the_body_limit(api, declared):
+    from app.main import MAX_BODY_BYTES
+    client, _ = api
+    headers = dict(KEY)
+    if declared is not None:
+        headers["Content-Length"] = declared
+    response = client.post("/v1/health/sync", headers=headers,
+                           content=iter([b" " * MAX_BODY_BYTES, b" "]))
+    assert response.status_code == 413
+    assert response.json() == {"code": "BODY_TOO_LARGE"}
+
+
+def test_request_exactly_at_the_limit_is_accepted(api):
+    from app.main import MAX_BODY_BYTES
+    client, _ = api
+    original = json.dumps(payload()).encode()
+    response = client.post("/v1/health/sync", headers=KEY,
+                           content=original + b" " * (MAX_BODY_BYTES - len(original)))
+    assert response.status_code == 200
+
+
 def test_upload_publishes_and_the_state_endpoints_serve_it(api):
     client, _ = api
     assert client.get("/v1/state/current", headers=KEY).json() == {"code": "NO_STATE_YET"}

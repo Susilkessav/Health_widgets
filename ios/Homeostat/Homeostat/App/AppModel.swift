@@ -72,11 +72,14 @@ final class AppModel: ObservableObject {
     private var uploadTask: Task<Void, Never>?
     private var uploadGeneration = 0
     private var uploadAgain = false
+    private var storeGeneration = 0
+    private var calculationWork: Task<Void, Never>?
+    private var calculationAgain = false
+    @Published private(set) var displayNow = Date()
+    private var clockSubscriptions = Set<AnyCancellable>()
 
     private func cancelUploads() {
         backgroundRunner.cancel()
-        backgroundRefreshWork?.cancel()
-        backgroundRefreshWork = nil
         uploadGeneration += 1
         uploadAgain = false
         uploadRetry.cancel()
@@ -87,6 +90,8 @@ final class AppModel: ObservableObject {
     func setForeground(_ active: Bool) {
         foreground = active
         if active {
+            updateDisplayClock()
+            scheduleRefresh()
             Task { await upload() }
         } else {
             // Inactive also occurs for permission sheets. Do not cancel an
@@ -102,6 +107,23 @@ final class AppModel: ObservableObject {
 
     init() {
         try? openStore()
+        Timer.publish(every: 60, on: .main, in: .common).autoconnect()
+            .sink { [weak self] _ in
+                guard let self, self.foreground else { return }
+                self.updateDisplayClock()
+            }.store(in: &clockSubscriptions)
+        NotificationCenter.default.publisher(for: UIApplication.significantTimeChangeNotification)
+            .merge(with: NotificationCenter.default.publisher(for: .NSSystemTimeZoneDidChange))
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in self?.updateDisplayClock() }.store(in: &clockSubscriptions)
+    }
+
+    func updateDisplayClock() { displayNow = Date() }
+
+    func isCurrent(_ state: ReturnedState) -> Bool {
+        guard let day = LocalDay(state.day) else { return false }
+        return WidgetPolicy.isCurrent(day: day, effectiveAt: state.effectiveAt,
+                                      now: Instant(displayNow), zone: .current)
     }
 
     // MARK: - Configuration
@@ -332,6 +354,17 @@ final class AppModel: ObservableObject {
     }
 
     private func install(store: LocalStore, scope: String, url: URL?, key: String?) {
+        storeGeneration += 1
+        backgroundRefreshWork?.cancel()
+        backgroundRefreshWork = nil
+        calculationWork?.cancel()
+        calculationWork = nil
+        calculationAgain = false
+        cancelUploads()
+        busy = false
+        showingExplanation = false
+        explanationState = nil
+        explanationMessage = nil
         self.store = store; self.scope = scope
         importer = ImportEngine(store: store, source: HealthKitSource(store: healthStore))
         syncer = url.flatMap { url in key.map {
@@ -449,13 +482,15 @@ final class AppModel: ObservableObject {
     func catchUp() async {
         guard let importer, !busy else { return }
         busy = true
-        let generation = uploadGeneration
-        defer { busy = false }
+        let generation = storeGeneration
+        defer { if generation == storeGeneration { busy = false } }
         let errors = await importer.catchUp()
-        guard generation == uploadGeneration else { return }
+        guard generation == storeGeneration else { return }
         importErrors = errors
         log.info("import finished with \(self.importErrors.count, privacy: .public) error(s)")
-        recalculate()
+        guard generation == storeGeneration, !Task.isCancelled else { return }
+        await recalculate()
+        scheduleRefresh()
         await upload()
         refresh()
     }
@@ -463,13 +498,16 @@ final class AppModel: ObservableObject {
     func refreshHistory() async {
         guard let importer else { return }
         busy = true
-        defer { busy = false }
+        let generation = storeGeneration
+        defer { if generation == storeGeneration { busy = false } }
         do {
             try await importer.refreshSteps(full: true)
         } catch {
             importErrors["steps"] = String(describing: error)
         }
-        recalculate()
+        guard generation == storeGeneration, !Task.isCancelled else { return }
+        await recalculate()
+        scheduleRefresh()
         await upload()
         refresh()
     }
@@ -481,7 +519,7 @@ final class AppModel: ObservableObject {
             await uploadTask.value
             return
         }
-        defer { scheduleRefresh() }  // only the caller that uploads schedules
+        defer { scheduleRefresh() }
         uploadRetry.cancel()
         let generation = uploadGeneration
         let task = Task { [weak self] in
@@ -535,21 +573,21 @@ final class AppModel: ObservableObject {
                 guard error == nil else { completion(); return }
                 Task { @MainActor in
                     guard let self else { completion(); return }
-                    let generation = self.uploadGeneration
+                    let localGeneration = self.storeGeneration
                     // Acquire the allowance before releasing HealthKit's wake.
                     let work = Task { @MainActor in await self.handleObserverUpdate(type) }
                     let allowance = BackgroundAllowance("homeostat.import") { [weak self] in
                         work.cancel()
-                        if self?.uploadGeneration == generation { self?.backgroundRunner.cancel() }
+                        if self?.storeGeneration == localGeneration { self?.backgroundRunner.cancel() }
                     }
                     let deadline = Task {
                         do { try await Task.sleep(nanoseconds: 20_000_000_000) } catch { return }
                         work.cancel()
-                        if generation == self.uploadGeneration { self.backgroundRunner.cancel() }
+                        if localGeneration == self.storeGeneration { self.backgroundRunner.cancel() }
                     }
                     await work.value
                     completion()
-                    if !work.isCancelled, generation == self.uploadGeneration { await self.syncAfterChange() }
+                    if !work.isCancelled, localGeneration == self.storeGeneration { await self.syncAfterChange() }
                     deadline.cancel()
                     allowance.end()
                 }
@@ -564,19 +602,20 @@ final class AppModel: ObservableObject {
         let name = type?.rawValue ?? "steps"
         let state = UIApplication.shared.applicationState == .active ? "active" : "background"
         log.info("observer update: \(name, privacy: .public), app \(state, privacy: .public), protected data \(UIApplication.shared.isProtectedDataAvailable ? "available" : "locked", privacy: .public)")
-        let generation = uploadGeneration
+        let generation = storeGeneration
         let errors = await importer.catchUp(repairHistory: false)
-        guard generation == uploadGeneration else { return }
+        guard generation == storeGeneration else { return }
         importErrors = errors
-        recalculate()
+        await recalculate()
+        scheduleRefresh()
     }
 
     private func enableDelivery(_ type: HKSampleType, name: String) {
-        let generation = uploadGeneration
+        let generation = storeGeneration
         healthStore.enableBackgroundDelivery(for: type, frequency: .immediate) { [self] success, error in
             let code = error.map { "\(($0 as NSError).domain):\(($0 as NSError).code)" } ?? "failed"
             Task { @MainActor [weak self] in
-                guard let self, generation == self.uploadGeneration else { return }
+                guard let self, generation == self.storeGeneration else { return }
                 try? self.store?.setValue(success ? "enabled" : code, for: "background_delivery_\(name)")
             }
         }
@@ -645,11 +684,11 @@ final class AppModel: ObservableObject {
             earliest = min(earliest, now.addingTimeInterval(3600))
         }
         let requestedDate = max(earliest, now.addingTimeInterval(60))
-        let generation = uploadGeneration
+        let generation = storeGeneration
         BGTaskScheduler.shared.getPendingTaskRequests { [self] pending in
             let scheduled = pending.first(where: { $0.identifier == Self.refreshTaskID })?.earliestBeginDate
             Task { @MainActor [weak self] in
-                guard let self, self.uploadEnabled, self.uploadGeneration == generation else { return }
+                guard let self, self.storeGeneration == generation else { return }
                 if let scheduled, scheduled <= requestedDate { return }
                 let request = BGAppRefreshTaskRequest(identifier: Self.refreshTaskID)
                 request.earliestBeginDate = requestedDate
@@ -668,36 +707,43 @@ final class AppModel: ObservableObject {
     func handleRefreshTask(_ task: BGAppRefreshTask) {
         log.info("background refresh task started")
         try? store?.setValue(Instant(Date()).wire, for: "background_last_started")
-        let generation = uploadGeneration
+        let generation = storeGeneration
+        let localStore = store
+        let localImporter = importer
         let work = Task { @MainActor in
-            if let importer { importErrors = await importer.catchUp(repairHistory: true) }
-            recalculate()
-            guard !Task.isCancelled, uploadGeneration == generation else {
+            let errors = await localImporter?.catchUp(repairHistory: true) ?? [:]
+            guard !Task.isCancelled, storeGeneration == generation else {
+                task.setTaskCompleted(success: false)
+                return
+            }
+            importErrors = errors
+            await recalculate()
+            guard !Task.isCancelled, storeGeneration == generation else {
                 task.setTaskCompleted(success: false)
                 return
             }
             let completed = uploadEnabled ? await backgroundSync() : true
-            let success = completed && !Task.isCancelled && self.importErrors.isEmpty
-            try? self.store?.setValue(success ? "completed" : "deferred_or_failed", for: "background_last_result")
+            let success = completed && !Task.isCancelled && storeGeneration == generation && errors.isEmpty
+            try? localStore?.setValue(success ? "completed" : "deferred_or_failed", for: "background_last_result")
             task.setTaskCompleted(success: success)
         }
         backgroundRefreshWork = work
         let deadline = Task { @MainActor in
             do { try await Task.sleep(nanoseconds: 20_000_000_000) } catch { return }
             work.cancel()
-            if self.uploadGeneration == generation { self.backgroundRunner.cancel() }
+            if self.storeGeneration == generation { self.backgroundRunner.cancel() }
         }
         Task { @MainActor in
             await work.value
             deadline.cancel()
-            if self.uploadGeneration == generation { self.scheduleRefresh() }
+            if self.storeGeneration == generation { self.scheduleRefresh() }
         }
         task.expirationHandler = { [weak self] in
             work.cancel()
             Task { @MainActor in
-                guard let self, self.uploadGeneration == generation else { return }
+                guard let self, self.storeGeneration == generation else { return }
                 self.backgroundRunner.cancel()
-                try? self.store?.setValue(Instant(Date()).wire, for: "background_last_expired")
+                try? localStore?.setValue(Instant(Date()).wire, for: "background_last_expired")
             }
         }
     }
@@ -705,6 +751,7 @@ final class AppModel: ObservableObject {
     // MARK: - Debug snapshot
 
     func refresh() {
+        updateDisplayClock()
         guard let store else { return }
         var next = Snapshot()
         next.ledger = (try? store.ledger()) ?? []
@@ -718,7 +765,7 @@ final class AppModel: ObservableObject {
         next.acknowledgedRevision = try? store.value("acknowledged_revision")
         next.paused = try? store.value("paused")
         next.state = try? store.storedLocalState()
-        for key in ["import_deferred", "last_import_cycle", "background_next_requested", "background_last_started",
+        for key in ["import_deferred", "last_import_cycle", "local_calculation_duration_ms", "background_next_requested", "background_last_started",
                     "background_last_result", "background_last_expired"]
                     + (SampleType.allCases.map(\.rawValue) + ["steps"]).map({ "background_delivery_\($0)" }) {
             next.diagnostics[key] = try? store.value(key)
@@ -729,29 +776,65 @@ final class AppModel: ObservableObject {
         widgetDiagnostics = try? SharedWidgetStore.shared()?.manifest()
     }
 
-    /// The widget's link: explain the latest on-device result.
-    func openExplanation() {
+    /// Explain a frozen local snapshot; never silently substitute another scope/run.
+    func openExplanation(url: URL) {
         refresh()
-        explanationState = snapshot.state
-        explanationMessage = snapshot.state == nil ? "No result yet. Sync to calculate one." : nil
+        explanationState = nil
+        explanationMessage = nil
+        if let link = ExplanationLink(url: url) {
+            switch link.resolve(scope: scope, run: snapshot.state?.runID) {
+            case .current: explanationState = snapshot.state
+            case .updated:
+                explanationState = snapshot.state
+                explanationMessage = "This result has been updated since the widget was shown. Showing the latest result."
+            case .unavailable: explanationMessage = "The widget's result is no longer available on this device."
+            }
+        } else {
+            explanationMessage = "This widget link is invalid. Open the current result in Homeostat."
+        }
         showingExplanation = true
     }
 
     // MARK: - On-device calculation (Plan/On_device_plan.md)
 
     /// Calculates today's result on this iPhone and hands it to the widget.
-    func recalculate() {
+    func recalculate() async {
         guard let store else { return }
-        do {
-            if let state = try store.calculateLocally(now: Instant(Date()), zone: TimeZone.current.identifier) {
-                try store.storeLocalState(state)
-            }
-        } catch {
-            log.error("local calculation failed: \(String(describing: type(of: error)), privacy: .public)")
+        if let calculationWork {
+            calculationAgain = true
+            await calculationWork.value
+            return
         }
-        refresh()
-        publishWidget(foreground: UIApplication.shared.applicationState == .active)
+        let generation = storeGeneration
+        let work = Task { @MainActor [weak self] in
+            guard let self else { return }
+            defer { if generation == self.storeGeneration { self.calculationWork = nil } }
+            repeat {
+                self.calculationAgain = false
+                let now = Instant(Date())
+                let zone = TimeZone.current.identifier
+                let started = ContinuousClock.now
+                do {
+                    let result = try await Task.detached(priority: .utility) {
+                        try store.calculateLocally(now: now, zone: zone)
+                    }.value
+                    guard generation == self.storeGeneration, !Task.isCancelled else { return }
+                    if let result { try store.storeLocalState(result) }
+                } catch {
+                    guard generation == self.storeGeneration, !Task.isCancelled else { return }
+                    self.log.error("local calculation failed: \(String(describing: type(of: error)), privacy: .public)")
+                }
+                let elapsed = started.duration(to: .now).components
+                let milliseconds = Double(elapsed.seconds) * 1000 + Double(elapsed.attoseconds) / 1e15
+                try? store.setValue(String(format: "%.2f", milliseconds), for: "local_calculation_duration_ms")
+                self.refresh()
+                self.publishWidget(foreground: UIApplication.shared.applicationState == .active)
+            } while self.calculationAgain && !Task.isCancelled
+        }
+        calculationWork = work
+        await work.value
     }
+
 }
 
 /// Background time from iOS, released exactly once: when the work ends, or

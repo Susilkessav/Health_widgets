@@ -37,6 +37,20 @@ INLINE_BUDGET_SECONDS = 10
 log = logging.getLogger("homeostat.api")
 
 
+class BodyTooLarge(Exception):
+    pass
+
+
+async def bounded_body(request: Request, limit: int = MAX_BODY_BYTES) -> bytes:
+    """Stop receiving once the cap is exceeded, even without Content-Length."""
+    body = bytearray()
+    async for chunk in request.stream():
+        if len(chunk) > limit - len(body):
+            raise BodyTooLarge
+        body.extend(chunk)
+    return bytes(body)
+
+
 class JsonFormatter(logging.Formatter):
     """One JSON object per line: the message plus the structured `event` fields."""
 
@@ -149,8 +163,9 @@ def create_app(runtime: Runtime | None = None, clock: Clock = system_clock, sett
         declared = request.headers.get("content-length")
         if declared and declared.isdigit() and int(declared) > MAX_BODY_BYTES:
             return error(413, "BODY_TOO_LARGE")
-        body = await request.body()
-        if len(body) > MAX_BODY_BYTES:
+        try:
+            body = await bounded_body(request)
+        except BodyTooLarge:
             return error(413, "BODY_TOO_LARGE")
         return await run_in_threadpool(handle_sync, user_id, body)
 

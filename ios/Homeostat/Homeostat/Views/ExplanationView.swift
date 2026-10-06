@@ -6,12 +6,15 @@ import SwiftUI
 /// recalculated, and a missing value says so.
 struct ExplanationView: View {
     let state: ReturnedState
+    var message: String? = nil
+    @EnvironmentObject private var model: AppModel
 
     var health: JSONValue { state.healthState }
 
     var body: some View {
         List {
             Section {
+                if let message { Text(message).foregroundStyle(.secondary) }
                 let p = state.widgetState.presentation
                 Text("\(p.icon) \(p.headline)").font(.headline)
                 if let detail = p.detail { Text(detail) }
@@ -20,9 +23,9 @@ struct ExplanationView: View {
                     Text("Not enough data to explain this").foregroundStyle(.secondary)
                 }
                 if let missing = state.widgetState.avatar?.missingInputs, !missing.isEmpty {
-                    LabeledContent("No reading today", value: missing.map(\.displayName).joined(separator: ", "))
+                    LabeledContent(model.isCurrent(state) ? "No reading today" : "No reading for this result", value: missing.map(\.displayName).joined(separator: ", "))
                 }
-                LabeledContent("Day", value: state.isToday ? "\(state.day) (today)" : state.day)
+                LabeledContent("Day", value: model.isCurrent(state) ? "\(state.day) (today)" : state.day)
                 LabeledContent("Data as of", value: state.effectiveAt.date.formatted(date: .abbreviated, time: .shortened))
             }
             Section("States") {

@@ -62,7 +62,7 @@ public struct SharedWidgetStore: Sendable {
 
     public func read() -> ReadResult {
         do {
-            return try coordinated { manifest in
+            return try coordinated(readOnly: true) { manifest in
                 guard let cache = manifest.cache else { return .none }
                 guard cache.schema == WidgetCache.currentSchema, Self.supported(cache.widgetState.version) else {
                     return .unreadable(.version)
@@ -71,28 +71,37 @@ public struct SharedWidgetStore: Sendable {
             }
         } catch {
             if let data = try? Data(contentsOf: fileURL), let probe = try? JSONDecoder().decode(Probe.self, from: data),
-               probe.schema != 1 { return .unreadable(.version) }
+               ![1, 2].contains(probe.schema) { return .unreadable(.version) }
             return .unreadable(.unavailable)
         }
     }
 
     public func manifest() throws -> WidgetManifest {
-        try coordinated { $0 }
+        try coordinated(readOnly: true) { $0 }
     }
 
     /// All readers and writers in both processes coordinate this same file.
     /// Never perform network or Keychain work inside the synchronous closure.
-    public func coordinated<T>(reset: Bool = false, recoverCorrupt: Bool = false, _ body: (inout WidgetManifest) throws -> T) throws -> T {
-        try FileManager.default.createDirectory(at: fileURL.deletingLastPathComponent(), withIntermediateDirectories: true)
+    public func coordinated<T>(reset: Bool = false, recoverCorrupt: Bool = false, readOnly: Bool = false,
+                               _ body: (inout WidgetManifest) throws -> T) throws -> T {
+        if readOnly, !FileManager.default.fileExists(atPath: fileURL.path) {
+            var empty = WidgetManifest()
+            return try body(&empty)
+        }
+        if !readOnly {
+            try FileManager.default.createDirectory(at: fileURL.deletingLastPathComponent(), withIntermediateDirectories: true)
+        }
         let coordinator = NSFileCoordinator()
         var coordinationError: NSError?
         var result: Result<T, Error>?
-        coordinator.coordinate(writingItemAt: fileURL, options: [], error: &coordinationError) { url in
+        let access: (URL) -> Void = { url in
             result = Result {
                 let data = try? Data(contentsOf: url)
                 var manifest: WidgetManifest
                 if reset { manifest = WidgetManifest() }
                 else if let data {
+                    if let probe = try? JSONDecoder().decode(Probe.self, from: data),
+                       ![1, 2].contains(probe.schema) { throw CocoaError(.fileReadUnknown) }
                     if let decoded = try? JSONDecoder().decode(WidgetManifest.self, from: data) {
                         guard decoded.schema == 2 else { throw CocoaError(.fileReadUnknown) }
                         manifest = decoded
@@ -105,15 +114,34 @@ public struct SharedWidgetStore: Sendable {
                 } else if FileManager.default.fileExists(atPath: url.path) {
                     throw CocoaError(.fileReadNoPermission)
                 } else { manifest = WidgetManifest() }
+                let originalCache = manifest.cache
                 let value = try body(&manifest)
+                if readOnly { return value }
                 let encoder = JSONEncoder()
                 encoder.outputFormatting = [.sortedKeys]
-                let encoded = try encoder.encode(manifest)
+                var encoded = try encoder.encode(manifest)
+                // Fetch metadata updates must preserve a newer nested avatar
+                // that this reader intentionally renders as unknown.
+                if !reset, let data,
+                   let raw = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                   raw["schema"] as? Int == 2,
+                   var next = try JSONSerialization.jsonObject(with: encoded) as? [String: Any] {
+                    for (key, value) in raw where !["schema", "cache", "configuration", "fetch"].contains(key) {
+                        next[key] = value
+                    }
+                    if originalCache == manifest.cache, let cache = raw["cache"] { next["cache"] = cache }
+                    encoded = try JSONSerialization.data(withJSONObject: next, options: [.sortedKeys])
+                }
                 if data != encoded {
                     try encoded.write(to: url, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
                 }
                 return value
             }
+        }
+        if readOnly {
+            coordinator.coordinate(readingItemAt: fileURL, options: [], error: &coordinationError, byAccessor: access)
+        } else {
+            coordinator.coordinate(writingItemAt: fileURL, options: [], error: &coordinationError, byAccessor: access)
         }
         if let coordinationError { throw coordinationError }
         guard let result else { throw CocoaError(.fileWriteUnknown) }

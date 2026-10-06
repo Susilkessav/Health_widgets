@@ -124,6 +124,7 @@ struct DayLabel: View {
 /// The avatar at the entry's time, so lighting and fading follow the timeline.
 struct EntryAvatar: View {
     @Environment(\.redactionReasons) private var redaction
+    @Environment(\.widgetRenderingMode) private var renderingMode
     let entry: Entry
     let framing: AvatarFraming
 
@@ -132,7 +133,7 @@ struct EntryAvatar: View {
         let avatar = AvatarView(identity: entry.identity,
                                 avatar: WidgetPolicy.avatar(entry.display, redacted: redacted) ?? .unknown,
                                 time: Instant(entry.date), zone: Zone(TimeZone.current.identifier) ?? Zone("UTC")!,
-                                framing: framing)
+                                framing: framing, accented: renderingMode != .fullColor)
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
         if redacted {
             avatar.accessibilityLabel("Avatar")  // not "typical look": the real state is hidden

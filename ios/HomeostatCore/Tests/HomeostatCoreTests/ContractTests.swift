@@ -120,3 +120,26 @@ final class ContractTests: XCTestCase {
         }
     }
 }
+
+/// JSONValue.parse (the fast event-log path) must equal the Codable decoder.
+final class JSONValueParseTests: XCTestCase {
+    func testMatchesTheDecoderOnEdgeCasesAndTheWholeSyntheticCorpus() throws {
+        for text in ["1", "1.0", "1.5", "1e2", "-0", "-0.0", "9223372036854775807", "9223372036854775808", "1.0e0",
+                     "true", "false", "null", "0.1", "-3.25e-5", #""aé\n""#, #"{"a":[1,2.5,{"b":null}],"c":"’"}"#] {
+            let data = Data(text.utf8)
+            XCTAssertEqual(try JSONValue.parse(data), try JSONDecoder().decode(JSONValue.self, from: data), text)
+        }
+        let data = fixtures.deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+            .deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent("data/synthetic")
+        var checked = 0
+        for case let url as URL in FileManager.default.enumerator(at: data, includingPropertiesForKeys: nil)!
+            where url.lastPathComponent == "events.jsonl" {
+            for line in try String(contentsOf: url, encoding: .utf8).split(separator: "\n") {
+                let bytes = Data(line.utf8)
+                XCTAssertEqual(try JSONValue.parse(bytes), try JSONDecoder().decode(JSONValue.self, from: bytes))
+                checked += 1
+            }
+        }
+        XCTAssertGreaterThan(checked, 1000)
+    }
+}

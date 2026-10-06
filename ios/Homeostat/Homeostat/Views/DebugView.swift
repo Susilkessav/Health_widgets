@@ -95,7 +95,7 @@ struct DebugView: View {
             .sheet(isPresented: $model.showingExplanation) {
                 NavigationStack {
                     if let state = model.explanationState {
-                        ExplanationView(state: state)
+                        ExplanationView(state: state, message: model.explanationMessage)
                     } else {
                         Text(model.explanationMessage ?? "No result yet.").padding()
                     }
@@ -111,14 +111,14 @@ struct DebugView: View {
             if let state = model.snapshot.state {
                 // An earlier day's result doesn't show its eyes, posture or movement as today's.
                 let avatar = state.widgetState.avatar ?? .unknown
-                LiveAvatarView(identity: model.identity, avatar: state.isToday ? avatar : avatar.withoutDailyTraits)
+                LiveAvatarView(identity: model.identity, avatar: model.isCurrent(state) ? avatar : avatar.withoutDailyTraits)
                     .frame(height: 260)
                     .listRowInsets(EdgeInsets())
                 let widget = state.widgetState.presentation
                 Text("\(widget.icon) \(widget.headline)").font(.headline)
                 if let detail = widget.detail { Text(detail) }
                 if let secondary = widget.secondary { Text(secondary).foregroundStyle(.secondary) }
-                LabeledContent("For", value: state.isToday ? "today (\(state.day))" : state.day)
+                LabeledContent("For", value: model.isCurrent(state) ? "today (\(state.day))" : state.day)
                 LabeledContent("Updated", value: state.widgetState.freshness.lastUpdatedAt.date
                     .formatted(date: .abbreviated, time: .shortened))
                 LabeledContent("Revision / run", value: "\(state.inputRevision) / \(state.runID)")

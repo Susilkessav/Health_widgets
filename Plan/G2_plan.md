@@ -7,6 +7,8 @@ Progress checklist and design steps: [G2_tracker.md](G2_tracker.md).
 
 Current code fixes and verification order: [G2_fix_plan_2026_10_05.md](G2_fix_plan_2026_10_05.md).
 
+The follow-up code fixes are implemented; the linked plan records automated results separately from remaining physical acceptance. Final asset requirements: [G2_art_brief.md](G2_art_brief.md).
+
 ## 0. Purpose
 
 G2 replaces the G1 emoji presentation with a semi-realistic, customizable avatar
@@ -82,7 +84,7 @@ Record the outcome of each decision in this table before its dependent task begi
 |---|---|---|---|
 | D1 | Renderer | **Layered 2.5D images composited in SwiftUI** for widget and app; evaluate Rive for in-app motion in T9 only. Prototype: shapes drawn in a Canvas (§4b) | WidgetKit renders static snapshots, so a layered renderer is required anyway. |
 | D2 | Where the mapper runs | **On the phone (Swift)**, with a **Python reference** checked by `engine_parity.json` | Matches the G1 rule: Python stays the reference, Swift must match the parity fixture. All 170 checkpoints become avatar goldens for free. |
-| D3 | Where decay is evaluated | The mapper emits `started_at`, `peak_intensity` and `half_life`; **the Swift renderer evaluates intensity at the render time** | Widget timeline entries can fade sweat with no recalculation. Decay is display math, so it needs no Python twin. |
+| D3 | Where decay is evaluated | The mapper emits `started_at`, `peak` and `half_life_minutes`; **the Swift renderer evaluates intensity at the render time** | Widget timeline entries can fade sweat with no recalculation. Decay is display math, so it needs no Python twin. |
 | D4 | Decay formula | `intensity(t) = peak · 0.5^((t − started_at) / half_life)`, 0 below 0.05 | One formula, one Swift unit test. |
 | D5 | Where `AvatarIdentity` lives | **App Group JSON file next to the widget cache**, separate from `WidgetCache` | Identity is not health data, never goes to the server, and must survive recalculation and scope resets. |
 | D6 | Art source | **Decided 2026-10-05: keep the code-drawn placeholder (`AvatarPainter`) for now**; final art replaces it later via §4b | Unblocks device acceptance of the prototype; art can change without touching the contract, widget or tests. |
@@ -140,8 +142,7 @@ with no new plumbing.
 
 ## 4a. Implementation record (2026-10-05)
 
-Built with placeholder art: T1–T4 and T6–T10. Open: T0 decisions D6/D10, T5 final
-art, T11 review, T12 device acceptance.
+Built with placeholder art: T1–T4 and T6–T10. T0 decisions and the art brief are complete. Open: T5 replacement artwork, T11 review and T12 device acceptance. Follow-up fixes and current checks are recorded in G2_fix_plan_2026_10_05.md.
 
 | Area | Where |
 |---|---|
@@ -251,6 +252,30 @@ no feature or engine version and no `settings_sha256`. On the phone, old caches
 still render: `widget-state@0.1.x` has no avatar and draws the neutral
 `.unknown` avatar, and an invalid or newer avatar does the same.
 
+## 4d. T11 review of the placeholder art (2026-10-06)
+
+Reviewed against principles 3.5 (show uncertainty) and 3.7 (non-judgmental), on
+the contact sheets and the 24 snapshot references. "Device" items need the T12
+iPhone run; nothing here marks T11 accepted.
+
+| Check | Result |
+|---|---|
+| No shaming or illness cues: tired = heavier lids and a flat (never sad) mouth; low posture = lower, narrower shoulders and a slight tilt | Pass (inspection) |
+| Body silhouette never changes with health data; only the chosen slim/broad body | Pass (code: health has no input to body width) |
+| Uncertainty visible: hourglass while calibrating, question mark for low confidence or missing data; marker top-left, clear of the sun/moon | Pass (snapshots) |
+| Missing inputs explained in words, not drawn (decision 10) | Pass (tests) |
+| Privacy: redacted widget is a neutral standing figure, no effects or marker | Pass (tests, snapshots) |
+| VoiceOver text names what is drawn and the recorded cause; no feeling words | Pass (tests: banned-word check) |
+| Swatches: 44 pt targets, spoken names | Pass (code); Device: confirm with VoiceOver |
+| Eyes readable for every skin tone, with and without glasses | Pass (snapshots, deepest skin + glasses) |
+| Night contrast | Pass (lighter night wash; night snapshots) |
+| Dark mode: dimmed backdrop | Pass (snapshots); Device: Home Screen |
+| Tinted Home Screen: one-colour figure, eyes/glasses/mouth as cutouts, glow as a dashed outline, marker symbol without a disc | Pass (simulated sheet, snapshots); Device: real tinted and clear Home Screens |
+| Increased contrast: outlines, eye whites, thicker glasses, solid marker, no wash | Pass (snapshots); Device: Settings → Accessibility → Display |
+| Reduce Motion: still pose, lighting and fading continue (minute clock) | Pass (code); Device |
+| Dynamic Type for the widget/app text | Device |
+| Poses: catching breath, stretching, walking, still (hands together in front), standing; posture visible in each | Pass (contact sheet) |
+
 ## 5. Tasks
 
 Tracks: **P** = Python reference, **S** = Swift core (`HomeostatCore`/`HomeostatShared`),
@@ -273,8 +298,8 @@ Tracks: **P** = Python reference, **S** = Swift core (`HomeostatCore`/`Homeostat
 
 - `backend/app/contracts/avatar_state.py`: `AvatarState`
   (`version = "avatar-state@0.1.0"`), one frozen model per §4 channel, and
-  `Effect` (`channel`, `peak_intensity`, `started_at`, `half_life_minutes`,
-  `confidence`, `driver_id`) for decaying channels.
+  `Effect` (`kind`, `peak`, `started_at`, `half_life_minutes`) for decaying channels.
+  Per-channel driver IDs live in `AvatarState.evidence`.
 - Reuse `_types.py` (`Frozen`, `Confidence`, `FiniteFloat`, `NonEmptyStr`).
 - `WidgetState` → `widget-state@0.2.0` with `avatar: AvatarState`. Keep
   `presentation` as the text line, the fallback and the VoiceOver source.
@@ -286,7 +311,7 @@ unknown fields rejected, version).
 
 ### T2 — Reference mapper, Python (P)
 
-- `backend/app/avatar.py`: pure `map_avatar_state(state: HealthState) -> AvatarState`
+- `backend/app/presentation.py`: pure `map_avatar_state(state: HealthState) -> AvatarState`
   implementing §4 and D7. Constants at the top of the file (D8).
 - Call it from `map_widget_state` so `run_checkpoint` and the API emit v0.2.
 - Regenerate `engine_parity.json` and `widget_states.jsonl`
@@ -487,8 +512,7 @@ T0 (decisions) ─► T5 (final art) ─► T6 painter swap (§4b) ─► T11 �
 G1 iPhone acceptance ──────────────────────────────────────────────────────┴─► T12 G2 accepted
 ```
 
-Status 2026-10-05: T1–T3 and T6–T10 built with placeholder art; T4 needs a
-phone database; T0 (D6, D10), T5, T11 and T12 are open.
+Status 2026-10-05: T0 decisions/brief, T1–T4 and T6–T10 are complete for the prototype. Existing T4 phone-database evidence is in the tracker. T5 final artwork, T11 review and T12 device acceptance remain open.
 
 ## 7. Risks
 

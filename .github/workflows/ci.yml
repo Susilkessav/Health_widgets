@@ -38,20 +38,28 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v5
+      - name: Select required Xcode SDK
+        run: |
+          set -euo pipefail
+          selected=""
+          for candidate in /Applications/Xcode*.app; do
+            if DEVELOPER_DIR="$candidate/Contents/Developer" xcodebuild -showsdks 2>/dev/null | grep -q 'iphonesimulator27'; then
+              selected="$candidate/Contents/Developer"
+              break
+            fi
+          done
+          if [ -z "$selected" ]; then
+            echo "::error::The app requires the iOS 27 SDK. Use a runner with Xcode 27; this build cannot be skipped."
+            exit 1
+          fi
+          echo "DEVELOPER_DIR=$selected" >> "$GITHUB_ENV"
+          DEVELOPER_DIR="$selected" xcodebuild -version
       - name: Swift package tests (engine parity, widget cache, avatar)
         working-directory: ios/HomeostatCore
         run: swift test
       - name: App and widget build (needs Xcode 27)
         working-directory: ios/Homeostat
-        # The project uses Xcode 27's file format and targets iOS 27, which older
-        # Xcode can't open. Skips with a warning until the runner image has it.
         run: |
-          XCODE=$(ls -d /Applications/Xcode_27*.app 2>/dev/null | sort -V | tail -1)
-          if [ -z "$XCODE" ]; then
-            echo "::warning::No Xcode 27 on this runner; app build skipped (package tests above still ran)."
-            exit 0
-          fi
-          sudo xcode-select -s "$XCODE"
           xcodebuild -project Homeostat.xcodeproj -scheme Homeostat \
             -destination 'generic/platform=iOS Simulator' -configuration Debug \
             CODE_SIGNING_ALLOWED=NO build

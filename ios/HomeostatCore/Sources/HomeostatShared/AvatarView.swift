@@ -31,7 +31,7 @@ public enum AvatarPose: String, Sendable, CaseIterable {
     case still
     case standing
 
-    /// Glow intensity above which the avatar still stretches (about the first two hours).
+    /// Stretching ends after 51–211 minutes for displayed peaks 0.5–1.
     static let stretchingGlow = 0.4
 
     public init(_ a: AvatarState, at time: Instant) {
@@ -61,9 +61,14 @@ public struct AvatarView: View {
     /// 0...1 breathing phase and eyelid closure from the app's animation.
     public var breath: Double
     public var blink: Double
+    /// Tinted or clear Home Screen (WidgetKit's accented/vibrant rendering): iOS keeps
+    /// only opacity, so the avatar is drawn as a one-colour figure with see-through features.
+    public var accented: Bool
+    @Environment(\.colorScheme) private var scheme
+    @Environment(\.colorSchemeContrast) private var contrast
 
     public init(identity: AvatarIdentity, avatar: AvatarState, time: Instant, zone: Zone,
-                framing: AvatarFraming = .fullBody, breath: Double = 0, blink: Double = 0) {
+                framing: AvatarFraming = .fullBody, breath: Double = 0, blink: Double = 0, accented: Bool = false) {
         self.identity = identity
         self.avatar = avatar
         self.time = time
@@ -71,14 +76,16 @@ public struct AvatarView: View {
         self.framing = framing
         self.breath = breath
         self.blink = blink
+        self.accented = accented
     }
 
     public var body: some View {
         let painter = AvatarPainter(identity: identity.valid, avatar: avatar, time: time,
                                     lighting: Lighting(at: time, zone: zone), framing: framing,
-                                    breath: breath, blink: blink)
+                                    breath: breath, blink: blink, accented: accented, dark: scheme == .dark,
+                                    highContrast: contrast == .increased)
         Canvas { context, size in painter.draw(&context, size) }
-            .overlay(alignment: .topTrailing) { marker }
+            .overlay(alignment: .topLeading) { marker }
             .accessibilityElement()
             .accessibilityLabel(AvatarDescription.text(avatar, at: time))
     }
@@ -87,9 +94,11 @@ public struct AvatarView: View {
         if let symbol = avatar.uncertainty.symbol {
             Image(systemName: symbol)
                 .font(.caption2.weight(.semibold))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(contrast == .increased ? .primary : .secondary)
                 .padding(4)
-                .background(.thinMaterial, in: Circle())
+                // Tinted: symbol only, since a filled circle would swallow it in a single tint.
+                .background(accented ? AnyShapeStyle(.clear)
+                            : contrast == .increased ? AnyShapeStyle(.background) : AnyShapeStyle(.thinMaterial), in: Circle())
                 .padding(6)
         }
     }
@@ -136,7 +145,7 @@ public enum AvatarDescription {
         }
         switch a.uncertainty {
         case .calibrating: parts.append("hourglass: still learning your usual")
-        case .lowConfidence: parts.append("question mark: some data is missing")
+        case .lowConfidence: parts.append("question mark: some signals have low confidence or missing data")
         case .none: break
         }
         return parts.isEmpty ? "Avatar, typical look" : "Avatar; " + parts.joined(separator: "; ")
@@ -169,16 +178,31 @@ struct AvatarPainter {
     let framing: AvatarFraming
     let breath: Double
     let blink: Double
-
+    var accented = false
+    /// Dark mode: a dimmer backdrop so the widget doesn't glare beside dark ones.
+    var dark = false
+    /// Increased contrast: outlines, eye whites, thicker glasses and no colour wash.
+    var highContrast = false
 
     var sky: Color {
-        switch lighting {
-        case .morning: rgb(0.99, 0.92, 0.80)
-        case .day: rgb(0.84, 0.92, 0.99)
-        case .evening: rgb(0.90, 0.78, 0.88)
+        // Night is already dark; the other skies dim by a quarter in dark mode.
+        let k = dark ? 0.75 : 1
+        return switch lighting {
+        case .morning: rgb(0.99 * k, 0.92 * k, 0.80 * k)
+        case .day: rgb(0.84 * k, 0.92 * k, 0.99 * k)
+        case .evening: rgb(0.90 * k, 0.78 * k, 0.88 * k)
         case .night: rgb(0.20, 0.22, 0.38)
         }
     }
+
+    /// Identity colours, or a fixed light palette when tinted: iOS turns colour into
+    /// opacity there, so lighter parts stay solid and dark details (eyes, mouth) read as cutouts.
+    var skin: Color { accented ? rgb(0.97, 0.97, 0.97) : AvatarPalette.skins[identity.skinTone] }
+    var hair: Color { accented ? rgb(0.55, 0.55, 0.55) : AvatarPalette.hairs[identity.hairColor] }
+    var outfit: (top: Color, bottom: Color) {
+        accented ? (rgb(0.78, 0.78, 0.78), rgb(0.62, 0.62, 0.62)) : AvatarPalette.outfits[identity.outfit]
+    }
+    var ink: Color { rgb(0.17, 0.15, 0.15) }
 
     /// Tints the avatar to match the light, so one drawing serves every time of day.
     var wash: (Color, Double) {
@@ -186,14 +210,14 @@ struct AvatarPainter {
         case .morning: (rgb(1, 0.85, 0.6), 0.10)
         case .day: (.white, 0)
         case .evening: (rgb(1, 0.6, 0.45), 0.14)
-        case .night: (rgb(0.35, 0.45, 1), 0.22)
+        case .night: (rgb(0.35, 0.45, 1), 0.12)
         }
     }
 
     func draw(_ c: inout GraphicsContext, _ size: CGSize) {
         let bounds = CGRect(origin: .zero, size: size)
         c.clip(to: Path(roundedRect: bounds, cornerRadius: min(size.width, size.height) * 0.12))
-        drawEnvironment(&c, bounds)
+        if !accented { drawEnvironment(&c, bounds) }  // tinted: the figure alone, on the system's tint
 
         // Avatar space: 100 x 200, centred, feet (or waist) on the bottom edge.
         let v = framing.visible
@@ -202,9 +226,15 @@ struct AvatarPainter {
         a.translateBy(x: (size.width - v.width * scale) / 2 - v.minX * scale, y: size.height - v.maxY * scale)
         a.scaleBy(x: scale, y: scale)
         a.drawLayer { layer in
+            if accented {
+                // Filters apply per drawing operation, so convert the finished figure as one layer.
+                layer.addFilter(.luminanceToAlpha)
+                layer.drawLayer { figure in drawFigure(&figure) }
+                return
+            }
             drawFigure(&layer)
             let (color, amount) = wash
-            if amount > 0 {
+            if amount > 0, !accented, !highContrast {
                 layer.blendMode = .sourceAtop
                 layer.fill(Path(CGRect(x: -50, y: -50, width: 200, height: 300)), with: .color(color.opacity(amount)))
             }
@@ -240,15 +270,16 @@ struct AvatarPainter {
     }
 
     func drawFigure(_ c: inout GraphicsContext) {
-        let skin = AvatarPalette.skins[identity.skinTone], hair = AvatarPalette.hairs[identity.hairColor]
-        let (top, bottom) = AvatarPalette.outfits[identity.outfit]
+        let (top, bottom) = outfit
         let width = identity.body == 0 ? 1.0 : 1.18
-        // Posture (D10 placeholder): a lower head and shoulders, and a slight tilt when low.
-        let drop: Double = switch avatar.posture { case .upright: -1; case .neutral: 1.5; case .low: 5 }
-        let tilt: Double = avatar.posture == .low ? 5 : 0
+        // Posture: upright lifts the head and squares the shoulders; low drops and
+        // narrows them and tilts the head (D10: applies in every pose).
+        let drop: Double = switch avatar.posture { case .upright: -3; case .neutral: 1; case .low: 6 }
+        let squared: Double = switch avatar.posture { case .upright: 1.06; case .neutral: 1; case .low: 0.93 }
+        let tilt: Double = avatar.posture == .low ? 6 : 0
         let pose = AvatarPose(avatar, at: time)
         let shoulderY = 62 + drop * 0.6 - breath * 0.8, headY = 34 + drop - breath * 1.0
-        let shoulder = 17 * width, hip = 12.5 * width, hipY = 118.0, footY = 186.0
+        let shoulder = 17 * width * squared, hip = 12.5 * width, hipY = 118.0, footY = 186.0
 
         // Activity glow behind the body.
         let glow = avatar.intensity(of: .glow, at: time)
@@ -259,9 +290,14 @@ struct AvatarPainter {
             default: rgb(0.62, 0.50, 0.95)
             }
             let halo = CGRect(x: 50 - 38 * width, y: 16, width: 76 * width, height: 176)
+            if accented {
+                c.stroke(Path(ellipseIn: halo.insetBy(dx: 6, dy: 6)), with: .color(.white.opacity(0.4 + 0.5 * glow)),
+                         style: StrokeStyle(lineWidth: 1.6, dash: [4, 3]))
+            } else {
             c.fill(Path(ellipseIn: halo), with: .radialGradient(
                 Gradient(colors: [color.opacity(0.45 * glow), color.opacity(0)]),
                 center: CGPoint(x: halo.midX, y: halo.midY), startRadius: 10, endRadius: 85))
+            }
         }
 
         // Legs and shoes: hip -> knee -> foot per side (left = -1), by pose.
@@ -282,10 +318,24 @@ struct AvatarPainter {
             path.addLine(to: foot)
             c.stroke(path, with: .color(bottom), style: StrokeStyle(lineWidth: 10 * width, lineCap: .round, lineJoin: .round))
             c.fill(Path(roundedRect: CGRect(x: foot.x - 6 + side * 2, y: foot.y - 2, width: 12, height: 6), cornerRadius: 3),
-                   with: .color(rgb(0.15, 0.15, 0.17)))
+                   with: .color(accented ? rgb(0.45, 0.45, 0.45) : rgb(0.15, 0.15, 0.17)))
         }
 
-        // Arms: shoulder -> elbow -> hand per side, skin, then a sleeve over the upper arm.
+        // Torso and hips.
+        var torso = Path()
+        torso.move(to: CGPoint(x: 50 - shoulder, y: shoulderY + 6))
+        torso.addQuadCurve(to: CGPoint(x: 50 - shoulder + 7, y: shoulderY), control: CGPoint(x: 50 - shoulder, y: shoulderY))
+        torso.addLine(to: CGPoint(x: 50 + shoulder - 7, y: shoulderY))
+        torso.addQuadCurve(to: CGPoint(x: 50 + shoulder, y: shoulderY + 6), control: CGPoint(x: 50 + shoulder, y: shoulderY))
+        torso.addLine(to: CGPoint(x: 50 + hip, y: hipY - 4))
+        torso.addLine(to: CGPoint(x: 50 - hip, y: hipY - 4))
+        torso.closeSubpath()
+        c.fill(Path(roundedRect: CGRect(x: 50 - hip, y: hipY - 8, width: hip * 2, height: 12), cornerRadius: 4),
+               with: .color(bottom))
+        c.fill(torso, with: .color(top))
+        if highContrast { c.stroke(torso, with: .color(ink), lineWidth: 0.9) }
+
+        // Arms (in front of the torso): shoulder -> elbow -> hand per side, skin, then a sleeve.
         func arm(_ side: Double, from s: CGPoint) -> (elbow: CGPoint, hand: CGPoint) {
             switch pose {
             case .catchingBreath:  // hands on hips
@@ -294,8 +344,8 @@ struct AvatarPainter {
                 return (CGPoint(x: s.x + side * 3, y: s.y - 20), CGPoint(x: s.x + side * 1, y: s.y - 42))
             case .walking:  // bent, pumping
                 return (CGPoint(x: s.x + side * 4, y: s.y + 21), CGPoint(x: s.x - side * (side < 0 ? 3 : 1), y: s.y + 33))
-            case .still:
-                return (CGPoint(x: s.x + side * 1, y: s.y + 22), CGPoint(x: s.x + side * 1.5, y: s.y + 42))
+            case .still:  // hands together in front
+                return (CGPoint(x: s.x + side * 1, y: s.y + 24), CGPoint(x: 50 + side * 2.5, y: hipY - 14))
             default:
                 return (CGPoint(x: s.x + side * 3, y: s.y + 22), CGPoint(x: s.x + side * 6, y: s.y + 42))
             }
@@ -314,18 +364,6 @@ struct AvatarPainter {
             c.stroke(sleeve, with: .color(top), style: StrokeStyle(lineWidth: 8, lineCap: .round))
         }
 
-        // Torso and hips.
-        var torso = Path()
-        torso.move(to: CGPoint(x: 50 - shoulder, y: shoulderY + 6))
-        torso.addQuadCurve(to: CGPoint(x: 50 - shoulder + 7, y: shoulderY), control: CGPoint(x: 50 - shoulder, y: shoulderY))
-        torso.addLine(to: CGPoint(x: 50 + shoulder - 7, y: shoulderY))
-        torso.addQuadCurve(to: CGPoint(x: 50 + shoulder, y: shoulderY + 6), control: CGPoint(x: 50 + shoulder, y: shoulderY))
-        torso.addLine(to: CGPoint(x: 50 + hip, y: hipY - 4))
-        torso.addLine(to: CGPoint(x: 50 - hip, y: hipY - 4))
-        torso.closeSubpath()
-        c.fill(Path(roundedRect: CGRect(x: 50 - hip, y: hipY - 8, width: hip * 2, height: 12), cornerRadius: 4),
-               with: .color(bottom))
-        c.fill(torso, with: .color(top))
 
         // Head group, tilted about the neck.
         var h = c
@@ -337,17 +375,22 @@ struct AvatarPainter {
         }
         h.fill(Path(CGRect(x: 46, y: headY + 10, width: 8, height: shoulderY - headY - 8)), with: .color(skin))
         h.fill(Path(ellipseIn: CGRect(x: 37, y: headY - 15, width: 26, height: 30)), with: .color(skin))
+        if highContrast {
+            h.stroke(Path(ellipseIn: CGRect(x: 37, y: headY - 15, width: 26, height: 30)), with: .color(ink), lineWidth: 0.9)
+        }
         drawFace(&h, headY: headY, skin: skin)
         drawHair(&h, headY: headY, hair: hair)
         if identity.glasses {
+            let frameColor = identity.skinTone >= 3 && !accented ? rgb(0.88, 0.88, 0.90) : rgb(0.15, 0.15, 0.17)
+            let frameWidth = highContrast ? 0.95 : 0.65
             for x in [45.5, 54.5] {
                 h.stroke(Path(ellipseIn: CGRect(x: x - 3.6, y: headY - 2.4, width: 7.2, height: 6.6)),
-                         with: .color(rgb(0.15, 0.15, 0.17)), lineWidth: 0.9)
+                         with: .color(frameColor), lineWidth: frameWidth)
             }
             var bridge = Path()
             bridge.move(to: CGPoint(x: 49.1, y: headY + 0.6))
             bridge.addLine(to: CGPoint(x: 50.9, y: headY + 0.6))
-            h.stroke(bridge, with: .color(rgb(0.15, 0.15, 0.17)), lineWidth: 0.9)
+            h.stroke(bridge, with: .color(frameColor), lineWidth: frameWidth)
         }
         let sweat = avatar.intensity(of: .sweat, at: time)
         if sweat > 0 {
@@ -370,6 +413,9 @@ struct AvatarPainter {
         let lid = max(tired > 0 ? 0.25 + 0.45 * tired : 0, blink)
         for x in [45.5, 54.5] {
             let eye = CGRect(x: x - 1.9, y: headY + 1 - eyeHeight / 2, width: 3.8, height: eyeHeight)
+            if (identity.skinTone >= 3 || highContrast) && !accented {
+                c.fill(Path(ellipseIn: eye.insetBy(dx: -0.4, dy: -0.4)), with: .color(.white.opacity(0.9)))
+            }
             c.fill(Path(ellipseIn: eye), with: .color(ink))
             if avatar.eyes == .rested {
                 c.fill(Path(ellipseIn: CGRect(x: x - 0.4, y: eye.minY + 0.7, width: 1.1, height: 1.1)), with: .color(.white))

@@ -75,7 +75,7 @@ final class SharedWidgetStoreTests: XCTestCase {
         var future = try JSONEncoder().encode(cache(1, widget: widget(version: "widget-state@9.0.0")))
         try future.write(to: store.fileURL)
         XCTAssertEqual(store.read(), .unreadable(.version))
-        future = Data(#"{"schema": 2, "something": "new"}"#.utf8)
+        future = Data(#"{"schema": 9, "something": "new"}"#.utf8)
         try future.write(to: store.fileURL)
         XCTAssertEqual(store.read(), .unreadable(.version))
         try Data("{not json".utf8).write(to: store.fileURL)
@@ -238,11 +238,11 @@ final class AvatarDescriptionTests: XCTestCase {
         XCTAssertEqual(AvatarDescription.text(busy, at: NOW),
                        "Avatar; tired-looking eyes: shorter sleep than usual; lower posture: recovery signals below usual; "
                        + "livelier movement: more active than usual; sweat drops: workout just finished; "
-                       + "strength glow: recent workout; question mark: some data is missing")
+                       + "strength glow: recent workout; question mark: some signals have low confidence or missing data")
         // Faded effects are no longer described.
         XCTAssertEqual(AvatarDescription.text(busy, at: NOW.adding(seconds: 2 * 86_400)),
                        "Avatar; tired-looking eyes: shorter sleep than usual; lower posture: recovery signals below usual; "
-                       + "livelier movement: more active than usual; question mark: some data is missing")
+                       + "livelier movement: more active than usual; question mark: some signals have low confidence or missing data")
         XCTAssertEqual(AvatarDescription.text(AvatarState(), at: NOW), "Avatar, typical look")
         XCTAssertEqual(AvatarDescription.text(AvatarState(eyes: .tired, eyesIntensity: 0.2), at: NOW),
                        "Avatar; slightly tired-looking eyes: shorter sleep than usual")
@@ -466,5 +466,59 @@ final class AvatarPoseTests: XCTestCase {
         XCTAssertEqual(AvatarPose(AvatarState(), at: NOW), .standing)
         // A redacted widget's neutral avatar always stands.
         XCTAssertEqual(AvatarPose(WidgetPolicy.avatar(.fresh(cache(1)), redacted: true)!, at: NOW), .standing)
+    }
+}
+
+/// The hand-written Instant.parse (2026-10-06, for load speed) must equal the
+/// earlier regex + Calendar parser on every valid timestamp.
+final class InstantParseTests: XCTestCase {
+    /// The previous implementation, kept as the reference.
+    static func reference(_ text: String) -> Instant? {
+        let pattern = #"^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,9}))?(Z|[+-]\d{2}:\d{2})$"#
+        guard let match = text.wholeMatch(of: try! Regex(pattern)) else { return nil }
+        func group(_ i: Int) -> String? { match.output[i].substring.map(String.init) }
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "UTC")!
+        let base = calendar.date(from: DateComponents(year: Int(group(1)!), month: Int(group(2)!), day: Int(group(3)!),
+                                                      hour: Int(group(4)!), minute: Int(group(5)!), second: Int(group(6)!)))!
+        var micros = Int64(base.timeIntervalSince1970) * 1_000_000
+        if let fraction = group(7) { micros += Int64((fraction + "000000").prefix(6))! }
+        let zone = group(8)!
+        if zone != "Z" {
+            let sign: Int64 = zone.hasPrefix("-") ? -1 : 1
+            micros -= sign * (Int64(zone.dropFirst().prefix(2))! * 3600 + Int64(zone.suffix(2))! * 60) * 1_000_000
+        }
+        return Instant(microseconds: micros)
+    }
+
+    func testMatchesTheReferenceOnValidTimestamps() {
+        var rng = SystemRandomNumberGenerator()
+        for _ in 0..<20_000 {
+            let year = Int.random(in: 1900...2100, using: &rng), month = Int.random(in: 1...12, using: &rng)
+            let leap = year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)
+            let maxDay = [31, leap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month - 1]
+            var text = String(format: "%04d-%02d-%02dT%02d:%02d:%02d", year, month, Int.random(in: 1...maxDay, using: &rng),
+                              Int.random(in: 0...23, using: &rng), Int.random(in: 0...59, using: &rng),
+                              Int.random(in: 0...59, using: &rng))
+            let digits = Int.random(in: 0...9, using: &rng)
+            if digits > 0 { text += "." + (0..<digits).map { _ in String(Int.random(in: 0...9, using: &rng)) }.joined() }
+            text += Bool.random(using: &rng) ? "Z"
+                : String(format: "%@%02d:%02d", Bool.random(using: &rng) ? "+" : "-",
+                         Int.random(in: 0...14, using: &rng), [0, 30, 45].randomElement(using: &rng)!)
+            XCTAssertEqual(Instant.parse(text), Self.reference(text), text)
+        }
+        XCTAssertEqual(Instant.parse("2026-09-22T18:00:00Z"), NOW)
+        XCTAssertEqual(Instant.parse("2024-02-29T23:59:59.999999999+00:00"), Self.reference("2024-02-29T23:59:59.999999999+00:00"))
+        XCTAssertEqual(Instant.parse("1969-12-31T23:59:59.5Z")?.microseconds, -500_000)
+    }
+
+    func testRejectsMalformedAndImpossibleTimestamps() {
+        for text in ["", "2026-09-22", "2026-09-22T18:00:00", "2026-09-22 18:00:00Z", "2026-09-22T18:00:00z",
+                     "2026-09-22T18:00:00.Z", "2026-09-22T18:00:00.1234567890Z", "2026-09-22T18:00:00+0500",
+                     "2026-09-22T18:00:00Zjunk", "2026-13-01T00:00:00Z", "2026-02-29T00:00:00Z", "2026-04-31T00:00:00Z",
+                     "2026-09-22T24:00:00Z", "2026-09-22T18:60:00Z", "2026-09-22T18:00:60Z", "0000-01-01T00:00:00Z",
+                     "2026-09-22T18:00:00+24:00", "2026-09-22T18:00:00+05:60", "２０２６-09-22T18:00:00Z"] {
+            XCTAssertNil(Instant.parse(text), text)
+        }
     }
 }

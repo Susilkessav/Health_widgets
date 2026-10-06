@@ -17,7 +17,7 @@ struct HomeostatApp: App {
                     }
                 }
                 .onOpenURL { url in
-                    if url.host() == "explain" { delegate.model.openExplanation() }
+                    if url.scheme == "homeostat", url.host() == "explain" { delegate.model.openExplanation(url: url) }
                 }
         }
         .onChange(of: scenePhase) { _, phase in

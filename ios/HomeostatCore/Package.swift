@@ -20,7 +20,7 @@ let package = Package(
         // Fixtures are read from the source tree (see TestSupport.swift) so the
         // cross-language golden files can be regenerated in place.
         .testTarget(name: "HomeostatCoreTests", dependencies: ["HomeostatCore"], exclude: ["Fixtures"]),
-        .testTarget(name: "HomeostatSharedTests", dependencies: ["HomeostatShared"]),
+        .testTarget(name: "HomeostatSharedTests", dependencies: ["HomeostatShared"], exclude: ["Fixtures"]),
     ],
     swiftLanguageModes: [.v5]
 )

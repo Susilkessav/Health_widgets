@@ -103,18 +103,22 @@ def main() -> None:
     args = parser.parse_args()
     settings = load_settings()
     lower, through, observations, coverage, stored = load(args.store, args.zone)
-    cutoff = min(through.values())
+    cutoff = min(through.values()) if through else None
     checkpoints = []
     if stored:
         checkpoints.append(("phone", instant(stored["effective_at"])))
     day = local_date(lower, args.zone) + timedelta(days=1)
-    while local_day_start(day + timedelta(days=1), args.zone) <= cutoff:
+    while cutoff is not None and local_day_start(day + timedelta(days=1), args.zone) <= cutoff:
         checkpoints.append((f"close:{day}", local_day_start(day + timedelta(days=1), args.zone)))
         day += timedelta(days=1)
     results = {name: calculate(observations, coverage, args.zone, utc(at), settings) for name, at in checkpoints}
     with open(args.out, "w") as handle:
         json.dump(results, handle, indent=1, sort_keys=True, ensure_ascii=False)
-    print(f"{len(observations)} events, coverage through {cutoff.isoformat()}, {len(results)} checkpoints")
+    print(f"{len(observations)} events, coverage through {cutoff.isoformat() if cutoff else 'unavailable'}, "
+          f"{len(results)} checkpoints")
+    if not results:
+        print("No replayable coverage or stored result; no comparison was performed.", file=sys.stderr)
+        sys.exit(2)
 
     failures = 0
     if stored:

@@ -3,7 +3,7 @@
 Progress checklist for [G2_plan.md](G2_plan.md), which holds the full spec.
 Tick boxes as work lands and add a line to the log at the bottom.
 
-Follow-up fixes and acceptance checks: [G2_fix_plan_2026_10_05.md](G2_fix_plan_2026_10_05.md). These are planned; original completion boxes below have not been advanced.
+Follow-up fixes and acceptance evidence: [G2_fix_plan_2026_10_05.md](G2_fix_plan_2026_10_05.md). Code fixes are implemented; physical acceptance boxes below have not been advanced.
 
 **Status:** Built with placeholder art (2026-10-05) · **Gate:** waived for build; G1 acceptance still needed before T12
 **Can start now:** Design (D-phase), T0, T5
@@ -24,15 +24,15 @@ origin so layers line up without code offsets.
 ### D1. Concept
 - [ ] Mood board: 5–10 references (polished game/cartoon, not photoreal)
 - [x] Choose framing: **full body**, cropped waist-up in the small widget (D9)
-- [ ] Write the art brief (T0): style, widget readability, non-judgmental expressions
+- [x] Write the art brief (T0): [G2_art_brief.md](G2_art_brief.md); replacement assets still pending
 
 ### D2. Avatar layers (placeholder first, final art later)
 Canvas: 1024×2048 (full body), transparent, shared origin. Names must match the plan (T5).
 
 - [ ] `body/<pose>` for each `AvatarPose` (catching breath, stretching, walking, still, standing; D10), with a head anchor per pose; posture shifts the head and shoulders
-- [ ] `head/<skin>` ×3 skin tones
+- [ ] `head/<skin>` ×5 skin tones (match current identity)
 - [ ] `hair/<style>` ×3 (color = tint in code)
-- [ ] `outfit/<id>_<pose>` ×2 outfits × 3 poses
+- [ ] `outfit/<id>_<pose>` ×3 outfits × 5 situational poses
 - [ ] `glasses/<id>` ×1
 - [ ] `eyes/rested`, `eyes/neutral`, `eyes/tired_low|mid|high`
 - [ ] `undereye/low|high`
@@ -78,14 +78,14 @@ Start from Apple's iOS design kit for Figma (widget frames and safe margins).
 
 ## Decisions (T0) — record outcome in G2_plan.md §3
 
-- [ ] D1 Renderer: layered SwiftUI (Rive only if T9 needs it)
-- [ ] D2 Mapper: Swift on device, Python reference + parity
-- [ ] D3 Decay evaluated in Swift at render time
-- [ ] D4 Decay formula (half-life, 0.05 cut-off)
-- [ ] D5 Identity stored as App Group JSON, device only
+- [x] D1 Renderer: layered SwiftUI; code-drawn prototype, replacement art pending
+- [x] D2 Mapper: Swift on device, Python reference + parity
+- [x] D3 Decay evaluated in Swift at render time
+- [x] D4 Decay formula (half-life, 0.05 cut-off)
+- [x] D5 Identity stored as App Group JSON, device only
 - [x] D6 Art source: code-drawn placeholder for now; final art later (decided 2026-10-05)
-- [ ] D7 Low-confidence rule (neutral below 0.5, uncertainty marker)
-- [ ] D8 Tuning constants in code, not `homeostat.yaml`
+- [x] D7 Low-confidence rule (neutral below 0.5, uncertainty marker)
+- [x] D8 Tuning constants in code, not `homeostat.yaml`
 - [x] D9 Framing: full body, cropped per surface
 - [x] D10 Situational poses: catching breath, stretching, walking, still, standing (decided 2026-10-05)
 
@@ -95,7 +95,7 @@ Start from Apple's iOS design kit for Figma (widget frames and safe margins).
 
 | Task | Track | Needs | Done |
 |---|---|---|---|
-| T0 Decisions + art brief | all | — | [ ] |
+| T0 Decisions + art brief | all | — | [x] |
 | T1 `AvatarState` contract + `widget-state@0.2.0` (Python) | P | Gate | [x] |
 | T2 Reference mapper + regenerate parity fixtures | P | T1 | [x] |
 | T3 Swift mapper, decay, 0.1/0.2 cache support | S | T2 | [x] |
@@ -138,3 +138,8 @@ Start from Apple's iOS design kit for Figma (widget frames and safe margins).
 | 2026-10-05 | Decided and built: missing inputs named not drawn (item 10); effects zero before start with 5 min grace (11); neutral avatar and "Homeostat" headline when redacted (18) |
 | 2026-10-05 | D6: placeholder art for now. D10: situational poses (AvatarPose), posture still shifts head and shoulders |
 | 2026-10-05 | Pre-commit verification: backend 3,760 passed with PostgreSQL (server_wire.json regenerated for the avatar); Swift 114 passed; signed Debug build on iPhone 16 Pro Max (Personal Team), App Group in app and widget, HealthKit in app; T4: phone database (1,674 events, 46 checkpoints) stored result = Python, Swift = Python on all 46, avatar included |
+
+| 2026-10-05 | Follow-up code fixes: local-only refresh/lifecycle, rollover, registered/scoped widget links, cache preservation, exact effect/pose transitions, replay backup/empty handling, immutable settings, stream limits and fail-closed SDK selection. Verification: 3,769 Python tests including PostgreSQL; 122 Swift checks; simulator DB 286 events / 41 checkpoints matches Python; app/widget build passed. Twenty visual references and art brief added. T11/T12 remain open. |
+| 2026-10-06 | Verified the 2026-10-05 follow-up fixes (backend 3,769 with PostgreSQL; Swift 122; build). Added display modes (tinted: one-colour figure with see-through features and a dashed glow; increased contrast: outlines, eye whites, solid marker; dark: dimmed backdrop), clearer posture, 'still' as hands together, 24 reviewed snapshot references, T11 review of the placeholder (G2_plan.md §4d). Swift 123 passed; installed on iPhone 16 Pro Max. Untracked UserInterfaceState.xcuserstate. Open: T12 device checks, G1 acceptance, final art |
+| 2026-10-06 | Performance: phone reported 420.50 ms local calculation (Debug). Profiled on the phone's database (1,674 events): ~95% was loading, not the engine — Instant.parse compiled a regex per call (0.058 ms × ~5 timestamps × 1,674 events) and JSONDecoder→JSONValue took 96 ms. Replaced both with exact fast paths (20,000-timestamp and whole-corpus + phone-body equality tests). Mac on phone data: Debug ~500→112 ms, Release ~470→66 ms. Phone replay still identical (46 checkpoints). Installed; on-phone value to re-read |
+| 2026-10-06 | On iPhone 16 Pro Max (Debug build): local calculation 420.50 ms → 125.82 ms after the parsing fixes. Runs off the main thread; the 100 ms budget applies to Release builds (Mac Release on the same data: 66 ms) |

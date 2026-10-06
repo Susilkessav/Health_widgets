@@ -25,9 +25,16 @@ public enum WidgetPolicy {
         case .none: return .empty
         case .unreadable(let reason): return .unreadable(reason)
         case .state(let cache):
-            if cache.day != zone.day(of: now) { return .earlierDay(cache) }
+            if !isCurrent(day: cache.day, effectiveAt: cache.widgetState.effectiveAt, now: now, zone: zone) {
+                return .earlierDay(cache)
+            }
             return isStale(cache, now: now) ? .stale(cache) : .fresh(cache)
         }
+    }
+
+    /// A timezone change must not relabel an ambiguously dated calculation.
+    public static func isCurrent(day: LocalDay, effectiveAt: Instant, now: Instant, zone: Zone) -> Bool {
+        day == zone.day(of: now) && day == zone.day(of: effectiveAt)
     }
 
     /// The avatar a display draws (decided 2026-10-05). Today's result keeps its
@@ -66,6 +73,10 @@ public enum WidgetPolicy {
                     at = at.adding(seconds: step)
                 }
                 dates.append(effect.fadedAt)
+                dates.append(effect.startedAt.adding(seconds: -AvatarState.Effect.clockGraceSeconds))
+                if effect.kind == .glow, effect.peak > AvatarPose.stretchingGlow {
+                    dates.append(effect.firstAtOrBelow(AvatarPose.stretchingGlow))
+                }
             }
             dates = dates.filter { $0 <= midnight }
         }
