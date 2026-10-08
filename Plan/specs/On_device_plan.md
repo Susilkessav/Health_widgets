@@ -1,6 +1,7 @@
 # On-device calculation — plan (2026-09-30)
 
 Status: phases 1–4 implemented 2026-09-30; real-iPhone acceptance open.
+Widget self-refresh (the widget reads today's steps and runs the shared engine): Plan.md §4, decided 2026-10-06.
 
 Decision: Homeostat calculates on the iPhone for now. The FastAPI backend is
 kept, tested and documented, but it is no longer on the path from Health data

@@ -3,13 +3,13 @@
 Prepared: 2026-09-30. Status: **Approved; software implementation recorded in [Implementation_2026_09_30.md](Implementation_2026_09_30.md). Device acceptance remains open.**
 
 Implementation order and duplicate-data release gates are consolidated in the
-[Master implementation plan](Master_implementation_plan.md).
+[Master implementation plan](../Plan.md).
 
 This covers the remaining G1 acceptance work and the requested independent
 widget refresh. It extends the cache-only design in Step_14_16_plan.md. Existing
 health calculations, canonical data, replay and upload durability stay central.
 
-Future scope is specified in [Multiple sources and platforms](Multi_source_platform_architecture.md).
+Future scope is specified in [Multiple sources and platforms](../specs/Multi_source_platform_architecture.md).
 That plan carries forward every G1 gap here and defines the later connector,
 identity, selection and platform changes. Its future account-wide controls do
 not require implementing new providers before finishing G1.

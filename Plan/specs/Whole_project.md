@@ -1,5 +1,12 @@
 Homeostat — Project Overview
 
+Product revision (2026-10-08): the current data-based feature catalog, app/widget
+layouts, reactive behavior, accessibility and delivery phases are defined in
+[Product.md](../Product.md). [Plan.md](../Plan.md) is the
+execution authority. D-D brings the daily app/widget experience and optional
+manual energy check-ins before workout logging; design studies begin now.
+The broader vision below includes later capabilities, not implemented features.
+
 1. What is Homeostat?
 
 Homeostat is a personal health companion built around a living, customizable digital human avatar.

@@ -2,9 +2,10 @@ import HomeostatShared
 import SwiftUI
 import WidgetKit
 
-/// The Home Screen widget (Step 14-16 plan section 5). It only renders the
-/// server's WidgetState: no HealthKit or health calculation in the extension. The one
-/// decision it makes is how old what it shows is (WidgetPolicy).
+/// The Home Screen widget renders cached WidgetState, calculated by the app
+/// on device (or fetched through the optional server path). WidgetPolicy handles
+/// age and presentation. The M2 HealthKit step probe logs only; shared-engine
+/// recalculation in the extension remains M3 work.
 
 struct Entry: TimelineEntry {
     let date: Date
@@ -42,6 +43,7 @@ struct Provider: TimelineProvider {
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> Void) {
         Task {
+            await StepProbe.run()  // M2 prototype: logs only; the display below is unchanged
             if let store = SharedWidgetStore.shared() { await WidgetClient.refresh(store: store) }
             let result = read()
             let now = Instant(Date())

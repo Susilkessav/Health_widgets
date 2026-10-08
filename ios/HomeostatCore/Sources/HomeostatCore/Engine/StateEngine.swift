@@ -144,7 +144,7 @@ func joinNames(_ names: [String]) -> String {
 
 func workoutLabel(_ type: String?) -> String { workoutLabels[type ?? ""] ?? "Workout" }
 
-// Avatar tuning (Plan/G2_plan.md D8), as in presentation.py.
+// Avatar tuning (Plan/specs/G2_plan.md D8), as in presentation.py.
 let activityGroups: [String: AvatarState.Activity] = [
     "traditional_strength_training": .strength, "functional_strength_training": .strength,
     "running": .cardio, "walking": .cardio, "cycling": .cardio, "swimming": .cardio, "hiking": .cardio,

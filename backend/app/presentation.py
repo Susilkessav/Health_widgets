@@ -1,6 +1,6 @@
 """Presentation mapper: HealthState -> WidgetState, including the G2 AvatarState.
 
-The only place health meaning becomes icons and text (Plan/Step_4_plan.md
+The only place health meaning becomes icons and text (Plan/archive/Step_4_plan.md
 sections 5-6). Its constants are presentation policy: changing them never
 changes HealthState, the engine version or the config hash.
 """
@@ -29,7 +29,7 @@ WORKOUT_LABELS = {
     "hiking": "Hike",
 }
 INPUT_NAMES = {"sleep": "sleep", "hrv": "HRV", "rhr": "resting HR"}
-# Avatar tuning (Plan/G2_plan.md D8): constants here, not homeostat.yaml, so
+# Avatar tuning (Plan/specs/G2_plan.md D8): constants here, not homeostat.yaml, so
 # they never change settings_sha256. Unknown workout types get no activity art.
 ACTIVITY_GROUPS = {
     "traditional_strength_training": "strength",
@@ -127,7 +127,7 @@ def detail(state: HealthState, rule: Rule) -> str:
 
 
 def map_avatar_state(state: HealthState) -> AvatarState:
-    """One channel per domain (Plan/G2_plan.md section 4). Below the display
+    """One channel per domain (Plan/specs/G2_plan.md section 4). Below the display
     threshold a channel stays neutral, so uncertain data never looks negative."""
     def shown(domain: str, value: str) -> bool:
         return getattr(state, domain).state == value and displayable(state, domain)

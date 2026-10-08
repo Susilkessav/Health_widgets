@@ -23,6 +23,8 @@ final class AppModel: ObservableObject {
         var paused: String?
         var state: ReturnedState?
         var diagnostics: [String: String] = [:]
+        /// Newest first (M1 evidence, see trace).
+        var backgroundLog: [String] = []
     }
 
     @Published var baseURL: String = UserDefaults.standard.string(forKey: "baseURL") ?? "http://localhost:8000"
@@ -206,7 +208,7 @@ final class AppModel: ObservableObject {
             guard Keychain.write(key, for: keyID) else { throw CocoaError(.fileWriteNoPermission) }
             unusedKeyID = keyID
             let widget = WidgetBackendConfiguration(scope: stableScope, baseURL: url, accountID: account,
-                // Results are calculated on this iPhone (Plan/On_device_plan.md), so the
+                // Results are calculated on this iPhone (Plan/specs/On_device_plan.md), so the
                 // widget doesn't fetch server results; that returns with the server.
                 credentialID: credentialID, syncEnabled: false, allowInsecureDevelopment: allowHTTP)
             let settings = ActiveSettings(widget: widget, fileScope: fileScope, keyID: keyID)
@@ -597,14 +599,27 @@ final class AppModel: ObservableObject {
         }
     }
 
+    /// Background evidence (M1): a line in the system log and in a rolling log in
+    /// the app's database, so a pulled database copy shows what happened while
+    /// no debugger was attached. Event names and error codes only, never health values.
+    func trace(_ line: String) {
+        log.notice("\(line, privacy: .public)")
+        guard let store else { return }
+        let entry = ISO8601DateFormatter().string(from: Date()) + " " + line
+        let lines = ((try? store.value("background_log"))?.split(separator: "\n").map(String.init) ?? []) + [entry]
+        try? store.setValue(lines.suffix(60).joined(separator: "\n"), for: "background_log")
+    }
+
     private func handleObserverUpdate(_ type: SampleType?) async {
         guard let importer else { return }
         let name = type?.rawValue ?? "steps"
         let state = UIApplication.shared.applicationState == .active ? "active" : "background"
-        log.info("observer update: \(name, privacy: .public), app \(state, privacy: .public), protected data \(UIApplication.shared.isProtectedDataAvailable ? "available" : "locked", privacy: .public)")
+        trace("observer update: \(name), app \(state), protected data \(UIApplication.shared.isProtectedDataAvailable ? "available" : "locked")")
         let generation = storeGeneration
         let errors = await importer.catchUp(repairHistory: false)
         guard generation == storeGeneration else { return }
+        trace(errors.isEmpty ? "observer import \(name): ok"
+              : "observer import failed: " + errors.sorted { $0.key < $1.key }.map { "\($0.key) \($0.value)" }.joined(separator: ", "))
         importErrors = errors
         await recalculate()
         scheduleRefresh()
@@ -632,7 +647,9 @@ final class AppModel: ObservableObject {
             enableDelivery(HealthKitSource.sampleType(type), name: type.rawValue)
         }
         if (try? store.value("background_delivery_steps")) != "enabled" { enableDelivery(HealthKitSource.stepType, name: "steps") }
-        if reopened || (try? store.value("import_deferred")) != nil { await catchUp() }
+        let deferred = (try? store.value("import_deferred")) ?? "none"
+        trace("unlock retry: import_deferred \(deferred), store reopened \(reopened)")
+        if reopened || deferred != "none" { await catchUp() }
     }
 
     // MARK: - Background (Step 14-16 plan section 8)
@@ -765,6 +782,7 @@ final class AppModel: ObservableObject {
         next.acknowledgedRevision = try? store.value("acknowledged_revision")
         next.paused = try? store.value("paused")
         next.state = try? store.storedLocalState()
+        next.backgroundLog = ((try? store.value("background_log"))?.split(separator: "\n").map(String.init) ?? []).reversed()
         for key in ["import_deferred", "last_import_cycle", "local_calculation_duration_ms", "background_next_requested", "background_last_started",
                     "background_last_result", "background_last_expired"]
                     + (SampleType.allCases.map(\.rawValue) + ["steps"]).map({ "background_delivery_\($0)" }) {
@@ -795,7 +813,7 @@ final class AppModel: ObservableObject {
         showingExplanation = true
     }
 
-    // MARK: - On-device calculation (Plan/On_device_plan.md)
+    // MARK: - On-device calculation (Plan/specs/On_device_plan.md)
 
     /// Calculates today's result on this iPhone and hands it to the widget.
     func recalculate() async {
@@ -815,11 +833,24 @@ final class AppModel: ObservableObject {
                 let zone = TimeZone.current.identifier
                 let started = ContinuousClock.now
                 do {
-                    let result = try await Task.detached(priority: .utility) {
-                        try store.calculateLocally(now: now, zone: zone)
+                    let run = try await Task.detached(priority: .utility) {
+                        try store.localRun(now: now, zone: zone)
                     }.value
                     guard generation == self.storeGeneration, !Task.isCancelled else { return }
-                    if let result { try store.storeLocalState(result) }
+                    if let run {
+                        let result = run.state
+                        try store.storeLocalState(result)
+                        let ms = started.duration(to: .now).components
+                        self.trace("calculation: revision \(result.inputRevision), run \(result.runID), "
+                                   + String(format: "%.0f ms", Double(ms.seconds) * 1000 + Double(ms.attoseconds) / 1e15))
+                        if let scope = self.scope {
+                            let line = await Task.detached(priority: .utility) {
+                                (try? EngineInputsProbe.run(run, scope: scope, now: now))
+                                    ?? "M2 snapshot: failed"
+                            }.value
+                            self.trace(line)
+                        }
+                    }
                 } catch {
                     guard generation == self.storeGeneration, !Task.isCancelled else { return }
                     self.log.error("local calculation failed: \(String(describing: type(of: error)), privacy: .public)")

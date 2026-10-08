@@ -55,7 +55,7 @@ STATE_EXPECTATIONS = {
         ("calibration.usable_days", 0, "No participating domains."),
         ("recovery.state", "insufficient_data", "No usable recovery inputs.")),
 }
-# Step 4 widget expectations (Plan/Step_4_plan.md section 6):
+# Step 4 widget expectations (Plan/archive/Step_4_plan.md section 6):
 # (primary trait, headline, detail, secondary, explainable).
 WIDGET_FIELDS = ("primary_trait.id", "presentation.headline", "presentation.detail",
                  "presentation.secondary", "primary_trait.explainable")

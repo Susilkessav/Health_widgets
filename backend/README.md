@@ -1,11 +1,11 @@
 # Homeostat backend
 
 > **Scoped for later (2026-09-30).** The iPhone now calculates results itself
-> (see [On-device plan](../Plan/On_device_plan.md)); this backend is optional
+> (see [On-device plan](../Plan/specs/On_device_plan.md)); this backend is optional
 > and not on the path to the widget. Its Python engine remains the reference
 > the Swift port is tested against (`tests/engine/test_parity_fixture.py`).
 
-G1 backend: canonical events → features → HealthState → WidgetState. See `../Plan/G1_plan.md`.
+G1 backend: canonical events → features → HealthState → WidgetState. See `../Plan/archive/G1_plan.md`.
 
 ```bash
 docker compose up -d db     # from the repo root; Postgres on localhost:5433
@@ -64,7 +64,7 @@ canonical events into a `CalculationReport`: the contract `DailyFeatures`, the
 resolved settings and their hash, an input hash, per-domain evidence and
 diagnostics. It is pure: no clock, files, network or database. Settings live in
 `config/homeostat.yaml` (validated by `app/config.py`; quote times such as
-`"18:00"`). Policies and their reasons are in `../Plan/Step_3_plan.md`:
+`"18:00"`). Policies and their reasons are in `../Plan/archive/Step_3_plan.md`:
 
 - **Inputs:** deliveries visible by `known_at`; retries collapse by client ID;
   reimports add no weight; conflicting provider records are quarantined; visible
@@ -112,7 +112,7 @@ uv run python -m app.pipeline timeline --dataset ../data/synthetic/demo
 - **`app/pipeline.py`:** runs events → features → state → widget for one
   checkpoint, or prints a timeline of every demo checkpoint.
 
-Decisions and their reasons are in `../Plan/Step_4_plan.md`.
+Decisions and their reasons are in `../Plan/archive/Step_4_plan.md`.
 
 ## Persistence, API and replay — Steps 6-8
 
@@ -166,13 +166,13 @@ Apply migration `0005` before using independent widget fetching. In the updated
 app, save Settings once to verify the account and provision the widget token.
 The widget targets a check about every 30 minutes when iOS grants a timeline
 refresh; fetching a published result does not itself import new HealthKit data.
-See [implementation and device checklist](../Plan/Implementation_2026_09_30.md).
+See [implementation and device checklist](../Plan/archive/Implementation_2026_09_30.md).
 
 Provider-neutral rules under `app/providers` are tested foundations only. There
 is no v2 HTTP ingestion or second-provider adapter enabled. Existing v1 hashes,
 request bodies and replay behavior remain the active data path.
 
-**How it works** (the full design and its reasons are in `../Plan/Step_6_8_plan.md`):
+**How it works** (the full design and its reasons are in `../Plan/archive/Step_6_8_plan.md`):
 
 - **Uploads are idempotent.**
   - A resent `request_id` returns the original response.

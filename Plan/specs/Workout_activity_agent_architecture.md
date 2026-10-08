@@ -1,6 +1,11 @@
 # Workout, activity and check-in architecture
 
 Status: proposed design, 2026-10-05. No implementation is claimed here.
+Sequence revised 2026-10-08 by D-D in [Plan.md](../Plan.md): P1 daily app/widget
+experience and manual energy check-ins come first; this document defines P2
+workout logging/planning and later proactive check-ins/agent work. See
+[Product.md](../Product.md). D-C's workout-first
+sequence is historical. Existing workout data and action contracts remain valid.
 
 ## 1. Product goal
 
@@ -10,7 +15,7 @@ lighter activity, food ideas or a check-in, and must also be able to stay quiet.
 The person remains in control of plans, exercise selection, weights, food and
 notification preferences. HealthState is wellness context, not exercise clearance.
 
-The first shipped loop should be: choose a workout -> log sets -> reflect on
+The first workout loop should be: choose a workout -> log sets -> reflect on
 effort -> see an explained next option. Proactive check-ins and food suggestions
 follow only after the input and feedback loops work reliably.
 

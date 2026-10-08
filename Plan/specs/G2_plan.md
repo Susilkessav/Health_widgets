@@ -3,9 +3,9 @@
 Created: 2026-09-24. Revised: 2026-10-05 against the G1 code at `0828226`
 (on-device calculation, Swift engine port, shared widget cache).
 
-Progress checklist and design steps: [G2_tracker.md](G2_tracker.md).
+Open tasks: [Plan.md](../Plan.md) §5 G2. Earlier checklist, Figma layer list and log: [archive/G2_tracker.md](../archive/G2_tracker.md).
 
-Current code fixes and verification order: [G2_fix_plan_2026_10_05.md](G2_fix_plan_2026_10_05.md).
+Current code fixes and verification order: [G2_fix_plan_2026_10_05.md](../archive/G2_fix_plan_2026_10_05.md).
 
 The follow-up code fixes are implemented; the linked plan records automated results separately from remaining physical acceptance. Final asset requirements: [G2_art_brief.md](G2_art_brief.md).
 
@@ -70,7 +70,7 @@ Account constraints (2026-09-30 decisions): free Personal Team, no TestFlight,
   G1 real-iPhone acceptance. Final avatar and environment art come later (T5).
   G1 acceptance is still required before G2 acceptance (T12).
 - Original rule, now waived: avatar implementation (T1 onward) begins after G1
-  real-iPhone acceptance is recorded (Master_implementation_plan.md §8).
+  real-iPhone acceptance is recorded (Plan.md §8).
 - T0 (decisions, art brief) and the art work in T5 have no code risk and may
   start now, since art has the longest lead time.
 - G2 and source/platform expansion are separate tracks consuming the same

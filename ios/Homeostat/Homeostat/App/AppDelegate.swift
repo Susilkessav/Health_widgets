@@ -10,7 +10,12 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     let model = AppModel()
 
     func applicationProtectedDataDidBecomeAvailable(_ application: UIApplication) {
+        model.trace("protected data available (unlocked)")
         Task { await model.retryDeferredImport() }
+    }
+
+    func applicationProtectedDataWillBecomeUnavailable(_ application: UIApplication) {
+        model.trace("protected data unavailable (locked)")
     }
 
     func application(_ application: UIApplication,

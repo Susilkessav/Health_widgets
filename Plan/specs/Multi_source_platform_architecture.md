@@ -2,11 +2,11 @@
 
 Prepared: 2026-09-30. Status: **Proposed architecture; not implemented.**
 
-The [Master implementation plan](Master_implementation_plan.md) consolidates
+The [Master implementation plan](../Plan.md) consolidates
 the sequence and mandatory duplicate-data gates. Its §4 refines ambiguous
 workout/source overlap handling into the conservative initial v2 policy.
 
-Companion to [G1 completion architecture](G1_completion_architecture.md). This
+Companion to [G1 completion architecture](../archive/G1_completion_architecture.md). This
 plan extends the product to other sources and platforms without making their
 implementation a prerequisite for finishing the current iPhone G1. All earlier
 G1 fixes and acceptance gates remain required; see §11 for the combined roadmap.
@@ -478,7 +478,7 @@ connection still needs the phone to receive and upload its health data.
 
 ### Now: complete G1 without requiring new platforms
 
-Execute phases A–F of [G1 completion architecture](G1_completion_architecture.md):
+Execute phases A–F of [G1 completion architecture](../archive/G1_completion_architecture.md):
 import coherence and diagnostics, safe settings/identity, compact authenticated
 widget reads, coordinated cache, independent refresh, exact explanations and
 real-device/replay acceptance. APNs remains optional phase G.
@@ -599,3 +599,53 @@ Outstanding preferences are first expansion (Android/direct wearable/web) and
 hosted versus local-only G1 deployment. Design work can proceed with these
 defaults; provider enrollment, new platform implementation and hosting remain
 separate implementation decisions. No external connections have been created.
+
+
+## Duplicate-data policy and release tests (moved from the master plan, 2026-10-08)
+
+Gate for any second source.
+
+**Principle:** exact retries and re-reads are detected deterministically. Two
+vendors describing the same activity are not provably the same from similarity
+alone. So keep the alternatives, select one conservative contribution, and
+explain what was excluded. Never add overlapping totals, and never delete an
+independent measurement as a guessed duplicate.
+
+| Layer | Identity | Effect |
+|---|---|---|
+| Request retry | user + request ID + body digest | Same answer; a changed body is rejected |
+| Event retry | user + event ID + content digest | One effect; changed content is rejected |
+| Provider record | user + provider namespace + type + record ID + version | A re-read adds provenance, not weight |
+| Cross-route | Verified upstream identity only | A proven mirror counts once; otherwise domain source selection |
+
+| Domain | First multi-source rule |
+|---|---|
+| Steps | One selected cumulative stream per day. Never sum or splice providers' totals |
+| Sleep | One primary source per night; union asleep intervals within it; naps separate; never invent stages |
+| Workouts | Resolve proven aliases. Otherwise one authoritative stream; no edge minutes filled from a possible mirror |
+| HRV / resting HR | One compatible series. Baseline counts valid days, not deliveries |
+| Provider scores | Separate metrics. Never added to Homeostat values |
+
+Corrections are new versions, and arrival order is not authority. Deletions
+are scoped to their namespace. A lost cursor or anchor is not a deletion. Only
+a completed scan withdraws records.
+
+**Release tests:**
+
+| ID | Scenario | Required |
+|---|---|---|
+| D01 | Same batch/event delivered repeatedly, also concurrently | One effect |
+| D02 | One record via two proven readers | One contribution, both memberships kept |
+| D03 | Equal bare IDs across namespaces or users | No collision or shared deletion |
+| D04 | Direct API plus a HealthKit/Health Connect mirror | Proven duplicates once; else conservative selection |
+| D05 | Similar but distinct readings/workouts | No destructive merge; exclusions explained |
+| D06 | Two step aggregates, late downward correction | No inflation; latest correction applies |
+| D07 | Overlapping sleep, two nights, naps, summary-only source | Correct union, one primary night, no fabricated stages |
+| D08 | Mirrored workout with shifted edges/pauses | No extra edge minutes |
+| D09 | Corrections arriving in both orders | Same result; old replay unchanged |
+| D10 | Delete a mirror, an unrelated same-ID record, or a completed scan | Effect limited to its scope |
+| D11 | Crash, reinstall, credential rotation, reconnect | Nothing inflated; lost local-only data reported |
+| D12 | Different HRV methods or an algorithm switch | Separate series, recalibration |
+| D13 | Incomplete scan, revoked access, expired cursor | No false coverage, zero or deletion |
+| D14 | Several clients read the same result | Reads create no events or calculations |
+| D15 | A wrong alias link is corrected | New result corrects it; old run reproducible |

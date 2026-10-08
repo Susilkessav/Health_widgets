@@ -1,4 +1,4 @@
-"""AvatarState: how HealthState appears on the avatar (Plan/G2_plan.md
+"""AvatarState: how HealthState appears on the avatar (Plan/specs/G2_plan.md
 section 4). One field per visual channel, each driven by one HealthState
 domain. Lighting and decay are not here: the renderer derives them from the
 time it draws, so a widget timeline can change them without a recalculation.

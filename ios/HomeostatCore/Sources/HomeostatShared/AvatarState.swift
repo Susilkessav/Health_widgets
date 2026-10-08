@@ -1,7 +1,7 @@
 import Foundation
 
 /// How HealthState appears on the avatar (backend `avatar_state.py`,
-/// Plan/G2_plan.md section 4). Lighting and fading are not stored: they come
+/// Plan/specs/G2_plan.md section 4). Lighting and fading are not stored: they come
 /// from the time the avatar is drawn, so widget timeline entries change them
 /// without a recalculation.
 public struct AvatarState: Codable, Hashable, Sendable {

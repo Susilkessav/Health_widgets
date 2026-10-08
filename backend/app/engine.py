@@ -1,4 +1,4 @@
-"""G1 Step 4 state engine: DailyFeatures -> HealthState (Plan/Step_4_plan.md).
+"""G1 Step 4 state engine: DailyFeatures -> HealthState (Plan/archive/Step_4_plan.md).
 
 Pure and deterministic: no database, HTTP, HealthKit, LLM, clock, widget or
 avatar code. It interprets features only; every number it states comes from a

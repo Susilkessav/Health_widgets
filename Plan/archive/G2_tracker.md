@@ -1,6 +1,6 @@
 # G2 tracker — Avatar Presentation System
 
-Progress checklist for [G2_plan.md](G2_plan.md), which holds the full spec.
+Progress checklist for [G2_plan.md](../specs/G2_plan.md), which holds the full spec.
 Tick boxes as work lands and add a line to the log at the bottom.
 
 Follow-up fixes and acceptance evidence: [G2_fix_plan_2026_10_05.md](G2_fix_plan_2026_10_05.md). Code fixes are implemented; physical acceptance boxes below have not been advanced.
@@ -12,7 +12,7 @@ Follow-up fixes and acceptance evidence: [G2_fix_plan_2026_10_05.md](G2_fix_plan
 
 ## Gate
 
-- [ ] G1 real-iPhone acceptance recorded in `Next_steps.md` (build gate waived 2026-10-05; still needed for T12)
+- [ ] G1 real-iPhone acceptance recorded in Step_14_16_plan.md §12 (build gate waived 2026-10-05; still needed for T12). G1 closes on paths 1–2, not widget self-refresh (D-B, 2026-10-06)
 
 ---
 
@@ -24,7 +24,7 @@ origin so layers line up without code offsets.
 ### D1. Concept
 - [ ] Mood board: 5–10 references (polished game/cartoon, not photoreal)
 - [x] Choose framing: **full body**, cropped waist-up in the small widget (D9)
-- [x] Write the art brief (T0): [G2_art_brief.md](G2_art_brief.md); replacement assets still pending
+- [x] Write the art brief (T0): [G2_art_brief.md](../specs/G2_art_brief.md); replacement assets still pending
 
 ### D2. Avatar layers (placeholder first, final art later)
 Canvas: 1024×2048 (full body), transparent, shared origin. Names must match the plan (T5).

@@ -62,6 +62,19 @@ struct DebugView: View {
                         Button("Uploads paused (\(paused)): resume") { Task { await model.resumeUploads() } }
                     }
                 }
+                Section("Widget step probe (M2)") {
+                    let probe = ProbeLog.lines().reversed().prefix(10)
+                    if probe.isEmpty { Text("The widget hasn't run the probe yet") }
+                    ForEach(Array(probe.enumerated()), id: \.offset) { _, line in
+                        Text(line).font(.caption.monospaced()).textSelection(.enabled)
+                    }
+                }
+                Section("Background log") {
+                    if model.snapshot.backgroundLog.isEmpty { Text("No background events yet") }
+                    ForEach(Array(model.snapshot.backgroundLog.prefix(20).enumerated()), id: \.offset) { _, line in
+                        Text(line).font(.caption.monospaced()).textSelection(.enabled)
+                    }
+                }
                 Section("Background and widget") {
                     ForEach(model.snapshot.diagnostics.keys.sorted(), id: \.self) { key in
                         LabeledContent(key.replacingOccurrences(of: "_", with: " "), value: model.snapshot.diagnostics[key] ?? "—")

@@ -1,4 +1,4 @@
-"""compute_health_state rules (Plan/Step_4_plan.md sections 3-4)."""
+"""compute_health_state rules (Plan/archive/Step_4_plan.md sections 3-4)."""
 import ast
 import itertools
 from pathlib import Path

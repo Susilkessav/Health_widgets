@@ -1,5 +1,5 @@
 """The Swift engine's reference: the Python pipeline's output for every
-synthetic dataset checkpoint (Plan/On_device_plan.md phase 1).
+synthetic dataset checkpoint (Plan/specs/On_device_plan.md phase 1).
 
 Regenerate with: UPDATE_WIRE_FIXTURES=1 uv run pytest tests/engine/test_parity_fixture.py
 """

@@ -1,4 +1,4 @@
-"""map_widget_state rules (Plan/Step_4_plan.md sections 5-6)."""
+"""map_widget_state rules (Plan/archive/Step_4_plan.md sections 5-6)."""
 import itertools
 import re
 
@@ -166,7 +166,7 @@ def test_unknown_workout_types_show_as_workout_but_keep_the_raw_type():
 
 
 # ---------------------------------------------------------------------------
-# AvatarState (Plan/G2_plan.md section 4 and decision D7)
+# AvatarState (Plan/specs/G2_plan.md section 4 and decision D7)
 # ---------------------------------------------------------------------------
 
 def avatar(*states, **kwargs):

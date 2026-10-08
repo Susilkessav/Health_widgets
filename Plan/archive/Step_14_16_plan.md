@@ -3,7 +3,7 @@
 Status: **Implemented with review fixes 2026-09-29. Simulator walkthrough, outage drill and real-iPhone acceptance remain pending (§12–13).**
 
 Planning update 2026-09-30: the requested independent widget fetch extends this
-original cache-only design. See [Master implementation plan](Master_implementation_plan.md)
+original cache-only design. See [Master implementation plan](../Plan.md)
 and [G1 completion architecture](G1_completion_architecture.md) for proposed
 networking/cache changes and the remaining acceptance gates. Those changes are
 not yet implemented.

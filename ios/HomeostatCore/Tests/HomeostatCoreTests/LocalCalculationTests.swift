@@ -91,3 +91,48 @@ final class LocalCalculationTests: XCTestCase {
         return nil
     }
 }
+
+/// Plan/Plan.md §4 path 3 (M2): the widget's snapshot path must equal the app's calculation.
+final class EngineInputsSnapshotTests: XCTestCase {
+    func assertSameResult(_ store: LocalStore, now: Instant, zone: String, file: StaticString = #filePath, line: UInt = #line) throws {
+        let run = try XCTUnwrap(try store.localRun(now: now, zone: zone))
+        let app = run.state
+        let snapshot = try run.snapshot(scope: "scope-a")
+        let widget = try LocalStore.calculate(snapshot: snapshot, now: now)
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .sortedKeys
+        XCTAssertEqual(widget.healthState.encoded(), app.healthState.encoded(), file: file, line: line)
+        XCTAssertEqual(try encoder.encode(widget.widgetState), try encoder.encode(app.widgetState), file: file, line: line)
+        XCTAssertEqual(widget.revision, app.inputRevision, file: file, line: line)
+        XCTAssertEqual(widget.effective, app.effectiveAt, file: file, line: line)
+        XCTAssertEqual(widget.scope, "scope-a", file: file, line: line)
+    }
+
+    func testTheSnapshotGivesTheAppsResult() async throws {
+        let base = LocalCalculationTests()
+        let store = try LocalStore(path: nil)
+        let source = FakeSource()
+        let (sleep, hrv, rhr) = base.history()
+        source.pages = [.sleep: [base.page(sleep)], .hrv: [base.page(hrv)], .rhr: [base.page(rhr)]]
+        source.steps = { start, end in [HourlyBucket(start: start, end: end, steps: 100)] }
+        _ = await ImportEngine(store: store, source: source, clock: { NOW }, deviceZone: { CHICAGO }).catchUp(repairHistory: false)
+        try assertSameResult(store, now: NOW, zone: CHICAGO)
+        try assertSameResult(store, now: NOW.adding(seconds: 3 * 3600), zone: CHICAGO)
+    }
+
+    func testAPhoneDatabaseGivesTheSameResultThroughTheSnapshot() throws {
+        guard let source = ProcessInfo.processInfo.environment["HOMEOSTAT_DEVICE_DB"] else { throw XCTSkip("no device database given") }
+        let copy = FileManager.default.temporaryDirectory.appendingPathComponent("snapshot-\(UUID()).sqlite")
+        try FileManager.default.copyItem(at: URL(fileURLWithPath: source), to: copy)
+        let store = try LocalStore(path: copy.path)
+        try assertSameResult(store, now: Instant(Date()), zone: ProcessInfo.processInfo.environment["HOMEOSTAT_DEVICE_ZONE"] ?? "America/Chicago")
+        let size = try XCTUnwrap(try store.localRun(now: Instant(Date()), zone: "America/Chicago")).snapshot(scope: "s").count
+        print("SNAPSHOT bytes \(size)")
+    }
+
+    func testOtherVersionsAndMalformedSnapshotsAreRejected() {
+        XCTAssertThrowsError(try LocalStore.calculate(snapshot: Data(#"{"version":"engine-inputs@9"}"#.utf8), now: NOW))
+        XCTAssertThrowsError(try LocalStore.calculate(snapshot: Data(#"{"version":"engine-inputs@0.1"}"#.utf8), now: NOW))
+        XCTAssertThrowsError(try LocalStore.calculate(snapshot: Data("not json".utf8), now: NOW))
+    }
+}
