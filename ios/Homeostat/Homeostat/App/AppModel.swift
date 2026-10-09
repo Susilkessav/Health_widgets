@@ -435,11 +435,15 @@ final class AppModel: ObservableObject {
     }
 
     func publishWidget(foreground: Bool) {
-        guard let store, let scope, let shared = SharedWidgetStore.shared(),
+        guard let store, let scope else { return }
+        let now = Instant(Date()), zone = Zone(TimeZone.current.identifier) ?? Zone("UTC")!
+        if let inbox = CheckInInbox.shared() { store.ingest(inbox, scope: scope, now: now) }  // widget check-ins first
+        guard let shared = SharedWidgetStore.shared(),
               let state = try? store.storedLocalState(), let day = LocalDay(state.day) else { return }
         let cache = WidgetCache(scope: scope, day: day, inputRevision: state.inputRevision, runID: state.runID,
-                                widgetState: state.widgetState, facts: DisplayFacts(healthState: state.healthState))
-        switch try? shared.write(cache, now: Instant(Date())) {
+                                widgetState: state.widgetState, facts: DisplayFacts(healthState: state.healthState),
+                                report: try? store.latestEnergy(on: zone.day(of: now), zone: zone))
+        switch try? shared.write(cache, now: now) {
         case .written(let meaningful) where meaningful || foreground:
             WidgetCenter.shared.reloadTimelines(ofKind: Self.widgetKind)
         default:

@@ -184,6 +184,22 @@ public final class LocalStore: Sendable {
                     """, arguments: [type.rawValue, try LocalStore.generation(type, in: db)])
             }
         }
+        migrator.registerMigration("v6_subjective_entries") { db in
+            // User-reported check-ins, kept apart from measured data (Journal.swift).
+            try db.execute(sql: """
+                CREATE TABLE subjective_entry (
+                    id TEXT PRIMARY KEY, kind TEXT NOT NULL, value TEXT NOT NULL,
+                    event_at TEXT NOT NULL, event_us INTEGER NOT NULL, zone TEXT NOT NULL,
+                    created_at TEXT NOT NULL, updated_at TEXT NOT NULL,
+                    revision INTEGER NOT NULL, deleted INTEGER NOT NULL DEFAULT 0,
+                    match_answer TEXT, match_run_ref TEXT);
+                CREATE INDEX subjective_entry_time ON subjective_entry (kind, deleted, event_us);
+                CREATE TABLE entry_command (
+                    command_id TEXT PRIMARY KEY, entry_id TEXT NOT NULL, action TEXT NOT NULL,
+                    applied_at TEXT NOT NULL, outcome TEXT NOT NULL, revision INTEGER,
+                    before_value TEXT, before_deleted INTEGER);
+                """)
+        }
         return migrator
     }
 

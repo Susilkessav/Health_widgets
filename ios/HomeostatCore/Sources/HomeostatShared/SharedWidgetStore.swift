@@ -17,9 +17,11 @@ public struct WidgetCache: Codable, Hashable, Sendable {
     public var stepsThrough: Instant?
     /// What DailySummary needs beyond the headline (P1). Nil in older caches.
     public var facts: DisplayFacts?
+    /// Today's newest saved energy report (P1), shown beside the result.
+    public var report: ReportedEnergy?
 
     public init(scope: String, day: LocalDay, inputRevision: Int64, runID: Int64, widgetState: WidgetState,
-                stepsThrough: Instant? = nil, facts: DisplayFacts? = nil) {
+                stepsThrough: Instant? = nil, facts: DisplayFacts? = nil, report: ReportedEnergy? = nil) {
         schema = Self.currentSchema
         self.scope = scope
         self.day = day
@@ -28,11 +30,12 @@ public struct WidgetCache: Codable, Hashable, Sendable {
         self.widgetState = widgetState
         self.stepsThrough = stepsThrough
         self.facts = facts
+        self.report = report
     }
 
     enum CodingKeys: String, CodingKey {
         case schema, scope, day, inputRevision = "input_revision", runID = "run_id"
-        case widgetState = "widget_state", stepsThrough = "steps_through", facts
+        case widgetState = "widget_state", stepsThrough = "steps_through", facts, report
     }
 }
 
@@ -227,6 +230,7 @@ public struct SharedWidgetStore: Sendable {
             || previous.day != next.day
             || previous.widgetState.freshness != next.widgetState.freshness
             || previous.widgetState.avatar != next.widgetState.avatar
+            || previous.report != next.report
             || WidgetPolicy.isStale(previous, now: now)  // a fresh time must replace a stale look
     }
 
