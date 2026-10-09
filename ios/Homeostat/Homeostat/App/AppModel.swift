@@ -357,6 +357,7 @@ final class AppModel: ObservableObject {
 
     private func install(store: LocalStore, scope: String, url: URL?, key: String?) {
         storeGeneration += 1
+        EngineInputsFile.remove()  // another account's inputs must never reach the widget
         backgroundRefreshWork?.cancel()
         backgroundRefreshWork = nil
         calculationWork?.cancel()
@@ -845,8 +846,7 @@ final class AppModel: ObservableObject {
                                    + String(format: "%.0f ms", Double(ms.seconds) * 1000 + Double(ms.attoseconds) / 1e15))
                         if let scope = self.scope {
                             let line = await Task.detached(priority: .utility) {
-                                (try? EngineInputsProbe.run(run, scope: scope, now: now))
-                                    ?? "M2 snapshot: failed"
+                                EngineInputsFile.write(run, scope: scope)
                             }.value
                             self.trace(line)
                         }

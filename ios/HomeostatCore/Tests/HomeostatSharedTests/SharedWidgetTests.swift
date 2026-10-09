@@ -49,6 +49,22 @@ final class SharedWidgetStoreTests: XCTestCase {
         XCTAssertEqual(store.read(), .state(cache(1, scope: "b")))
     }
 
+    /// M3: a widget result is a step read over one app run (Plan.md §4).
+    func testWidgetStepReadsOrderWithinOneAppRun() throws {
+        func read(_ minutes: Int64, run: Int64 = 9) -> WidgetCache {
+            var c = cache(5, run: run, widget: widget("\(minutes) min", updated: NOW.adding(seconds: minutes * 60)))
+            c.stepsThrough = NOW.adding(seconds: minutes * 60)
+            return c
+        }
+        _ = try store.write(cache(5, run: 9), now: NOW)                                   // the app's result
+        XCTAssertEqual(try store.write(read(30), now: NOW), .written(meaningful: true))     // newer read over it
+        XCTAssertEqual(try store.write(read(15), now: NOW), .ignoredOlder)                  // two widget runs: newer wins
+        XCTAssertEqual(try store.write(cache(5, run: 9), now: NOW), .ignoredOlder)          // app republish can't undo the read
+        XCTAssertEqual(try store.write(read(45, run: 8), now: NOW), .ignoredOlder)          // read on an old app run
+        XCTAssertEqual(store.read(), .state(read(30)))
+        XCTAssertEqual(try store.write(cache(5, run: 10), now: NOW), .written(meaningful: true))  // any new app run wins
+    }
+
     func testOnlyVisibleChangesAreMeaningful() throws {
         _ = try store.write(cache(1), now: NOW)
         let later = NOW.adding(seconds: 600)

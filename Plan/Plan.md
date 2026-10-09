@@ -136,7 +136,7 @@ together when a step changes. If blocked, record the reason and next action.
 | 02 | Validate and revise the design | Review performed; gaps open | Existing interactions pass; missing scenarios and stale dimming need confirmation before changes |
 | 03 | Foundation checks | Done (2026-10-09) | Swift, app/widget build and backend with PostgreSQL pass (§6) |
 | 04 | iPhone acceptance and G1 close | Partly done | Device session, current replay, 24–48 h use; after 03 |
-| 05 | Widget self-refresh (M3) | Feasibility passed; not built | A3 passed for one observed refresh; explicit implementation confirmation still required |
+| 05 | Widget self-refresh (M3) | Built; device exit open | Install and check the widget updates with the app force-quit |
 | 06 | Final avatar and G2 acceptance | Partly done | Art, accessibility, acceptance; final acceptance after 04 |
 | 07 | Review implementation specification | Specified; confirmation required | Contracts written; user now requires confirmation before implementation |
 | 08 | Daily loop (P1) | Not started; confirmation and acceptance gates pending | Today + Your day widget + explanations/check-in; after 04/06/07 |
@@ -225,18 +225,18 @@ debugger where possible. Note device, iOS, power and network.
 
 ### Step 05 — conditional widget self-refresh (M3)
 
-**Status: not built; A3 feasibility passed 2026-10-09. Depends on:** explicit implementation confirmation. A single successful probe does not establish M3 reliability or acceptance.
+**Status: built 2026-10-09; device exit open.** A3 feasibility passed 2026-10-09 (one refresh).
 **Done when:** implementation, tests and the device exit below pass. If A3 fails,
 mark this step **Not proceeding**, record why, and continue without path 3.
 This step does not block G1, G2 or the basic Your day widget.
 
-- [ ] Per-domain cutoffs in Python then Swift; regenerate fixtures (`UPDATE_WIRE_FIXTURES=1`); parity green.
-- [ ] Split `HomeostatEngine` out of `HomeostatCore` (no behavior change).
-- [ ] App-owned generation ordering, written with both the cache and the snapshot.
-- [ ] Snapshot v1: versioned; scope, zone, local day, settings/engine identity, generation; capped; cleared on scope change.
-- [ ] Widget path: step query → engine → ordered publish, cache fallback; timeline 15 min with a valid snapshot, else ~30.
-- [ ] Tests: identical app/widget output for the same inputs; app beats widget; old generation dropped; newer step read wins; concurrent writers; every failure keeps the cache; no samples never zero; caps hold.
-- [ ] **Exit:** app force-quit, phone unlocked, the widget's steps and headline update within ~30–60 min on the iPhone.
+- [x] Per-domain cutoffs in Python then Swift; new `engine_parity_cutoffs.json` (170 checkpoints 3 h later); parity green.
+- [x] Split `HomeostatEngine` out of `HomeostatCore` (no behavior change); the widget links it, no GRDB in the widget binary.
+- [x] Ordering: reuses the app's `(input_revision, run_id)` (every app run gets a new run ID) as the generation; the cache adds `steps_through`, so within one run the newer step read wins and the app republishing that run never undoes it.
+- [x] Snapshot v1 (`engine-inputs@1`): scope, zone, local day, settings hash, input revision, run ID, app effective/known times; 2 MB cap (not written above it); deleted on account change and on any write failure.
+- [x] Widget path (`WidgetRefresh`): step query (5 s, stopped) → `EngineSnapshot.calculate` → ordered cache write; any failure keeps the cache; "no samples" never becomes 0; timeline asks for 15 min while inputs exist.
+- [x] Tests: snapshot = app result; step read moves movement only and holds other domains; not-newer/other-day/other-settings rejected; cap; cache ordering (newer read wins, app republish can't undo, old run dropped, new app run wins). Not automated: concurrent app/widget writes (relies on the existing `NSFileCoordinator` cache lock) and the HealthKit read itself (device only).
+- [ ] **Exit:** app force-quit, phone unlocked, the widget's steps and headline update within ~30–60 min on the iPhone. Check the Debug view's probe log for `widget refresh:` lines (read, outcome, ms, MB).
 
 ### Step 06 — finish the avatar (G2)
 

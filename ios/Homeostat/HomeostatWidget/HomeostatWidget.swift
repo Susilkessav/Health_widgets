@@ -3,9 +3,9 @@ import SwiftUI
 import WidgetKit
 
 /// The Home Screen widget renders cached WidgetState, calculated by the app
-/// on device (or fetched through the optional server path). WidgetPolicy handles
-/// age and presentation. The M2 HealthKit step probe logs only; shared-engine
-/// recalculation in the extension remains M3 work.
+/// on device (or fetched through the optional server path). Before each
+/// timeline it recalculates the app's last run with its own step read
+/// (WidgetRefresh, M3). WidgetPolicy handles age and presentation.
 
 struct Entry: TimelineEntry {
     let date: Date
@@ -43,7 +43,7 @@ struct Provider: TimelineProvider {
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> Void) {
         Task {
-            await StepProbe.run()  // M2 prototype: logs only; the display below is unchanged
+            await WidgetRefresh.run()
             if let store = SharedWidgetStore.shared() { await WidgetClient.refresh(store: store) }
             let result = read()
             let now = Instant(Date())
@@ -52,7 +52,10 @@ struct Provider: TimelineProvider {
                 Entry(date: $0.date, display: WidgetPolicy.display(result, now: $0, zone: zone))
             }
             let retry = (try? SharedWidgetStore.shared()?.manifest())?.fetch.nextAttemptAt
-            let next = max(now.adding(seconds: 60), retry ?? WidgetPolicy.reloadAfter(now: now, zone: zone))
+            // With app inputs to recalculate from, ask for a step refresh every 15 minutes; iOS decides.
+            let hasInputs = SharedWidgetStore.engineInputsURL.map { FileManager.default.fileExists(atPath: $0.path) } == true
+            let planned = retry ?? WidgetPolicy.reloadAfter(now: now, zone: zone)
+            let next = max(now.adding(seconds: 60), hasInputs ? min(planned, now.adding(seconds: 900)) : planned)
             completion(Timeline(entries: entries, policy: .after(next.date)))
         }
     }

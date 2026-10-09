@@ -94,21 +94,7 @@ final class LocalCalculationTests: XCTestCase {
 
 /// Plan/Plan.md §4 path 3 (M2): the widget's snapshot path must equal the app's calculation.
 final class EngineInputsSnapshotTests: XCTestCase {
-    func assertSameResult(_ store: LocalStore, now: Instant, zone: String, file: StaticString = #filePath, line: UInt = #line) throws {
-        let run = try XCTUnwrap(try store.localRun(now: now, zone: zone))
-        let app = run.state
-        let snapshot = try run.snapshot(scope: "scope-a")
-        let widget = try LocalStore.calculate(snapshot: snapshot, now: now)
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = .sortedKeys
-        XCTAssertEqual(widget.healthState.encoded(), app.healthState.encoded(), file: file, line: line)
-        XCTAssertEqual(try encoder.encode(widget.widgetState), try encoder.encode(app.widgetState), file: file, line: line)
-        XCTAssertEqual(widget.revision, app.inputRevision, file: file, line: line)
-        XCTAssertEqual(widget.effective, app.effectiveAt, file: file, line: line)
-        XCTAssertEqual(widget.scope, "scope-a", file: file, line: line)
-    }
-
-    func testTheSnapshotGivesTheAppsResult() async throws {
+    func importedStore() async throws -> LocalStore {
         let base = LocalCalculationTests()
         let store = try LocalStore(path: nil)
         let source = FakeSource()
@@ -116,8 +102,71 @@ final class EngineInputsSnapshotTests: XCTestCase {
         source.pages = [.sleep: [base.page(sleep)], .hrv: [base.page(hrv)], .rhr: [base.page(rhr)]]
         source.steps = { start, end in [HourlyBucket(start: start, end: end, steps: 100)] }
         _ = await ImportEngine(store: store, source: source, clock: { NOW }, deviceZone: { CHICAGO }).catchUp(repairHistory: false)
+        return store
+    }
+
+    func assertSameResult(_ store: LocalStore, now: Instant, zone: String, file: StaticString = #filePath, line: UInt = #line) throws {
+        let run = try XCTUnwrap(try store.localRun(now: now, zone: zone))
+        let app = run.state
+        let widget = try EngineSnapshot.calculate(try run.snapshot(scope: "scope-a"), now: now)
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .sortedKeys
+        XCTAssertEqual(widget.healthState.encoded(), app.healthState.encoded(), file: file, line: line)
+        XCTAssertEqual(try encoder.encode(widget.widgetState), try encoder.encode(app.widgetState), file: file, line: line)
+        XCTAssertEqual(widget.effective, app.effectiveAt, file: file, line: line)
+        XCTAssertEqual(widget.header, .init(scope: "scope-a", zone: zone, day: Zone(zone)!.day(of: app.effectiveAt),
+                                            inputRevision: app.inputRevision, runID: app.runID,
+                                            effective: app.effectiveAt, knownAt: now), file: file, line: line)
+    }
+
+    func testTheSnapshotGivesTheAppsResult() async throws {
+        let store = try await importedStore()
         try assertSameResult(store, now: NOW, zone: CHICAGO)
         try assertSameResult(store, now: NOW.adding(seconds: 3 * 3600), zone: CHICAGO)
+    }
+
+    func drivers(_ state: JSONValue) -> [String: JSONValue] {
+        guard case .array(let list)? = state["drivers"] else { return [:] }
+        return Dictionary(uniqueKeysWithValues: list.map { ($0["id"]!.string!, $0) })
+    }
+
+    /// Plan.md §4 path 3 / D-A: the widget's step read moves movement only.
+    func testAStepReadUpdatesMovementAndHoldsTheOtherDomains() async throws {
+        let store = try await importedStore()
+        let run = try XCTUnwrap(try store.localRun(now: NOW, zone: CHICAGO))
+        let later = NOW.adding(seconds: 3600)
+        let widget = try EngineSnapshot.calculate(try run.snapshot(scope: "s"), now: later,
+                                                  steps: .init(steps: 9999, at: later))
+        let app = run.state.healthState
+        XCTAssertEqual(widget.effective, later)
+        XCTAssertEqual(drivers(widget.healthState)["steps_so_far"]?["value"], .double(9999))
+        XCTAssertEqual(drivers(widget.healthState)["steps_so_far"]?["observed_at"], .string(later.wire))
+        for id in ["sleep_duration", "hrv_sdnn", "resting_hr"] {
+            XCTAssertEqual(drivers(widget.healthState)[id], drivers(app)[id], id)
+        }
+        for domain in ["sleep", "recovery", "workout", "calibration"] {
+            XCTAssertEqual(widget.healthState[domain], app[domain], domain)  // coverage held at their cutoff
+        }
+    }
+
+    func testAReadThatIsNotNewerOrOnAnotherDayIsRejected() async throws {
+        let store = try await importedStore()
+        let snapshot = try XCTUnwrap(try store.localRun(now: NOW, zone: CHICAGO)).snapshot(scope: "s")
+        for at in [NOW, NOW.adding(seconds: -60), NOW.adding(seconds: 12 * 3600)] {  // app's own import; earlier; tomorrow
+            XCTAssertThrowsError(try EngineSnapshot.calculate(snapshot, now: at, steps: .init(steps: 1, at: at))) {
+                XCTAssertEqual($0 as? EngineSnapshot.Failure, .notNewer)
+            }
+        }
+    }
+
+    func testASnapshotFromOtherSettingsIsRejected() async throws {
+        let store = try await importedStore()
+        let snapshot = try XCTUnwrap(try store.localRun(now: NOW, zone: CHICAGO)).snapshot(scope: "s")
+        let other = Data(String(decoding: snapshot, as: UTF8.self)
+            .replacingOccurrences(of: EngineSettings.configSHA256, with: String(repeating: "0", count: 64)).utf8)
+        XCTAssertThrowsError(try EngineSnapshot.calculate(other, now: NOW)) {
+            XCTAssertEqual($0 as? EngineSnapshot.Failure, .otherSettings)
+        }
     }
 
     func testAPhoneDatabaseGivesTheSameResultThroughTheSnapshot() throws {
@@ -130,9 +179,20 @@ final class EngineInputsSnapshotTests: XCTestCase {
         print("SNAPSHOT bytes \(size)")
     }
 
+    func testASnapshotOverTheCapIsNotWritten() {
+        let big = Data(#"{"x":""#.utf8) + Data(repeating: UInt8(ascii: "a"), count: EngineSnapshot.maxBytes) + Data(#""}"#.utf8)
+        let inputs = LocalInputs(lower: NOW, through: [:], observations: [], rows: [(body: big, createdAt: NOW.wire)],
+                                 coverage: [], revision: 1)
+        let header = EngineSnapshot.Header(scope: "s", zone: CHICAGO, day: Zone(CHICAGO)!.day(of: NOW), inputRevision: 1,
+                                           runID: 1, effective: NOW, knownAt: NOW)
+        XCTAssertThrowsError(try EngineSnapshot.encode(inputs, header: header)) {
+            XCTAssertEqual($0 as? EngineSnapshot.Failure, .tooLarge)
+        }
+    }
+
     func testOtherVersionsAndMalformedSnapshotsAreRejected() {
-        XCTAssertThrowsError(try LocalStore.calculate(snapshot: Data(#"{"version":"engine-inputs@9"}"#.utf8), now: NOW))
-        XCTAssertThrowsError(try LocalStore.calculate(snapshot: Data(#"{"version":"engine-inputs@0.1"}"#.utf8), now: NOW))
-        XCTAssertThrowsError(try LocalStore.calculate(snapshot: Data("not json".utf8), now: NOW))
+        XCTAssertThrowsError(try EngineSnapshot.calculate(Data(#"{"version":"engine-inputs@9"}"#.utf8), now: NOW))
+        XCTAssertThrowsError(try EngineSnapshot.calculate(Data(#"{"version":"engine-inputs@0.1"}"#.utf8), now: NOW))
+        XCTAssertThrowsError(try EngineSnapshot.calculate(Data("not json".utf8), now: NOW))
     }
 }

@@ -12,19 +12,24 @@ public struct WidgetCache: Codable, Hashable, Sendable {
     public var inputRevision: Int64
     public var runID: Int64
     public var widgetState: WidgetState
+    /// Set when the widget recalculated this run with its own step read (M3):
+    /// the read's time. Nil for the app's own result.
+    public var stepsThrough: Instant?
 
-    public init(scope: String, day: LocalDay, inputRevision: Int64, runID: Int64, widgetState: WidgetState) {
+    public init(scope: String, day: LocalDay, inputRevision: Int64, runID: Int64, widgetState: WidgetState,
+                stepsThrough: Instant? = nil) {
         schema = Self.currentSchema
         self.scope = scope
         self.day = day
         self.inputRevision = inputRevision
         self.runID = runID
         self.widgetState = widgetState
+        self.stepsThrough = stepsThrough
     }
 
     enum CodingKeys: String, CodingKey {
         case schema, scope, day, inputRevision = "input_revision", runID = "run_id"
-        case widgetState = "widget_state"
+        case widgetState = "widget_state", stepsThrough = "steps_through"
     }
 }
 
@@ -39,6 +44,12 @@ public struct SharedWidgetStore: Sendable {
     public init(directory: URL) {
         fileURL = directory.appendingPathComponent("widget", isDirectory: true)
             .appendingPathComponent("widget_state.json")
+    }
+
+    /// The app's calculation inputs for the widget's own recalculation (EngineSnapshot, M3).
+    public static var engineInputsURL: URL? {
+        FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroup)?
+            .appendingPathComponent("engine/engine_inputs.json")
     }
 
     /// The shared container, or nil if the App Group entitlement is missing.
@@ -171,7 +182,8 @@ public struct SharedWidgetStore: Sendable {
     public enum WriteResult: Equatable, Sendable {
         case written(meaningful: Bool)
         case unchanged
-        /// Older than the stored state by (input_revision, run_id).
+        /// Older than the stored state by (input_revision, run_id), or the same
+        /// run with an older step read (no read counts as oldest).
         case ignoredOlder
         /// Failed validation; the previous file is kept.
         case invalid
@@ -188,8 +200,13 @@ public struct SharedWidgetStore: Sendable {
         return try coordinated { manifest in
             if let configuration = manifest.configuration, configuration.scope != cache.scope { return .invalid }
             let previous = manifest.cache?.scope == cache.scope ? manifest.cache : nil
-            if let previous, (cache.inputRevision, cache.runID) < (previous.inputRevision, previous.runID) {
-                return .ignoredOlder
+            if let previous {
+                let run = (cache.inputRevision, cache.runID), stored = (previous.inputRevision, previous.runID)
+                if run < stored { return .ignoredOlder }
+                // Same app run: a widget step read only replaces an older one, and
+                // the app republishing that run never undoes a newer read.
+                let none = Instant(microseconds: .min)
+                if run == stored, (cache.stepsThrough ?? none) < (previous.stepsThrough ?? none) { return .ignoredOlder }
             }
             if previous == cache { return .unchanged }
             manifest.cache = cache

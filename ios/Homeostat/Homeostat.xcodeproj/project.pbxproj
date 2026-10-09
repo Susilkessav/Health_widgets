@@ -13,6 +13,7 @@
 		6CE0107D3063947C00DF579A /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 6CE0107C3063947C00DF579A /* GRDB */; };
 		6CE0109000000000000000A3 /* HomeostatCore in Frameworks */ = {isa = PBXBuildFile; productRef = 6CE0109000000000000000A2 /* HomeostatCore */; };
 		6CE0109000000000000000A5 /* HomeostatShared in Frameworks */ = {isa = PBXBuildFile; productRef = 6CE0109000000000000000A4 /* HomeostatShared */; };
+		6CE0109000000000000000B2 /* HomeostatEngine in Frameworks */ = {isa = PBXBuildFile; productRef = 6CE0109000000000000000B1 /* HomeostatEngine */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,6 +96,7 @@
 				6CE0106630638A0800DF579A /* SwiftUI.framework in Frameworks */,
 				6CE0106430638A0800DF579A /* WidgetKit.framework in Frameworks */,
 				6CE0109000000000000000A5 /* HomeostatShared in Frameworks */,
+				6CE0109000000000000000B2 /* HomeostatEngine in Frameworks */,
 			);
 		};
 /* End PBXFrameworksBuildPhase section */
@@ -174,6 +176,7 @@
 			name = HomeostatWidgetExtension;
 			packageProductDependencies = (
 				6CE0109000000000000000A4 /* HomeostatShared */,
+				6CE0109000000000000000B1 /* HomeostatEngine */,
 			);
 			productName = HomeostatWidgetExtension;
 			productReference = 6CE0106130638A0800DF579A /* HomeostatWidgetExtension.appex */;
@@ -577,6 +580,10 @@
 		6CE0109000000000000000A4 /* HomeostatShared */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = HomeostatShared;
+		};
+		6CE0109000000000000000B1 /* HomeostatEngine */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = HomeostatEngine;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
