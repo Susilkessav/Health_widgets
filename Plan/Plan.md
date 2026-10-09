@@ -277,6 +277,7 @@ Full feature acceptance: [Product.md §7](Product.md#7-phases-and-acceptance).
 - [x] Optional "does this match?" after a report, stored with the entry and the run it refers to.
 - [x] Quiet, missing, learning (per domain) and waiting states in `DailySummary` (11 table tests).
 - [ ] On the iPhone: widget check-in while the app is closed, locked-phone inbox write, VoiceOver, large text, tinted widgets; record evidence.
+- [ ] **Decide:** an empty HealthKit step result is imported as 0 steps (both engines; HealthKit hides denied access), so "0" can mean nothing recorded, no access, or a real zero. P1 now words it "No steps recorded yet". Changing the import to record "no samples" separately changes the data contract and fixtures in both languages.
 
 ### Step 09 — review one week of real use
 
@@ -371,6 +372,7 @@ are labeled and forecasts are explicitly hypothetical.
 | 2026-10-09 | M3 + P1 build: backend `pytest -q` with PostgreSQL | 783804c | 3,784 passed, 0 failed |
 | 2026-10-09 | M3 + P1 build: `swift test`; app + widget simulator build | 783804c | 93 run, 2 skipped, 0 failures; build succeeded; widget binary has the engine and no GRDB |
 | 2026-10-09 | P1 Today screen on iPhone 18 Pro simulator (iOS 27) | 783804c | Learning state with per-domain counts; energy save and undo verified in the database (create applied:1, undo deleted). Not a device check |
+| 2026-10-09 | Review fixes (M3 + P1) | 339893f | 156 Swift tests (4 skipped) pass; app + widget build; Today (values while learning, no-steps wording) and layered explanation checked on the iOS 27 simulator |
 | 2026-10-09 | Plan tracking revision | documentation only | Steps 01–13 verified in order; local document links resolve; `git diff --check` passed. No implementation or device checks performed |
 | 2026-10-09 | Step 02 real-data experience audit | working tree; connected iPhone database copy | SQLite integrity OK; 51 local-noon days: 29 observation headlines, 22 calibrating, 0 quiet, 0 no-data; all 51 match Swift across features, health and widget state. Retrospective, not actual screen exposure |
 | 2026-10-09 | Step 04 standard device replay | working tree; same phone copy | Saved phone HealthState and WidgetState match Python; 50 standard checkpoints match Swift, including avatar. No physical background-use acceptance claimed |
