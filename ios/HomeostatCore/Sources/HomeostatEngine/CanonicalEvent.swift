@@ -52,7 +52,7 @@ public indirect enum JSONValue: Codable, Hashable, Sendable {
         try JSONValue(foundation: JSONSerialization.jsonObject(with: data, options: [.fragmentsAllowed]))
     }
 
-    init(foundation value: Any) {
+    public init(foundation value: Any) {
         switch value {
         case let number as NSNumber:
             if CFGetTypeID(number) == CFBooleanGetTypeID() {
@@ -107,6 +107,21 @@ public struct SampleMetadata: Hashable, Sendable {
     public var sampleEnd: Instant
     public var providerMetadata: [String: String]
 
+    public init(healthKitType: String, sourceName: String, sourceBundleID: String, sourceRevision: String?,
+                deviceProductType: String?, timezone: String, timezoneSource: TimezoneSource,
+                sampleStart: Instant, sampleEnd: Instant, providerMetadata: [String: String]) {
+        self.healthKitType = healthKitType
+        self.sourceName = sourceName
+        self.sourceBundleID = sourceBundleID
+        self.sourceRevision = sourceRevision
+        self.deviceProductType = deviceProductType
+        self.timezone = timezone
+        self.timezoneSource = timezoneSource
+        self.sampleStart = sampleStart
+        self.sampleEnd = sampleEnd
+        self.providerMetadata = providerMetadata
+    }
+
     public enum TimezoneSource: String, Sendable {
         case sampleMetadata = "sample_metadata"
         case deviceAtIngestion = "device_at_ingestion"
@@ -144,24 +159,43 @@ public enum CanonicalEvent: Hashable, Sendable {
         public var metadata: SampleMetadata
         public enum Metric: String, Sendable { case hrvSDNN = "hrv_sdnn_ms", restingHR = "resting_hr_bpm" }
         public var unit: String { metric == .hrvSDNN ? "ms" : "bpm" }
+        public init(eventID: UUID, sourceRecordID: String, metric: Metric, observedAt: Instant, value: Double,
+                    metadata: SampleMetadata) {
+            (self.eventID, self.sourceRecordID, self.metric) = (eventID, sourceRecordID, metric)
+            (self.observedAt, self.value, self.metadata) = (observedAt, value, metadata)
+        }
     }
 
     public struct Interval: Hashable, Sendable {
         public var eventID: UUID, sourceRecordID: String
         public var stage: SleepStage, start: Instant, end: Instant
         public var metadata: SampleMetadata
+        public init(eventID: UUID, sourceRecordID: String, stage: SleepStage, start: Instant, end: Instant,
+                    metadata: SampleMetadata) {
+            (self.eventID, self.sourceRecordID, self.stage) = (eventID, sourceRecordID, stage)
+            (self.start, self.end, self.metadata) = (start, end, metadata)
+        }
     }
 
     public struct Workout: Hashable, Sendable {
         public var eventID: UUID, sourceRecordID: String
         public var workoutType: String, start: Instant, end: Instant, durationMinutes: Double
         public var metadata: SampleMetadata
+        public init(eventID: UUID, sourceRecordID: String, workoutType: String, start: Instant, end: Instant,
+                    durationMinutes: Double, metadata: SampleMetadata) {
+            (self.eventID, self.sourceRecordID, self.workoutType) = (eventID, sourceRecordID, workoutType)
+            (self.start, self.end, self.durationMinutes, self.metadata) = (start, end, durationMinutes, metadata)
+        }
     }
 
     /// Cumulative steps for local `day` in `timezone` up to `asOf`, read at `queriedAt`.
     public struct Snapshot: Hashable, Sendable {
         public var eventID: UUID
         public var day: LocalDay, timezone: String, asOf: Instant, queriedAt: Instant, steps: Int64
+        public init(eventID: UUID, day: LocalDay, timezone: String, asOf: Instant, queriedAt: Instant, steps: Int64) {
+            (self.eventID, self.day, self.timezone) = (eventID, day, timezone)
+            (self.asOf, self.queriedAt, self.steps) = (asOf, queriedAt, steps)
+        }
         public var sourceRecordID: String {
             snapshotRecordID(timezone: timezone, day: day, asOf: asOf, queriedAt: queriedAt, steps: steps)
         }
@@ -169,6 +203,9 @@ public enum CanonicalEvent: Hashable, Sendable {
 
     public struct Delete: Hashable, Sendable {
         public var eventID: UUID, sourceRecordID: String, deletedAt: Instant
+        public init(eventID: UUID, sourceRecordID: String, deletedAt: Instant) {
+            (self.eventID, self.sourceRecordID, self.deletedAt) = (eventID, sourceRecordID, deletedAt)
+        }
     }
 
     public var eventID: UUID {

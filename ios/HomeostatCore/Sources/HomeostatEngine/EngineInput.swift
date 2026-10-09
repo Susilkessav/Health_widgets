@@ -1,19 +1,19 @@
 import Foundation
 
 /// Provenance of one HealthKit sample, as the calculation needs it.
-struct EventMeta: Hashable {
-    let healthKitType: String
-    let sourceName: String
-    let sourceBundleID: String
-    let productType: String?
-    let timezone: String
-    let sampleStart: Instant
-    let sampleEnd: Instant
+public struct EventMeta: Hashable {
+    public let healthKitType: String
+    public let sourceName: String
+    public let sourceBundleID: String
+    public let productType: String?
+    public let timezone: String
+    public let sampleStart: Instant
+    public let sampleEnd: Instant
 }
 
 /// A canonical event (backend `canonical_events.py`), read from its JSON.
 public struct EngineEvent: Hashable, Sendable {
-    enum Kind: Hashable {
+    public enum Kind: Hashable {
         case point(metric: String, observedAt: Instant, value: Double)
         case interval(stage: String, start: Instant, end: Instant)
         case workout(type: String, start: Instant, end: Instant, durationMinutes: Double)
@@ -21,15 +21,15 @@ public struct EngineEvent: Hashable, Sendable {
         case delete
     }
 
-    let eventID: String  // lowercase UUID text: orders exactly like the UUID's integer
-    let source: String
-    let recordID: String
-    let eventType: String
-    let kind: Kind
-    let meta: EventMeta?
+    public let eventID: String  // lowercase UUID text: orders exactly like the UUID's integer
+    public let source: String
+    public let recordID: String
+    public let eventType: String
+    public let kind: Kind
+    public let meta: EventMeta?
     /// Canonical JSON without the client event ID: equal means the same provider content.
-    let content: Data
-    let full: Data
+    public let content: Data
+    public let full: Data
 
     public enum ParseError: Error { case invalid(String) }
 

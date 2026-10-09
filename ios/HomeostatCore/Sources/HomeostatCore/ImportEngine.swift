@@ -29,14 +29,6 @@ public struct AnchoredPage: Sendable {
 
 /// Step totals for one clock hour `[start, end)` in the query's zone, with
 /// HealthKit's own merging of overlapping sources (no raw-sample summation).
-public struct HourlyBucket: Hashable, Sendable {
-    public var start: Instant, end: Instant, steps: Int64
-    public init(start: Instant, end: Instant, steps: Int64) {
-        self.start = start
-        self.end = end
-        self.steps = steps
-    }
-}
 
 public enum HealthSourceError: Error, Equatable, Sendable {
     /// The stored anchor can't be decoded; recovery re-reads from no anchor.
@@ -50,27 +42,6 @@ public protocol HealthDataSource: Sendable {
     /// Hourly step sums from `start` to `end`, hours anchored at `start` in `zone`.
     /// A successful empty result means no steps visible; failures must throw.
     func hourlySteps(from start: Instant, to end: Instant, zone: String) async throws -> [HourlyBucket]
-}
-
-/// Cumulative snapshots for one local day: one per completed hourly boundary
-/// (the last is the day's closing boundary) plus, for today, one at `through`.
-public func stepSnapshots(day: LocalDay, zone: Zone, buckets: [HourlyBucket], through: Instant,
-                          queriedAt: Instant, makeID: () -> UUID = UUID.init) -> [CanonicalEvent.Snapshot] {
-    let dayEnd = zone.start(of: zone.adding(days: 1, to: day))
-    var total: Int64 = 0
-    var result: [CanonicalEvent.Snapshot] = []
-    for bucket in buckets.sorted(by: { $0.start < $1.start }) {
-        total += bucket.steps
-        if bucket.end <= through && bucket.end <= dayEnd {
-            result.append(.init(eventID: makeID(), day: day, timezone: zone.identifier, asOf: bucket.end,
-                                queriedAt: queriedAt, steps: total))
-        }
-    }
-    if through < dayEnd && result.last?.asOf != through {
-        result.append(.init(eventID: makeID(), day: day, timezone: zone.identifier, asOf: through,
-                            queriedAt: queriedAt, steps: total))
-    }
-    return result
 }
 
 /// HealthKit import (Step 9-13 plan sections 6-7): one serial drain per type,
