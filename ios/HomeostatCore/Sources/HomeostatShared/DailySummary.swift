@@ -71,6 +71,8 @@ public struct DailySummary: Equatable, Sendable {
     }
     public struct DomainLine: Equatable, Sendable {
         public var id: String, readiness: Readiness, observedAt: Instant?
+        /// Today's plain value ("7h 12m", "4,200 steps", "HRV 48 ms"), shown even while learning.
+        public var value: String?
     }
     public enum Action: String, Sendable {
         case openEvidence = "open_evidence", openApp = "open_app", openDataAccess = "open_data_access"
@@ -79,6 +81,16 @@ public struct DailySummary: Equatable, Sendable {
     public var kind: Kind
     public var icon: String
     public var headline: String
+    /// The same headline, short enough for the small widget.
+    public var shortHeadline: String {
+        switch headline {
+        case "Fewer steps than usual by this time": "Fewer steps than usual"
+        case "More steps than usual by this time": "More steps than usual"
+        case "Last result is from an earlier day": "Earlier result"
+        case "Waiting for Health data": "Waiting for data"
+        default: headline
+        }
+    }
     /// One same-domain comparison, or nil.
     public var comparison: String?
     /// Sleep, recovery and movement, each ready, learning or missing.
@@ -172,12 +184,24 @@ public struct DailySummary: Equatable, Sendable {
         func latest(_ domains: [String]) -> Instant? {
             facts.measures.filter { domains.contains($0.domain) && $0.value != nil }.compactMap(\.observedAt).max()
         }
+        func value(_ id: String) -> String? {
+            func measure(_ domain: String) -> Double? { facts.measures.first { $0.domain == domain }?.value }
+            switch id {
+            case "sleep": return measure("sleep").map(hours)
+            case "movement": return measure("movement").map(steps)
+            default:
+                let parts = [measure("hrv").map { "HRV \(Int($0.rounded())) ms" },
+                             measure("rhr").map { "resting \(Int($0.rounded())) bpm" }].compactMap { $0 }
+                return parts.isEmpty ? nil : parts.joined(separator: " · ")
+            }
+        }
         return [("sleep", ["sleep"]), ("recovery", ["hrv", "rhr"]), ("movement", ["movement"])].map { id, inputs in
             let usable = days(inputs)
+            // Recovery has no "missing": without enough readings today it is "insufficient_data".
             let readiness: Readiness = usable < facts.requiredDays
                 ? .learning(usable: min(usable, facts.requiredDays), required: facts.requiredDays)
-                : facts.block(id).state == "missing" ? .missing : .ready
-            return DomainLine(id: id, readiness: readiness, observedAt: latest(inputs))
+                : ["missing", "insufficient_data"].contains(facts.block(id).state) ? .missing : .ready
+            return DomainLine(id: id, readiness: readiness, observedAt: latest(inputs), value: value(id))
         }
     }
 
@@ -195,7 +219,7 @@ public struct DailySummary: Equatable, Sendable {
         guard let value = measure?.value, let usual = measure?.baseline else { return nil }
         switch trait {
         case "sleep": return "\(hours(value)) · usually \(hours(usual))"
-        case "movement": return "\(count(value)) steps · usually \(count(usual)) by now"
+        case "movement": return "\(steps(value)) · usually \(count(usual)) by now"
         default: return nil
         }
     }
@@ -203,6 +227,12 @@ public struct DailySummary: Equatable, Sendable {
     static func hours(_ value: Double) -> String {
         let minutes = Int((value * 60 + 0.5).rounded(.down))
         return "\(minutes / 60)h \(String(format: "%02d", minutes % 60))m"
+    }
+
+    /// An empty HealthKit result is imported as 0 steps, and denied access looks the
+    /// same, so 0 is worded as nothing recorded rather than as a measured zero.
+    static func steps(_ value: Double) -> String {
+        value.rounded() == 0 ? "No steps recorded yet" : "\(count(value)) steps"
     }
 
     static func count(_ value: Double) -> String {

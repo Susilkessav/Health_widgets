@@ -43,6 +43,10 @@ public enum LocalEngine {
 /// The app's calculation inputs as one file the widget reads without the
 /// database (Plan.md §4 path 3). The app writes it after every run; the widget
 /// recalculates from it with its own step read, under the cache's ordering rule.
+///
+/// Format: one JSON header line, then one line per event: `delivered_at`, a tab,
+/// and the event's stored bytes unchanged. Nothing is re-encoded, so the widget
+/// parses exactly what the app parsed, one small line at a time.
 public enum EngineSnapshot {
     public static let version = "engine-inputs@1"
     /// Above this the app writes no snapshot and the widget keeps the cached result.
@@ -91,7 +95,7 @@ public enum EngineSnapshot {
     }
 
     public static func encode(_ inputs: LocalInputs, header: Header) throws -> Data {
-        let object: [String: Any] = [
+        let head: [String: Any] = [
             "version": version, "settings": EngineSettings.configSHA256,
             "scope": header.scope, "zone": header.zone, "day": header.day.description,
             "input_revision": header.inputRevision, "run_id": header.runID,
@@ -99,18 +103,28 @@ public enum EngineSnapshot {
             "lower": inputs.lower.wire,
             "through": Dictionary(uniqueKeysWithValues: inputs.through.map { ($0.key.rawValue, $0.value.wire) }),
             "complete": Dictionary(uniqueKeysWithValues: inputs.coverage.map { ($0.domain.rawValue, $0.complete) }),
-            "events": try inputs.rows.map { ["delivered_at": $0.createdAt, "body": try JSONSerialization.jsonObject(with: $0.body)] },
         ]
-        let data = try JSONSerialization.data(withJSONObject: object, options: [.sortedKeys])
-        guard data.count <= maxBytes else { throw Failure.tooLarge }
+        var data = try JSONSerialization.data(withJSONObject: head, options: [.sortedKeys])
+        for row in inputs.rows {
+            // Canonical JSON escapes control characters, so a body never holds a raw newline.
+            guard !row.body.contains(newline), !row.createdAt.utf8.contains(tab) else { throw Failure.malformed }
+            data.append(newline)
+            data.append(contentsOf: row.createdAt.utf8)
+            data.append(tab)
+            data.append(row.body)
+            guard data.count <= maxBytes else { throw Failure.tooLarge }
+        }
         return data
     }
+
+    static let newline = UInt8(ascii: "\n"), tab = UInt8(ascii: "\t")
 
     /// Without `steps`: the app's own calculation at `now`. With `steps`: movement
     /// at the step read; every other domain held at the app run's cutoff (D-A).
     public static func calculate(_ data: Data, now: Instant, steps: StepRead? = nil,
                                  settings: EngineSettings = .standard) throws -> Result {
-        guard let root = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+        let lines = data.split(separator: newline, omittingEmptySubsequences: false)
+        guard let first = lines.first, let root = try? JSONSerialization.jsonObject(with: first) as? [String: Any],
               root["version"] as? String == version else { throw Failure.unsupported }
         guard root["settings"] as? String == EngineSettings.configSHA256 else { throw Failure.otherSettings }
         guard let scope = root["scope"] as? String, let zone = root["zone"] as? String, let calendar = Zone(zone),
@@ -120,8 +134,8 @@ public enum EngineSnapshot {
               let appEffective = (root["effective_at"] as? String).flatMap(Instant.parse),
               let appKnown = (root["known_at"] as? String).flatMap(Instant.parse),
               let lower = (root["lower"] as? String).flatMap(Instant.parse),
-              let throughText = root["through"] as? [String: String], let complete = root["complete"] as? [String: Bool],
-              let events = root["events"] as? [[String: Any]] else { throw Failure.malformed }
+              let throughText = root["through"] as? [String: String], let complete = root["complete"] as? [String: Bool]
+        else { throw Failure.malformed }
         var through: [Domain: Instant] = [:]
         for (key, value) in throughText {
             guard let domain = Domain(rawValue: key), let at = Instant.parse(value) else { throw Failure.malformed }
@@ -131,9 +145,11 @@ public enum EngineSnapshot {
             guard let isComplete = complete[domain.rawValue] else { throw Failure.malformed }
             return EngineCoverage(domain: domain, timezone: zone, complete: isComplete, startAt: lower, endAt: max(end, lower))
         }
-        var observations = try events.map { entry -> EngineObservation in
-            guard let body = entry["body"], let at = (entry["delivered_at"] as? String).flatMap(Instant.parse),
-                  let event = try? EngineEvent(json: JSONValue(foundation: body)) else { throw Failure.malformed }
+        var observations = try lines.dropFirst().map { line -> EngineObservation in
+            guard let split = line.firstIndex(of: tab),
+                  let at = Instant.parse(String(decoding: line[..<split], as: UTF8.self)),
+                  let event = try? EngineEvent(json: JSONValue.parse(Data(line[line.index(after: split)...])))
+            else { throw Failure.malformed }
             return EngineObservation(event: event, deliveredAt: at)
         }
         let header = Header(scope: scope, zone: zone, day: day, inputRevision: revision, runID: runID,
@@ -151,9 +167,10 @@ public enum EngineSnapshot {
         let read = CanonicalEvent.snapshot(.init(eventID: UUID(), day: day, timezone: zone, asOf: steps.at,
                                                  queriedAt: steps.at, steps: steps.steps))
         observations.append(EngineObservation(event: try EngineEvent(json: read.json), deliveredAt: steps.at))
-        // The query succeeded, so movement is covered up to the read. Coverage
-        // for the other domains is untouched: it still ends at their import.
-        coverage.append(EngineCoverage(domain: .movement, timezone: zone, complete: true, startAt: lower, endAt: steps.at))
+        // The query covered today from midnight to the read, and nothing earlier.
+        // Coverage for the other domains is untouched: it still ends at their import.
+        coverage.append(EngineCoverage(domain: .movement, timezone: zone, complete: true,
+                                       startAt: max(lower, calendar.start(of: day)), endAt: steps.at))
         let held: [Domain] = [.sleep, .hrv, .rhr, .workout]
         let features = try calculateFeatures(observations, EngineContext(
             day: day, timezone: zone, effectiveAt: steps.at, knownAt: max(steps.at, appKnown), coverage: coverage,

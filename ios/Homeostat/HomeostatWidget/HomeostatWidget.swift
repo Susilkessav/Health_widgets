@@ -59,8 +59,10 @@ struct Provider: TimelineProvider {
                 return CheckInInbox.shared()?.pendingEnergy(scope: cache.scope, day: today, zone: zone)
                     ?? cache.report.flatMap { zone.day(of: $0.at) == today ? $0 : nil }
             }()
-            let entries = WidgetPolicy.timelineDates(result, now: now, zone: zone).map {
-                Entry(date: $0.date, display: WidgetPolicy.display(result, now: $0, zone: zone), report: report)
+            let entries = WidgetPolicy.timelineDates(result, now: now, zone: zone).map { at in
+                // A report belongs to its own day: entries after midnight drop it.
+                Entry(date: at.date, display: WidgetPolicy.display(result, now: at, zone: zone),
+                      report: report.flatMap { zone.day(of: $0.at) == zone.day(of: at) ? $0 : nil })
             }
             let retry = (try? SharedWidgetStore.shared()?.manifest())?.fetch.nextAttemptAt
             // With app inputs to recalculate from, ask for a step refresh every 15 minutes; iOS decides.
@@ -84,10 +86,11 @@ struct HeadlineText: View {
 
 struct DetailLine: View {
     let text: String?
+    var lines = 2
 
     var body: some View {
         if let text {
-            Text(text).font(.subheadline).lineLimit(2).minimumScaleFactor(0.8).privacySensitive()
+            Text(text).font(.subheadline).lineLimit(lines).minimumScaleFactor(0.8).privacySensitive()
         }
     }
 }
@@ -242,10 +245,11 @@ struct HomeostatWidgetEntryView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     if earlier { DayLabel(day: cache.day) }
                     HeadlineText(text: headline(summary.headline))
-                    DetailLine(text: summary.comparison)
+                    let buttons = summary.report == nil && !redaction.contains(.privacy)
+                    DetailLine(text: summary.comparison, lines: buttons ? 1 : 2)  // room for the buttons
                     if let report = summary.report {
                         ReportLine(report: report)
-                    } else if !redaction.contains(.privacy) {
+                    } else if buttons {
                         EnergyButtons()
                     } else {
                         SecondaryLine(text: p.secondary)
@@ -260,7 +264,7 @@ struct HomeostatWidgetEntryView: View {
                 EntryAvatar(entry: entry, framing: .waistUp)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 if earlier { DayLabel(day: cache.day) }
-                HeadlineText(text: headline(summary.headline))
+                HeadlineText(text: headline(summary.shortHeadline))
                 FreshnessLine(display: entry.display)
             }
         }

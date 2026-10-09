@@ -59,6 +59,10 @@ final class DailySummaryTests: XCTestCase {
             facts: facts(movement: "behind_usual", measures: [measure("movement", 4200, usual: 6000)]))))
         XCTAssertEqual(summary.headline, "Fewer steps than usual by this time")
         XCTAssertEqual(summary.comparison, "4,200 steps · usually 6,000 by now")
+        XCTAssertEqual(summary.domains.map(\.value), [nil, nil, "4,200 steps"])  // plain values, even while learning
+        let none = DailySummary.make(.fresh(cache(trait: "movement", headline: "Less active than usual",
+                                                  facts: facts(movement: "behind_usual", measures: [measure("movement", 0, usual: 900)]))))
+        XCTAssertEqual(none.comparison, "No steps recorded yet · usually 900 by now")  // never a measured zero
     }
 
     /// The real-data audit: global calibration hid a ready, typical movement domain.
@@ -97,6 +101,20 @@ final class DailySummaryTests: XCTestCase {
                                                      facts: facts(sleep: "missing"))))
         XCTAssertEqual(summary.domains.first?.readiness, .missing)
         XCTAssertEqual(summary.comparison, "Recovery and steps as usual")  // sleep isn't claimed
+    }
+
+    func testRecoveryWithoutTodaysReadingsIsMissing() {
+        let summary = DailySummary.make(.fresh(cache(trait: "typical", headline: "Typical day",
+                                                     facts: facts(recovery: "insufficient_data"))))
+        XCTAssertEqual(summary.domains[1].readiness, .missing)
+        XCTAssertEqual(summary.comparison, "Sleep and steps as usual")
+    }
+
+    func testTheSmallWidgetGetsAShortHeadline() {
+        let steps = DailySummary.make(.fresh(cache(trait: "movement", headline: "Less active than usual",
+                                                   facts: facts(movement: "behind_usual"))))
+        XCTAssertEqual(steps.shortHeadline, "Fewer steps than usual")
+        XCTAssertEqual(DailySummary.make(.empty).shortHeadline, "Waiting for data")
     }
 
     func testStaleKeepsTheResultAndSaysSo() {

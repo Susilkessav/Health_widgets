@@ -199,6 +199,7 @@ public struct SharedWidgetStore: Sendable {
     /// same scope, or byte-identical. `meaningful` says whether the widget
     /// would look different, which decides a timeline reload (plan section 8).
     public func write(_ cache: WidgetCache, now: Instant) throws -> WriteResult {
+        var cache = cache
         let presentation = cache.widgetState.presentation
         guard Self.supported(cache.widgetState.version), cache.schema == WidgetCache.currentSchema,
               !presentation.headline.trimmingCharacters(in: .whitespaces).isEmpty,
@@ -209,10 +210,21 @@ public struct SharedWidgetStore: Sendable {
             if let previous {
                 let run = (cache.inputRevision, cache.runID), stored = (previous.inputRevision, previous.runID)
                 if run < stored { return .ignoredOlder }
-                // Same app run: a widget step read only replaces an older one, and
-                // the app republishing that run never undoes a newer read.
-                let none = Instant(microseconds: .min)
-                if run == stored, (cache.stepsThrough ?? none) < (previous.stepsThrough ?? none) { return .ignoredOlder }
+                if run == stored {
+                    // The app owns the energy report: a widget step read keeps the stored one,
+                    // even if the app changed it after the widget read the cache.
+                    if cache.stepsThrough != nil { cache.report = previous.report }
+                    // A widget step read only replaces an older one, and the app republishing
+                    // the same run never undoes a newer read; it can still update the report.
+                    let none = Instant(microseconds: .min)
+                    if (cache.stepsThrough ?? none) < (previous.stepsThrough ?? none) {
+                        guard cache.stepsThrough == nil, cache.report != previous.report else { return .ignoredOlder }
+                        var merged = previous
+                        merged.report = cache.report
+                        manifest.cache = merged
+                        return .written(meaningful: true)
+                    }
+                }
             }
             if previous == cache { return .unchanged }
             manifest.cache = cache

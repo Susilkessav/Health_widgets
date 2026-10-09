@@ -441,7 +441,10 @@ final class AppModel: ObservableObject {
     func publishWidget(foreground: Bool) {
         guard let store, let scope else { return }
         let now = Instant(Date()), zone = Zone(TimeZone.current.identifier) ?? Zone("UTC")!
-        if let inbox = CheckInInbox.shared() { store.ingest(inbox, scope: scope, now: now) }  // widget check-ins first
+        // Widget check-ins first, so the published report and the Today screen include them.
+        if let inbox = CheckInInbox.shared(), store.ingest(inbox, scope: scope, now: now) > 0 {
+            todayReport = try? store.latestEnergy(on: zone.day(of: now), zone: zone)
+        }
         guard let shared = SharedWidgetStore.shared(),
               let state = try? store.storedLocalState(), let day = LocalDay(state.day) else { return }
         let cache = WidgetCache(scope: scope, day: day, inputRevision: state.inputRevision, runID: state.runID,
@@ -811,7 +814,14 @@ final class AppModel: ObservableObject {
         explanationMessage = nil
         if let link = ExplanationLink(url: url) {
             switch link.resolve(scope: scope, run: snapshot.state?.runID) {
-            case .current: explanationState = snapshot.state
+            case .current:
+                explanationState = snapshot.state
+                // The widget may have recalculated this run with its own, newer step read (M3).
+                if case .state(let cache)? = SharedWidgetStore.shared()?.read(), cache.runID == snapshot.state?.runID,
+                   let read = cache.stepsThrough {
+                    explanationMessage = "The widget counted steps up to \(read.date.formatted(date: .omitted, time: .shortened)). "
+                        + "This shows the app's last full calculation; it updates on the next one."
+                }
             case .updated:
                 explanationState = snapshot.state
                 explanationMessage = "This result has been updated since the widget was shown. Showing the latest result."

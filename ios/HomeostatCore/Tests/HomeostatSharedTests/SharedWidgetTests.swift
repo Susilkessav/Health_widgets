@@ -65,6 +65,29 @@ final class SharedWidgetStoreTests: XCTestCase {
         XCTAssertEqual(try store.write(cache(5, run: 10), now: NOW), .written(meaningful: true))  // any new app run wins
     }
 
+    /// The app owns the energy report; widget step reads own the measured result.
+    func testTheReportSurvivesWidgetStepReadsInBothOrders() throws {
+        let saved = ReportedEnergy(level: .low, at: NOW, status: .saved)
+        var appResult = cache(5, run: 9)
+        _ = try store.write(appResult, now: NOW)
+        var read = cache(5, run: 9, widget: widget("30 min"))
+        read.stepsThrough = NOW.adding(seconds: 1800)
+        _ = try store.write(read, now: NOW)
+
+        appResult.report = saved  // the user checks in after the widget's read
+        XCTAssertEqual(try store.write(appResult, now: NOW), .written(meaningful: true))
+        guard case .state(let merged) = store.read() else { return XCTFail() }
+        XCTAssertEqual(merged.report, saved)
+        XCTAssertEqual(merged.widgetState, read.widgetState)  // the newer step read stays
+
+        var later = read  // a widget read that began before the check-in, carrying no report
+        later.stepsThrough = NOW.adding(seconds: 2700)
+        _ = try store.write(later, now: NOW)
+        guard case .state(let after) = store.read() else { return XCTFail() }
+        XCTAssertEqual(after.report, saved)
+        XCTAssertEqual(after.stepsThrough, later.stepsThrough)
+    }
+
     func testOnlyVisibleChangesAreMeaningful() throws {
         _ = try store.write(cache(1), now: NOW)
         let later = NOW.adding(seconds: 600)

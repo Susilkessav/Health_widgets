@@ -21,7 +21,10 @@ struct TodayView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
                             .accessibilityHidden(true)  // the summary below says the same in words
                     }
-                    SummaryCard(summary: summary) { model.showCurrentExplanation() }
+                    if model.healthAvailable && (model.snapshot.ledger.isEmpty || model.needsHealthAccess) {
+                        ConnectHealthCard()
+                    }
+                    SummaryCard(summary: summary, canExplain: model.snapshot.state != nil) { model.showCurrentExplanation() }
                     if !summary.domains.isEmpty { DomainList(lines: summary.domains) }
                     EnergyCard()  // how you feel today doesn't depend on how fresh the Health data is
                 }
@@ -35,11 +38,14 @@ struct TodayView: View {
         .sheet(isPresented: $showingDetails) { DebugView() }
         .sheet(isPresented: $model.showingExplanation) {
             NavigationStack {
-                if let state = model.explanationState {
-                    ExplanationView(state: state, message: model.explanationMessage)
-                } else {
-                    Text(model.explanationMessage ?? "No result yet.").padding()
+                Group {
+                    if let state = model.explanationState {
+                        ExplanationView(state: state, message: model.explanationMessage)
+                    } else {
+                        Text(model.explanationMessage ?? "No result yet.").padding()
+                    }
                 }
+                .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { model.showingExplanation = false } } }
             }
         }
     }
@@ -47,6 +53,8 @@ struct TodayView: View {
 
 struct SummaryCard: View {
     let summary: DailySummary
+    /// Any stored result can be opened; "Why?" when it explains a finding.
+    let canExplain: Bool
     let explain: () -> Void
 
     var body: some View {
@@ -58,8 +66,8 @@ struct SummaryCard: View {
                                      : "Updated \(Text(updated.date, style: .time))")
                     .font(.footnote).foregroundStyle(.secondary)
             }
-            if summary.evidence != nil {
-                Button("Why?", action: explain)
+            if canExplain {
+                Button(summary.evidence != nil ? "Why?" : "See measurements", action: explain)
                     .frame(minHeight: 44)
                     .accessibilityHint("Shows the measurements behind this")
             }
@@ -69,6 +77,27 @@ struct SummaryCard: View {
         .background(.background.secondary, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
         .opacity(summary.isStale ? 0.7 : 1)
         .accessibilityElement(children: .contain)
+    }
+}
+
+/// First run, or access never granted: the one step that makes everything else work.
+struct ConnectHealthCard: View {
+    @EnvironmentObject var model: AppModel
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Connect Apple Health").font(.headline)
+            Text("Homeostat reads sleep, heart rate variability, resting heart rate, steps and workouts. "
+                 + "It never writes to Health, and your data stays on this iPhone.")
+                .font(.subheadline)
+            Button("Connect") { Task { await model.requestAccess() } }
+                .buttonStyle(.borderedProminent)
+                .frame(minHeight: 44)
+                .disabled(model.busy)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding()
+        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 }
 
@@ -83,9 +112,11 @@ struct DomainList: View {
                     Text(Self.names[line.id] ?? line.id).font(.headline)
                     Spacer()
                     VStack(alignment: .trailing, spacing: 2) {
-                        Text(status(line.readiness))
+                        if let value = line.value { Text(value).font(.body.monospacedDigit()) }
+                        Text(status(line.readiness)).font(line.value == nil ? .body : .caption)
+                            .foregroundStyle(line.value == nil ? .primary : .secondary)
                         if let at = line.observedAt {
-                            Text(at.date, style: .time).font(.caption).foregroundStyle(.secondary)
+                            Text(observed(at)).font(.caption).foregroundStyle(.secondary)
                         }
                     }
                 }
@@ -94,6 +125,14 @@ struct DomainList: View {
         }
         .padding()
         .background(.background.secondary, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+    }
+
+    /// "7:02 AM" today; otherwise with its day, so yesterday's reading isn't read as today's.
+    func observed(_ at: Instant) -> String {
+        let date = at.date
+        if Calendar.current.isDateInToday(date) { return date.formatted(date: .omitted, time: .shortened) }
+        if Calendar.current.isDateInYesterday(date) { return "Yesterday " + date.formatted(date: .omitted, time: .shortened) }
+        return date.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day().hour().minute())
     }
 
     func status(_ readiness: DailySummary.Readiness) -> String {
@@ -133,7 +172,7 @@ struct EnergyCard: View {
             }
             if model.lastEnergy != nil, !model.matchAnswered {
                 HStack {
-                    Text("Does this match how you feel?").font(.subheadline)
+                    Text("Does today's summary match how you feel?").font(.subheadline)
                     Spacer()
                     Button("Yes") { model.answerMatch(.yes) }.frame(minHeight: 44)
                     Button("Not really") { model.answerMatch(.notReally) }.frame(minHeight: 44)
