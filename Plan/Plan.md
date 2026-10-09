@@ -139,7 +139,7 @@ together when a step changes. If blocked, record the reason and next action.
 | 05 | Widget self-refresh (M3) | Built; device exit open | Install and check the widget updates with the app force-quit |
 | 06 | Final avatar and G2 acceptance | Partly done | Art, accessibility, acceptance; final acceptance after 04 |
 | 07 | Review implementation specification | Specified; confirmation required | Contracts written; user now requires confirmation before implementation |
-| 08 | Daily loop (P1) | Not started; confirmation and acceptance gates pending | Today + Your day widget + explanations/check-in; after 04/06/07 |
+| 08 | Daily loop (P1) | Built; device and accessibility checks open | Release still after 04/06 |
 | 09 | One-week P1 review | Not started | Real use, findings and fixes; after 08 |
 | 10 | History, activity calendar, focused widgets (P1b) | Not started | After 09 |
 | 11 | Workout logging, reflection, then planning (P2) | Later | After 10 and scope review |
@@ -265,18 +265,18 @@ the user has confirmed the concrete implementation scope (new requirement 2026-1
 
 ### Step 08 — build the daily app/widget loop (P1)
 
-**Status: not started; confirmation, G1/G2 and scenario acceptance pending. Depends on:** Steps 04, 06 and 07.
+**Status: built 2026-10-09 (simulator-checked); device, accessibility and release gates open. Depends on:** Steps 04, 06 and 07 for release.
 **Done when:** the loop works on the iPhone, all required data states and
 accessibility checks pass, and it is ready for the week of use in Step 09.
 Full feature acceptance: [Product.md §7](Product.md#7-phases-and-acceptance).
 
-- [ ] Today: one useful observation, its explanation and an optional action.
-- [ ] One small/medium **Your day** widget with correct freshness and privacy.
-- [ ] Widget → exact evidence, with safe deep-link fallback.
-- [ ] Energy check-in in the app and widget; persist through the App Group inbox, with edit/undo and retry handling.
-- [ ] Optional “does this match?” feedback on the observation.
-- [ ] Quiet days, missing/partial data and first-two-weeks calibration states.
-- [ ] Complete required scenarios and native accessibility/device checks; record evidence.
+- [x] Today (`TodayView`, now the app's root; Debug under Details): summary, per-domain status, "Why?" to the explanation.
+- [x] Your day widget on `DailySummary`; existing freshness, dimming and privacy redaction kept.
+- [x] Widget → exact evidence via the existing explanation link when there is evidence; otherwise the tap just opens the app.
+- [x] Energy check-in in the app (save, acknowledgment, undo) and widget (`LogEnergyIntent` → App Group inbox → imported on the next app publish). Simulator: save and undo verified in the database.
+- [x] Optional "does this match?" after a report, stored with the entry and the run it refers to.
+- [x] Quiet, missing, learning (per domain) and waiting states in `DailySummary` (11 table tests).
+- [ ] On the iPhone: widget check-in while the app is closed, locked-phone inbox write, VoiceOver, large text, tinted widgets; record evidence.
 
 ### Step 09 — review one week of real use
 

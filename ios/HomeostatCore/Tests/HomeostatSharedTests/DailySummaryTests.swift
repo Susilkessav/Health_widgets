@@ -32,13 +32,13 @@ final class DailySummaryTests: XCTestCase {
         XCTAssertEqual(DailySummary.make(.unreadable(.unavailable)).kind, .unavailable)
     }
 
-    func testAnEarlierDayDropsTodaysInterpretationAndReport() {
+    func testAnEarlierDayDropsTodaysInterpretationButKeepsTodaysReport() {
         let report = ReportedEnergy(level: .low, at: NOW, status: .saved)
         let summary = DailySummary.make(.earlierDay(cache(trait: "sleep", headline: "Shorter sleep", facts: facts())),
                                         report: report)
         XCTAssertEqual(summary.kind, .earlierDay)
         XCTAssertEqual(summary.headline, "Last result is from an earlier day")
-        XCTAssertNil(summary.report)
+        XCTAssertEqual(summary.report, report)
         XCTAssertEqual(summary.updatedAt, NOW)
     }
 

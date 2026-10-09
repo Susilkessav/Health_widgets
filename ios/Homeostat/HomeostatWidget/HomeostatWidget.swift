@@ -1,3 +1,4 @@
+import AppIntents
 import HomeostatShared
 import SwiftUI
 import WidgetKit
@@ -10,7 +11,11 @@ import WidgetKit
 struct Entry: TimelineEntry {
     let date: Date
     let display: WidgetPolicy.Display
+    /// Today's energy report: one still waiting in the inbox, else the app's saved one.
+    var report: ReportedEnergy?
     var identity = AvatarIdentityStore.shared()?.read() ?? AvatarIdentity()
+
+    var summary: DailySummary { DailySummary.make(display, report: report) }
 }
 
 struct Provider: TimelineProvider {
@@ -48,8 +53,14 @@ struct Provider: TimelineProvider {
             let result = read()
             let now = Instant(Date())
             let zone = self.zone
+            let report: ReportedEnergy? = {
+                guard case .state(let cache) = result else { return nil }
+                let today = zone.day(of: now)
+                return CheckInInbox.shared()?.pendingEnergy(scope: cache.scope, day: today, zone: zone)
+                    ?? cache.report.flatMap { zone.day(of: $0.at) == today ? $0 : nil }
+            }()
             let entries = WidgetPolicy.timelineDates(result, now: now, zone: zone).map {
-                Entry(date: $0.date, display: WidgetPolicy.display(result, now: $0, zone: zone))
+                Entry(date: $0.date, display: WidgetPolicy.display(result, now: $0, zone: zone), report: report)
             }
             let retry = (try? SharedWidgetStore.shared()?.manifest())?.fetch.nextAttemptAt
             // With app inputs to recalculate from, ask for a step refresh every 15 minutes; iOS decides.
@@ -126,6 +137,31 @@ struct DayLabel: View {
     }
 }
 
+/// Low / Okay / High, saved straight from the widget through the inbox.
+struct EnergyButtons: View {
+    var body: some View {
+        HStack(spacing: 6) {
+            ForEach([EnergyLevel.low, .okay, .high], id: \.self) { level in
+                Button(intent: LogEnergyIntent(level)) {
+                    Text(level.rawValue.capitalized).font(.caption.weight(.semibold)).frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+                .accessibilityLabel("Energy \(level.rawValue)")
+            }
+        }
+    }
+}
+
+/// The report, kept apart from the measured headline; "saving" until the app imports it.
+struct ReportLine: View {
+    let report: ReportedEnergy
+
+    var body: some View {
+        Text("You: \(report.level.rawValue) energy\(report.status == .saving ? " · saving" : "")")
+            .font(.caption).foregroundStyle(.secondary).lineLimit(1).privacySensitive()
+    }
+}
+
 /// The avatar at the entry's time, so lighting and fading follow the timeline.
 struct EntryAvatar: View {
     @Environment(\.redactionReasons) private var redaction
@@ -162,7 +198,7 @@ struct HomeostatWidgetEntryView: View {
         content
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .accessibilityElement(children: .combine)
-            .widgetURL(link)
+            .widgetURL(entry.summary.action == .openEvidence ? link : nil)  // otherwise the tap just opens the app
     }
 
     var link: URL? {
@@ -180,7 +216,7 @@ struct HomeostatWidgetEntryView: View {
         case .fresh(let cache), .stale(let cache), .earlierDay(let cache):
             stateLayout(cache).opacity(isStale ? 0.6 : 1)
         case .empty:
-            message("🙂", "Open Homeostat to get started")
+            message(entry.summary.icon, entry.summary.headline)
         case .unreadable(.version):
             message("⬆️", "Update Homeostat")
         case .unreadable(.unavailable):
@@ -194,8 +230,8 @@ struct HomeostatWidgetEntryView: View {
     }
 
     @ViewBuilder func stateLayout(_ cache: WidgetCache) -> some View {
-        let p = cache.widgetState.presentation
-        let earlier: Bool = { if case .earlierDay = entry.display { return true } else { return false } }()
+        let summary = entry.summary, p = cache.widgetState.presentation
+        let earlier = summary.kind == .earlierDay
         // G2: the avatar replaces the emoji. Medium shows the full body; small
         // crops to the waist so the face stays readable (decision D9).
         switch family {
@@ -205,9 +241,15 @@ struct HomeostatWidgetEntryView: View {
                     .frame(width: 92)
                 VStack(alignment: .leading, spacing: 4) {
                     if earlier { DayLabel(day: cache.day) }
-                    HeadlineText(text: headline(p.headline))
-                    DetailLine(text: p.detail)
-                    SecondaryLine(text: p.secondary)
+                    HeadlineText(text: headline(summary.headline))
+                    DetailLine(text: summary.comparison)
+                    if let report = summary.report {
+                        ReportLine(report: report)
+                    } else if !redaction.contains(.privacy) {
+                        EnergyButtons()
+                    } else {
+                        SecondaryLine(text: p.secondary)
+                    }
                     Spacer(minLength: 0)
                     FreshnessLine(display: entry.display)
                 }
@@ -218,7 +260,7 @@ struct HomeostatWidgetEntryView: View {
                 EntryAvatar(entry: entry, framing: .waistUp)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 if earlier { DayLabel(day: cache.day) }
-                HeadlineText(text: headline(p.headline))
+                HeadlineText(text: headline(summary.headline))
                 FreshnessLine(display: entry.display)
             }
         }

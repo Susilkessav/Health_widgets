@@ -42,6 +42,10 @@ final class AppModel: ObservableObject {
     @Published var explanationMessage: String?
     @Published var savingSettings = false
     @Published var widgetDiagnostics: WidgetManifest?
+    /// Today's newest saved energy report, and the last one made here (for undo).
+    @Published private(set) var todayReport: ReportedEnergy?
+    @Published private(set) var lastEnergy: (command: EntryCommand, revision: Int)?
+    @Published var energyMessage: String?
     /// The user's avatar appearance (G2 decision D5): device-only, shared with the widget.
     @Published private(set) var identity = AvatarIdentityStore.shared()?.read() ?? AvatarIdentity()
 
@@ -787,6 +791,7 @@ final class AppModel: ObservableObject {
         next.acknowledgedRevision = try? store.value("acknowledged_revision")
         next.paused = try? store.value("paused")
         next.state = try? store.storedLocalState()
+        todayReport = try? store.latestEnergy(on: Zone.current.day(of: Instant(displayNow)), zone: .current)
         next.backgroundLog = ((try? store.value("background_log"))?.split(separator: "\n").map(String.init) ?? []).reversed()
         for key in ["import_deferred", "last_import_cycle", "local_calculation_duration_ms", "background_next_requested", "background_last_started",
                     "background_last_result", "background_last_expired"]
@@ -815,6 +820,70 @@ final class AppModel: ObservableObject {
         } else {
             explanationMessage = "This widget link is invalid. Open the current result in Homeostat."
         }
+        showingExplanation = true
+    }
+
+    // MARK: - Today (P1, Daily_loop_contract.md)
+
+    /// The same summary the widget shows, from the same mapping.
+    var todaySummary: DailySummary {
+        guard let state = snapshot.state, let day = LocalDay(state.day) else { return .make(.empty, report: todayReport) }
+        let cache = WidgetCache(scope: scope ?? "", day: day, inputRevision: state.inputRevision, runID: state.runID,
+                                widgetState: state.widgetState, facts: DisplayFacts(healthState: state.healthState))
+        return .make(WidgetPolicy.display(.state(cache), now: Instant(displayNow), zone: .current), report: todayReport)
+    }
+
+    func recordEnergy(_ level: ReportedEnergy.Level) {
+        guard let store, let scope else { return }
+        let now = Instant(Date())
+        let command = EntryCommand.energy(level, at: now, zone: TimeZone.current.identifier, scope: scope)
+        do {
+            guard case .applied(let revision) = try store.apply(command, now: now) else {
+                energyMessage = "Not saved. Try again."
+                return
+            }
+            lastEnergy = (command, revision)
+            matchAnswered = false
+            energyMessage = nil
+        } catch {
+            energyMessage = "Not saved. Try again."
+        }
+        refresh()
+        publishWidget(foreground: true)
+    }
+
+    func undoEnergy() {
+        guard let store, let scope, let (made, revision) = lastEnergy else { return }
+        // Taking back the report removes it, whatever was added to it since (an answer).
+        let undo = EntryCommand(scope: scope, action: .delete, entryID: made.entryID, eventAt: made.eventAt,
+                                zone: made.zone, expectedRevision: revision)
+        switch try? store.apply(undo, now: Instant(Date())) {
+        case .applied: energyMessage = nil
+        case .conflict: energyMessage = "This report changed since, so it wasn't undone."
+        default: energyMessage = "Couldn't undo. Try again."
+        }
+        lastEnergy = nil
+        refresh()
+        publishWidget(foreground: true)
+    }
+
+    /// "Does this match how you feel?" for the observation on screen (optional).
+    @Published private(set) var matchAnswered = false
+
+    func answerMatch(_ match: EntryCommand.Match) {
+        guard let store, let scope, let (made, revision) = lastEnergy else { return }
+        let answer = EntryCommand(scope: scope, action: .edit, entryID: made.entryID, eventAt: made.eventAt,
+                                  zone: made.zone, expectedRevision: revision, match: match,
+                                  matchRunRef: snapshot.state.map { String($0.runID) })
+        if case .applied(let next)? = try? store.apply(answer, now: Instant(Date())) {
+            lastEnergy = (answer, next)
+            matchAnswered = true
+        }
+    }
+
+    func showCurrentExplanation() {
+        explanationState = snapshot.state
+        explanationMessage = nil
         showingExplanation = true
     }
 

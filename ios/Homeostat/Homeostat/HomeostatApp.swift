@@ -8,7 +8,7 @@ struct HomeostatApp: App {
 
     var body: some Scene {
         WindowGroup {
-            DebugView()
+            TodayView()
                 .environmentObject(delegate.model)
                 .task {
                     delegate.model.setForeground(scenePhase == .active)

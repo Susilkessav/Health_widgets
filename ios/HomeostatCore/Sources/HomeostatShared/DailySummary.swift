@@ -104,9 +104,10 @@ public struct DailySummary: Equatable, Sendable {
                                 domains: [], updatedAt: nil, isStale: false, evidence: nil, action: .openApp, report: report)
         case .earlierDay(let cache):
             // Today's interpretation is removed; only the date of the last result remains.
+            // A report is today's, not an interpretation of old data, so it stays.
             return DailySummary(kind: .earlierDay, icon: "🕰️", headline: "Last result is from an earlier day",
                                 comparison: nil, domains: [], updatedAt: cache.widgetState.freshness.lastUpdatedAt,
-                                isStale: true, evidence: nil, action: .openApp, report: nil)
+                                isStale: true, evidence: nil, action: .openApp, report: report)
         case .fresh(let cache):
             return current(cache, stale: false, report: report)
         case .stale(let cache):

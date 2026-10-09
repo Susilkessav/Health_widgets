@@ -105,15 +105,6 @@ struct DebugView: View {
                 ToolbarItem(placement: .topBarLeading) { if model.busy { ProgressView() } }
             }
             .sheet(isPresented: $showingSettings) { SettingsView() }
-            .sheet(isPresented: $model.showingExplanation) {
-                NavigationStack {
-                    if let state = model.explanationState {
-                        ExplanationView(state: state, message: model.explanationMessage)
-                    } else {
-                        Text(model.explanationMessage ?? "No result yet.").padding()
-                    }
-                }
-            }
             .refreshable { await model.catchUp() }
             .onAppear { model.refresh() }
         }
