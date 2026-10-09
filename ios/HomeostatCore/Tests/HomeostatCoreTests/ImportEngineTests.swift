@@ -58,12 +58,18 @@ final class ImportEngineTests: XCTestCase {
 
     func test_triggersDuringADrainCoalesceIntoOneMorePass() async throws {
         source.pages[.hrv] = [page([50], anchor: 1, more: false)]
+        let entered = expectation(description: "first source query is suspended")
+        let gate = FirstPageGate(entered: entered)
+        source.beforeAnchoredPage = { await gate.pauseOnce() }
         let sut = engine()
-        async let first = sut.drain(.hrv)
-        async let second = sut.drain(.hrv)
-        let results = try await [first, second]
-        XCTAssertTrue(results.contains(.coalesced))
+        let first = Task { try await sut.drain(.hrv) }
+        await fulfillment(of: [entered], timeout: 5)
+        let second = try await sut.drain(.hrv)
+        await gate.release()
+        _ = try await first.value
+        XCTAssertEqual(second, .coalesced)
         XCTAssertEqual(try pending(), 1)
+        XCTAssertEqual(source.anchorsSeen[.hrv]?.count, 2)
     }
 
     func test_aCorruptAnchorStartsANewGenerationWithoutLosingPendingUploads() async throws {
@@ -368,5 +374,29 @@ extension ImportEngineTests {
         XCTAssertGreaterThan(sent.count, 2)
         XCTAssertNil(try store.value("recovery_hrv"))
         XCTAssertEqual(try lastCoverageStatus("hrv"), "complete") // no second drain required
+    }
+}
+
+/// Hold the first source query so coalescing is tested with genuine overlap,
+/// independently of how the task scheduler orders two fast async calls.
+private actor FirstPageGate {
+    let entered: XCTestExpectation
+    private var started = false
+    private var continuation: CheckedContinuation<Void, Never>?
+
+    init(entered: XCTestExpectation) { self.entered = entered }
+
+    func pauseOnce() async {
+        guard !started else { return }
+        started = true
+        await withCheckedContinuation { continuation in
+            self.continuation = continuation
+            entered.fulfill()
+        }
+    }
+
+    func release() {
+        continuation?.resume()
+        continuation = nil
     }
 }

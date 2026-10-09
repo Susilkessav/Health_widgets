@@ -429,3 +429,30 @@ retained until every contributing installation withdraws it; an explicit
 HealthKit tombstone still removes it. New scoped scans do not withdraw
 unattributed legacy records. The iPhone upgrade re-delivers locally indexed
 records to establish ownership before its fresh scan.
+
+### Daily widget experience review (plan Step 02)
+
+Use a consistent, local copy of the iPhone's `homeostat-*.sqlite` database. Copy
+all SQLite sidecars with it if present, or use `LocalStore.exportSnapshot` for
+an online backup. Do not commit the database or its generated health reports.
+From `backend`:
+
+```sh
+.venv/bin/python -m app.experience_audit /absolute/path/store.sqlite \
+  --days 60 --zone America/Chicago --out-dir /tmp/homeostat-experience-review
+```
+
+The output directory must be new. It contains `review.md` (daily headlines and
+counts), `report.json` (coverage/calibration metadata), and `checkpoints.json`
+(compatible with the existing `DeviceReplayTests` Swift replay). The command
+reads the source database without modifying it, uses the current reference
+engine, and reports actual coverage instead of inventing a 60-day history.
+Exit 2 means no supported checkpoints or invalid input; it is not a successful
+usefulness review.
+
+The sample is local noon on each supported day, capped by the earliest import
+cutoff across imported domains. `--end YYYY-MM-DD` optionally caps the final
+local date. Categories are observation headline, quiet/typical, calibrating,
+and no data. Missing data never counts as quiet. Replay uses retained corrected
+data, so it cannot tell what was delivered or displayed at the historical time.
+A repeated headline is not proof of a new change or a helpful suggestion.

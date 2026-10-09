@@ -1,13 +1,17 @@
 # Homeostat — app and widget experience
 
-Updated: 2026-10-08. What the app and widget should do and look like. Order,
+Updated: 2026-10-09. What the app and widget should do and look like. Order,
 status and the checklist are in [Plan.md](Plan.md); the long-term vision is in
 [specs/Whole_project.md](specs/Whole_project.md).
 
-Status: design studies only; nothing native. **Visual design is open:** no
-layout, palette, avatar treatment or calendar style is chosen.
+Status: review in progress; confirmation required before implementation. Redesign remains design studies, not native P1.
+**Visual design stays flexible:** Companion and separate rings are working
+options. Real-data findings and implementation contracts are in
+[Daily_loop_contract.md](specs/Daily_loop_contract.md).
 
 ## 1. Experience goal
+
+Use the phone’s current system timezone by default for displayed times and current local-day boundaries. Follow timezone changes during travel while preserving original event timezone/provenance. No fixed Chicago default in the product experience.
 
 Answer three questions: **What changed? Why does it matter to me? What can I do
 next?** The widget supplies one useful observation; the app provides its
@@ -33,14 +37,22 @@ entry. This is the product's usefulness measure; §7 usability goals use it.
 
 ### First two weeks
 
-Comparisons need a personal baseline, so a new user mostly sees calibration.
-Design this as a primary state, not scenario 3's footnote:
+Comparisons need a per-domain personal baseline. Installation age does not
+predict readiness: imported history may make a domain ready immediately, while
+gaps can leave another learning beyond two weeks. The current minimum is 14
+usable days; read it from settings/feature metadata, never hard-code a promise.
 
-- **Day 1:** last night's sleep and today's steps as plain values with their
-  times; per-domain "learning your usual: N of M days" progress.
-- **Days 2–10:** domains switch to comparisons individually as each baseline
-  completes; the widget headline prefers a completed domain over a calibrating one.
-- **Day 10+:** normal behavior. Never imply a comparison before its baseline exists.
+- **First use:** available sleep/steps as plain values with their times;
+  each domain's actual “learning your usual: N of M usable days” progress.
+- **Partial readiness:** show comparisons for ready domains while keeping
+  learning/missing labels on the others. Do not hide a ready domain behind
+  global calibration.
+- **Ready domains:** normal supported comparisons; never imply readiness from
+  “day 10+” or a count of days since installation.
+
+Quiet/new-user copy, actions and evidence rules are specified in the
+[daily-loop contract](specs/Daily_loop_contract.md). Interactive/native validation
+remains open in the tracker.
 
 ## 2. Data inventory and boundaries
 
@@ -166,7 +178,7 @@ explicit user-chosen targets and units (see §10), never decorative health grade
 Two first design studies use the same data and actions:
 
 - **Companion:** avatar-led summary, explanatory sentence and compact evidence
-  cards. An exploratory option for the product's identity; not a selected design.
+  cards. The current working direction; still revisable.
 - **Focus:** metric-led summary with a smaller avatar; denser scan-friendly
   evidence rows. Also informs an eventual user-selectable metric-first mode.
 
@@ -203,7 +215,8 @@ study does not save health data, connect HealthKit or implement WidgetKit.
 Before P1 native implementation, define the presentation and action contracts,
 trend retention, deep-link fallback, redaction and check-in persistence. Swift is
 the source of truth for presentation wording/ranking (calculation is on device);
-Python keeps engine parity only (proposed; confirm before P1). Do not
+Python keeps engine parity; existing stored mapper output stays unchanged until
+the new UI presentation layer lands. Do not
 introduce health thresholds from mockup copy. The study uses a sleep deviation
 of 70 minutes to fit the existing below-baseline rule.
 
@@ -286,7 +299,7 @@ Explore these components independently before deciding their place in the app.
   rather than shrinking a year's days into untappable pixels. Later year view
   can be a visual overview that opens an accessible month/week detail.
 - Historical views require retention beyond the current import/baseline window.
-  Native P1 can ship only the period with retained, supported observations;
+  Native P1b can ship only the period with retained, supported observations;
   do not imply that the synthetic 12-week study is already available in the app.
 - Prefer days with recorded activity / supported days and weekly consistency
   over an unbroken daily exercise streak. Do not penalize planned rest or

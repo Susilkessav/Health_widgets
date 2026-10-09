@@ -87,13 +87,15 @@ final class FakeSource: HealthDataSource, @unchecked Sendable {
     var failAfterPages: [SampleType: Int] = [:]
     var corruptAnchorOnce: Set<SampleType> = []
     var steps: (Instant, Instant) throws -> [HourlyBucket] = { _, _ in [] }
+    var beforeAnchoredPage: (@Sendable () async -> Void)?
     private(set) var anchorsSeen: [SampleType: [Data?]] = [:]
     private var served: [SampleType: Int] = [:]
 
     struct Failure: Error {}
 
     func anchoredPage(_ type: SampleType, since lowerBound: Instant, anchor: Data?, limit: Int) async throws -> AnchoredPage {
-        try lock.withLock {
+        await beforeAnchoredPage?()
+        return try lock.withLock {
             anchorsSeen[type, default: []].append(anchor)
             if corruptAnchorOnce.contains(type), anchor != nil {
                 corruptAnchorOnce.remove(type)
