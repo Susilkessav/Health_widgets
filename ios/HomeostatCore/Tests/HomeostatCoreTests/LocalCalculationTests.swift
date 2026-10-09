@@ -190,6 +190,24 @@ final class EngineInputsSnapshotTests: XCTestCase {
         }
     }
 
+    /// P1: the engine's own HealthState becomes the facts and the daily summary.
+    func testTheEnginesStateBecomesTheDailySummary() async throws {
+        let store = try await importedStore()
+        let state = try XCTUnwrap(try store.localRun(now: NOW, zone: CHICAGO)).state
+        let facts = try XCTUnwrap(DisplayFacts(healthState: state.healthState))
+        XCTAssertEqual(facts.sleep.state, "below_baseline")
+        XCTAssertEqual(facts.learningDays["sleep"], 20)
+        XCTAssertEqual(facts.requiredDays, 14)
+        let cache = WidgetCache(scope: "s", day: Zone(CHICAGO)!.day(of: NOW), inputRevision: state.inputRevision,
+                                runID: state.runID, widgetState: state.widgetState, facts: facts)
+        let summary = DailySummary.make(.fresh(cache))
+        XCTAssertEqual(summary.kind, .change)
+        XCTAssertEqual(summary.headline, "Shorter sleep")
+        XCTAssertEqual(summary.comparison, "5h 30m · usually 7h 30m")
+        XCTAssertEqual(summary.domains.map(\.id), ["sleep", "recovery", "movement"])
+        XCTAssertEqual(summary.domains.last?.readiness, .learning(usable: 0, required: 14))
+    }
+
     func testOtherVersionsAndMalformedSnapshotsAreRejected() {
         XCTAssertThrowsError(try EngineSnapshot.calculate(Data(#"{"version":"engine-inputs@9"}"#.utf8), now: NOW))
         XCTAssertThrowsError(try EngineSnapshot.calculate(Data(#"{"version":"engine-inputs@0.1"}"#.utf8), now: NOW))

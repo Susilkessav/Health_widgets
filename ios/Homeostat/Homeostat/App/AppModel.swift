@@ -438,7 +438,7 @@ final class AppModel: ObservableObject {
         guard let store, let scope, let shared = SharedWidgetStore.shared(),
               let state = try? store.storedLocalState(), let day = LocalDay(state.day) else { return }
         let cache = WidgetCache(scope: scope, day: day, inputRevision: state.inputRevision, runID: state.runID,
-                                widgetState: state.widgetState)
+                                widgetState: state.widgetState, facts: DisplayFacts(healthState: state.healthState))
         switch try? shared.write(cache, now: Instant(Date())) {
         case .written(let meaningful) where meaningful || foreground:
             WidgetCenter.shared.reloadTimelines(ofKind: Self.widgetKind)

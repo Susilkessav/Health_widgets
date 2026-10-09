@@ -15,9 +15,11 @@ public struct WidgetCache: Codable, Hashable, Sendable {
     /// Set when the widget recalculated this run with its own step read (M3):
     /// the read's time. Nil for the app's own result.
     public var stepsThrough: Instant?
+    /// What DailySummary needs beyond the headline (P1). Nil in older caches.
+    public var facts: DisplayFacts?
 
     public init(scope: String, day: LocalDay, inputRevision: Int64, runID: Int64, widgetState: WidgetState,
-                stepsThrough: Instant? = nil) {
+                stepsThrough: Instant? = nil, facts: DisplayFacts? = nil) {
         schema = Self.currentSchema
         self.scope = scope
         self.day = day
@@ -25,11 +27,12 @@ public struct WidgetCache: Codable, Hashable, Sendable {
         self.runID = runID
         self.widgetState = widgetState
         self.stepsThrough = stepsThrough
+        self.facts = facts
     }
 
     enum CodingKeys: String, CodingKey {
         case schema, scope, day, inputRevision = "input_revision", runID = "run_id"
-        case widgetState = "widget_state", stepsThrough = "steps_through"
+        case widgetState = "widget_state", stepsThrough = "steps_through", facts
     }
 }
 

@@ -38,7 +38,8 @@ enum WidgetRefresh {
                 if header.scope == cache.scope, header.inputRevision == cache.inputRevision, header.runID == cache.runID,
                    header.zone == TimeZone.current.identifier {
                     let next = WidgetCache(scope: cache.scope, day: header.day, inputRevision: cache.inputRevision,
-                                           runID: cache.runID, widgetState: result.widgetState, stepsThrough: at)
+                                           runID: cache.runID, widgetState: result.widgetState, stepsThrough: at,
+                                           facts: DisplayFacts(healthState: result.healthState))
                     outcome = "\(try shared.write(next, now: at))"
                 } else {
                     outcome = "kept cache (inputs from another run or zone)"
