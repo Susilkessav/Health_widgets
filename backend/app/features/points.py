@@ -53,12 +53,12 @@ def calculate(metric: str, selection: Selection, context: CalculationContext, se
               primaries: dict[date, Episode | None]) -> Outcome:
     domain = "hrv" if metric == "hrv_sdnn_ms" else "rhr"
     rules: PointSettings = getattr(settings, domain)
-    effective = utc(context.effective_at)
+    cutoff, effective = context.cutoff(domain), utc(context.effective_at)
     by_group: dict[Group, list[PointMeasurement]] = defaultdict(list)
     for reading in selection.of(PointMeasurement):
         # A point counts once both its observation and its original sample have ended.
-        if reading.metric == metric and utc(reading.observed_at) <= effective \
-                and utc(reading.metadata.sample_end_at) <= effective:
+        if reading.metric == metric and utc(reading.observed_at) <= cutoff \
+                and utc(reading.metadata.sample_end_at) <= cutoff:
             by_group[group_of(settings, reading.metadata)].append(reading)
 
     day, conflicted = context.day, selection.conflict_days(domain)

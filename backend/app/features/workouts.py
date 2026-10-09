@@ -54,7 +54,8 @@ def calculate(selection: Selection, context: CalculationContext, settings: Setti
         outcome.evidence["required_coverage"] = [first_day.isoformat(), day.isoformat()]
         return outcome
 
-    workouts = [w for w in selection.of(WorkoutEvent) if utc(w.end_at) <= effective]
+    cutoff = context.cutoff("workout")
+    workouts = [w for w in selection.of(WorkoutEvent) if utc(w.end_at) <= cutoff]
     pieces = segments(workouts, settings)
     today = active_minutes(pieces, local_day_start(day, context.timezone), effective)
     week_start = local_day_start(day - timedelta(days=rules.totals_days - 1), context.timezone)

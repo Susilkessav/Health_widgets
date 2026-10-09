@@ -43,7 +43,7 @@ def _order(report_zone: str):
 
 
 def calculate(selection: Selection, context: CalculationContext, settings: Settings) -> Outcome:
-    effective, known, day = utc(context.effective_at), utc(context.known_at), context.day
+    effective, known, day = context.cutoff("movement"), utc(context.known_at), context.day
     snapshots = [s for s in selection.of(DailyActivitySnapshot)
                  if utc(s.as_of) <= effective and utc(s.queried_at) <= known]
     by_day: dict[date, list[DailyActivitySnapshot]] = defaultdict(list)
@@ -92,7 +92,7 @@ def calculate(selection: Selection, context: CalculationContext, settings: Setti
         return outcome
     outcome.fields.update(steps=current.steps, as_of=current.as_of, source_record_id=current.source_record_id)
     outcome.present = True
-    outcome.age_hours = (effective - utc(current.as_of)).total_seconds() / 3600
+    outcome.age_hours = (utc(context.effective_at) - utc(current.as_of)).total_seconds() / 3600
     if not ready:
         outcome.fields["state"] = "calibrating"
         return outcome

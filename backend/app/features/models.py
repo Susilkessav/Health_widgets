@@ -97,19 +97,32 @@ class CalculationContext(Frozen):
     known_at: AwareDatetime
     coverage: tuple[CoverageWindow, ...] = ()
     visibility: tuple[VisibilityScan, ...] = ()
+    # Per-domain import cutoffs (decision D-A). A domain listed here only uses
+    # records and coverage up to its own cutoff; ages are still measured at
+    # effective_at. Unlisted domains use effective_at, so an empty map is the
+    # original single-cutoff calculation.
+    cutoffs: dict[Domain, AwareDatetime] = Field(default_factory=dict)
 
     @model_serializer(mode="wrap")
     def _compatible_context(self, handler):
         result = handler(self)
         if not self.visibility:
             result.pop("visibility", None)  # exact pre-scan report representation
+        if not self.cutoffs:
+            result.pop("cutoffs", None)  # exact single-cutoff report representation
         return result
 
     @model_validator(mode="after")
     def _ordered(self) -> CalculationContext:
         if utc(self.known_at) < utc(self.effective_at):
             raise ValueError("known_at cannot precede effective_at")
+        if any(utc(at) > utc(self.effective_at) for at in self.cutoffs.values()):
+            raise ValueError("a domain cutoff cannot be after effective_at")
         return self
+
+    def cutoff(self, domain: Domain) -> datetime:
+        """The latest instant this domain's records and coverage may come from."""
+        return utc(self.cutoffs.get(domain, self.effective_at))
 
     def covered(self, domain: Domain, first: date, last: date) -> bool:
         """Report days first..last (in this context's timezone) are covered when,
@@ -121,7 +134,7 @@ class CalculationContext(Frozen):
         and a partial-day declaration covers only until its query finished
         (Step 9-13 plan section 3A)."""
         start = local_day_start(first, self.timezone)
-        end = min(local_day_start(last + timedelta(days=1), self.timezone), utc(self.effective_at))
+        end = min(local_day_start(last + timedelta(days=1), self.timezone), self.cutoff(domain))
         if end <= start:
             return True
         windows = [(w, *w.span()) for w in self.coverage if w.domain == domain]

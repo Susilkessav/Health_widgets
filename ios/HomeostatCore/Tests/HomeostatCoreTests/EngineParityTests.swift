@@ -12,7 +12,24 @@ final class EngineParityTests: XCTestCase {
     func json(_ url: URL) throws -> JSONValue { try JSONDecoder().decode(JSONValue.self, from: Data(contentsOf: url)) }
 
     func testEveryCheckpointMatchesThePythonEngine() throws {
-        guard case .array(let expected) = try json(fixtures.appendingPathComponent("engine_parity.json")) else {
+        try assertMatches("engine_parity.json") { context, _ in context }
+    }
+
+    /// Decision D-A: each checkpoint again as a later step read, other domains
+    /// held at the checkpoint's own cutoff (test_parity_fixture.py).
+    func testEveryCheckpointMatchesWithPerDomainCutoffs() throws {
+        try assertMatches("engine_parity_cutoffs.json") { base, entry in
+            guard case .int(let later)? = entry["later_seconds"] else { return base }
+            let effective = base.effectiveAt.adding(seconds: later)
+            return EngineContext(day: base.zone.day(of: effective), timezone: base.timezone, effectiveAt: effective,
+                                 knownAt: max(base.knownAt, effective), coverage: base.coverage,
+                                 cutoffs: [.sleep: base.effectiveAt, .hrv: base.effectiveAt,
+                                           .rhr: base.effectiveAt, .workout: base.effectiveAt])
+        }
+    }
+
+    func assertMatches(_ fixture: String, adjust: (EngineContext, JSONValue) -> EngineContext) throws {
+        guard case .array(let expected) = try json(fixtures.appendingPathComponent(fixture)) else {
             return XCTFail("fixture is not a list")
         }
         var datasets: [String: (observations: [EngineObservation], context: JSONValue)] = [:]
@@ -21,7 +38,7 @@ final class EngineParityTests: XCTestCase {
             let name = entry["dataset"]!.string!, checkpoint = entry["checkpoint"]!.string!
             if datasets[name] == nil { datasets[name] = try load(data.appendingPathComponent(name)) }
             let (observations, context) = datasets[name]!
-            let engineContext = try makeContext(context, checkpoint)
+            let engineContext = adjust(try makeContext(context, checkpoint), entry)
             let features = try calculateFeatures(observations, engineContext)
             let state = computeHealthState(features)
             let widget = try JSONDecoder().decode(JSONValue.self, from: JSONEncoder().encode(mapWidgetState(state)))

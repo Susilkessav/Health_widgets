@@ -166,23 +166,32 @@ public struct EngineContext: Sendable {
     public var effectiveAt: Instant
     public var knownAt: Instant
     public var coverage: [EngineCoverage]
+    /// Per-domain import cutoffs (decision D-A, models.py). A listed domain only
+    /// uses records and coverage up to its own cutoff; ages are still measured
+    /// at effectiveAt. Empty is the original single-cutoff calculation.
+    public var cutoffs: [Domain: Instant]
 
-    public init(day: LocalDay, timezone: String, effectiveAt: Instant, knownAt: Instant, coverage: [EngineCoverage]) {
+    public init(day: LocalDay, timezone: String, effectiveAt: Instant, knownAt: Instant, coverage: [EngineCoverage],
+                cutoffs: [Domain: Instant] = [:]) {
         self.day = day
         self.timezone = timezone
         self.effectiveAt = effectiveAt
         self.knownAt = knownAt
         self.coverage = coverage
+        self.cutoffs = cutoffs
     }
 
     var zone: Zone { Zone(timezone)! }
+
+    /// The latest instant this domain's records and coverage may come from.
+    func cutoff(_ domain: Domain) -> Instant { cutoffs[domain] ?? effectiveAt }
 
     /// Local days first...last are covered when, at every instant of their span
     /// up to effectiveAt, the newest declaration there is complete. Undeclared
     /// time is unknown, never complete.
     func covered(_ domain: Domain, _ first: LocalDay, _ last: LocalDay) -> Bool {
         let start = zone.start(of: first)
-        let end = min(zone.start(of: zone.adding(days: 1, to: last)), effectiveAt)
+        let end = min(zone.start(of: zone.adding(days: 1, to: last)), cutoff(domain))
         if end <= start { return true }
         let windows = coverage.filter { $0.domain == domain }.map { ($0, $0.span) }
             .filter { $0.1.0 < end && $0.1.1 > start }

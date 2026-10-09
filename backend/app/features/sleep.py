@@ -146,8 +146,8 @@ def primary(episodes: list[Episode], day: date, settings: Settings, group: Group
 
 
 def eligible_episodes(selection: Selection, context: CalculationContext, settings: Settings) -> list[Episode]:
-    effective = utc(context.effective_at)
-    intervals = [e for e in selection.of(IntervalEvent) if utc(e.end_at) <= effective]
+    cutoff = context.cutoff("sleep")
+    intervals = [e for e in selection.of(IntervalEvent) if utc(e.end_at) <= cutoff]
     conflicted = selection.conflict_days("sleep")
     return [e for e in build_episodes(intervals, settings) if e.wake_day not in conflicted]
 

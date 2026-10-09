@@ -241,7 +241,7 @@ func primary(_ episodes: [Episode], _ day: LocalDay, _ settings: EngineSettings,
 
 func eligibleEpisodes(_ selection: Selection, _ context: EngineContext, _ settings: EngineSettings) -> [Episode] {
     let intervals = selection.records.filter {
-        if case .interval(_, _, let end) = $0.kind { return end <= context.effectiveAt }
+        if case .interval(_, _, let end) = $0.kind { return end <= context.cutoff(.sleep) }
         return false
     }
     let conflicted = selection.conflictDays("sleep")
@@ -322,12 +322,12 @@ func calculatePoints(_ metric: String, _ selection: Selection, _ context: Engine
                      _ primaries: [LocalDay: Episode], _ support: inout Support,
                      _ diagnostics: inout [String]) -> PointFeatures {
     let domain = metric == "hrv_sdnn_ms" ? "hrv" : "rhr"
-    let effective = context.effectiveAt
+    let cutoff = context.cutoff(domain == "hrv" ? .hrv : .rhr), effective = context.effectiveAt
     var byGroup: [SourceRank: [EngineEvent]] = [:]
     for reading in selection.records {
         // A point counts once both its observation and its original sample have ended.
-        guard case .point(let m, let at, _) = reading.kind, m == metric, at <= effective,
-              reading.meta!.sampleEnd <= effective else { continue }
+        guard case .point(let m, let at, _) = reading.kind, m == metric, at <= cutoff,
+              reading.meta!.sampleEnd <= cutoff else { continue }
         byGroup[settings.group(of: reading.meta!), default: []].append(reading)
     }
     let day = context.day, conflicted = selection.conflictDays(domain)
@@ -417,7 +417,7 @@ private func buckets(_ snaps: [Snap]) -> [[Snap]] {
 
 func calculateMovement(_ selection: Selection, _ context: EngineContext, _ settings: EngineSettings,
                        _ support: inout Support, _ diagnostics: inout [String]) -> MovementFeatures {
-    let effective = context.effectiveAt, day = context.day
+    let effective = context.cutoff(.movement), day = context.day
     let snaps = selection.records.compactMap(Snap.init).filter { $0.asOf <= effective && $0.queriedAt <= context.knownAt }
     let byDay = Dictionary(grouping: snaps, by: \.day)
     var f = MovementFeatures()
@@ -455,7 +455,7 @@ func calculateMovement(_ selection: Selection, _ context: EngineContext, _ setti
     f.steps = current.steps
     f.asOf = current.asOf
     f.recordID = current.event.recordID
-    support = Support(present: true, ageHours: seconds(current.asOf, effective) / 3600)
+    support = Support(present: true, ageHours: seconds(current.asOf, context.effectiveAt) / 3600)
     guard f.ready, let expected = f.expectedStepsNow else {
         f.state = "calibrating"
         return f
@@ -518,7 +518,7 @@ func calculateWorkouts(_ selection: Selection, _ context: EngineContext, _ setti
     diagnostics += conflicted.sorted().map { "workout_conflict:\($0)" }
     if !conflicted.isEmpty || !context.covered(.workout, firstDay, day) { return f }  // unknown isn't absence
 
-    let workouts = selection.records.compactMap(Workout.init).filter { $0.end <= effective }
+    let workouts = selection.records.compactMap(Workout.init).filter { $0.end <= context.cutoff(.workout) }
     let pieces = segments(workouts, settings)
     f.minutesToday = activeMinutes(pieces, zone.start(of: day), effective)
     f.minutesLast7d = activeMinutes(pieces, zone.start(of: zone.adding(days: -(settings.totalsDays - 1), to: day)), effective)
