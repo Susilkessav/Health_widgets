@@ -11,9 +11,9 @@ Everything else is reference ([specs/](specs/)) or history ([archive/](archive/)
 |---|---|
 | Health engine: contracts, features, state, wording | Done. Python is the reference; Swift matches all 170 parity checkpoints |
 | iPhone: HealthKit import, local store, on-device calculation, widget | Done, runs with no server. Device acceptance partly open (§5 G1) |
-| Background updates | App wake and unlock retry built; widget self-refresh is a probe only (§4) |
+| Background updates | App wake, unlock retry and widget self-refresh built; M3 force-quit device acceptance remains open (§4, Step 05) |
 | Avatar (G2) | Built with code-drawn placeholder art. Open: final art, accessibility, acceptance (§5 G2) |
-| App/widget redesign | Design studies only; nothing native. Visual direction not chosen ([Product.md](Product.md)) |
+| App/widget redesign | Today restyled natively with Liquid Glass (2026-10-09, [Product.md §12](Product.md#12-today-restyle--built-2026-10-09)); widget plan W1–W4 in [Product.md §11](Product.md#11-widget-roadmap--research-and-plan-2026-10-09), widget not yet changed |
 | Backend (FastAPI + PostgreSQL) | Kept, tested, optional. Not on the path from Health data to the widget |
 | More sources and platforms | Deferred until G1 acceptance and a chosen second source |
 
@@ -66,7 +66,7 @@ Optional: LocalStore ─► upload ─► backend (history now; result path late
 | Target | Contents | Linked by |
 |---|---|---|
 | `HomeostatShared` | Instant, WidgetState, AvatarState, cache, display policy, avatar view, probe log | app, widget |
-| `HomeostatEngine` (planned, M3) | Pure Swift engine, `stepSnapshots`, input snapshot format | core, widget |
+| `HomeostatEngine` | Pure Swift engine, `stepSnapshots`, input snapshot format | core, widget |
 | `HomeostatCore` | GRDB store, import, outbox, sync, local calculation | app |
 
 The widget never links GRDB and never writes the app's database. Why on-device
@@ -81,15 +81,15 @@ Three paths keep the widget current, all writing through the same ordered cache.
 |---|---|---|---|
 | 1 | **App wake**: HealthKit background delivery, refresh task, app open | iOS wakes the app; never after a force-quit | Built |
 | 2 | **Unlock retry**: a locked import is marked `import_deferred` and retried at unlock or next wake | App process still alive at unlock | Built; device evidence open (M1) |
-| 3 | **Widget self-refresh**: the widget reads today's steps and recalculates itself | Each widget refresh, also after force-quit; phone unlocked | Probes only (M2); M3 not built |
+| 3 | **Widget self-refresh**: the widget reads today's steps and recalculates itself | Each widget refresh, also after force-quit; phone unlocked | M3 built; force-quit device exit open |
 
 ### Path 3 — widget self-refresh
 
 1. **App prepares inputs.** After each calculation the app atomically writes
    `engine_inputs.json` to the App Group: the `LocalInputs` that run used, the
-   scope, a generation number and today's step buckets.
+   scope and app generation `(input_revision, run_id)`.
 2. **Widget refreshes.** If unlocked and the snapshot is valid: query today's
-   hourly steps (deadline, stoppable), build `stepSnapshots`, run the shared
+   cumulative steps (5-second deadline, stoppable), build a `stepSnapshot`, run the shared
    engine for now, publish under the ordering rule, then build the timeline.
 3. **App stays the authority.** A widget result never replaces one built from
    newer app inputs.
@@ -109,7 +109,9 @@ query error, timeout).
   domains at their own import cutoff. A step read never advances other domains'
   timestamps or coverage.
 - **Budget.** Snapshot ≤ 2 MB (36-day window, event/byte caps on write), widget
-  run ≤ 3 s, peak memory under the extension limit. If a limit fails, the
+  run target ≤ 3 s, peak memory under the extension limit. The current query timeout
+  is 5 s, so the overall runtime target is not yet guaranteed; measure it at the device exit.
+  Snapshot reads are bounded and oversized inputs are rejected before parsing. If a limit fails, the
   snapshot carries daily summaries instead of raw observations.
 - **G1 rule amended (2026-10-06):** the widget may read today's step statistics
   and run the shared engine on app-prepared inputs; nothing else changes.
@@ -124,6 +126,9 @@ by this review. Companion and separate rings remain flexible working directions.
 Review results and the proposed preview-only changes are in
 [Scenario_review_2026_10_09.md](specs/Scenario_review_2026_10_09.md).
 The earlier start authorization does not waive this new confirmation gate.
+**Update (2026-10-09, later):** the user asked to make the app more user friendly
+and futuristic, and to plan the widget. The Today/explanation restyle is built
+(Step 08); the widget plan (W1–W4) awaits the user's choice before any widget code.
 
 Use this file as the only status tracker. `[x]` means the stated deliverable is
 complete with evidence; `[ ]` means it remains. A completed study does not mean
@@ -234,6 +239,7 @@ This step does not block G1, G2 or the basic Your day widget.
 - [x] Split `HomeostatEngine` out of `HomeostatCore` (no behavior change); the widget links it, no GRDB in the widget binary.
 - [x] Ordering: reuses the app's `(input_revision, run_id)` (every app run gets a new run ID) as the generation; the cache adds `steps_through`, so within one run the newer step read wins and the app republishing that run never undoes it.
 - [x] Snapshot v1 (`engine-inputs@1`): scope, zone, local day, settings hash, input revision, run ID, app effective/known times; 2 MB cap (not written above it); deleted on account change and on any write failure.
+- [x] Enforce the 2 MB cap on widget file reads and calculation input before parsing; reject oversized headers on write. Regression checks cover oversized input and the exact file-size boundary.
 - [x] Widget path (`WidgetRefresh`): step query (5 s, stopped) → `EngineSnapshot.calculate` → ordered cache write; any failure keeps the cache; "no samples" never becomes 0; timeline asks for 15 min while inputs exist.
 - [x] Tests: snapshot = app result; step read moves movement only and holds other domains; not-newer/other-day/other-settings rejected; cap; cache ordering (newer read wins, app republish can't undo, old run dropped, new app run wins). Not automated: concurrent app/widget writes (relies on the existing `NSFileCoordinator` cache lock) and the HealthKit read itself (device only).
 - [ ] **Exit:** app force-quit, phone unlocked, the widget's steps and headline update within ~30–60 min on the iPhone. Check the Debug view's probe log for `widget refresh:` lines (read, outcome, ms, MB).
@@ -275,6 +281,8 @@ Full feature acceptance: [Product.md §7](Product.md#7-phases-and-acceptance).
 - [x] Widget → exact evidence via the existing explanation link when there is evidence; otherwise the tap just opens the app.
 - [x] Energy check-in in the app (save, acknowledgment, undo) and widget (`LogEnergyIntent` → App Group inbox → imported on the next app publish). Simulator: save and undo verified in the database.
 - [x] Optional "does this match?" after a report, stored with the entry and the run it refers to.
+- [x] Today and explanation restyle (Liquid Glass, time-of-day sky, icon rows, check-in feedback): [Product.md §12](Product.md#12-today-restyle--built-2026-10-09). Simulator-checked; device and VoiceOver open.
+- [ ] Widget W1 polish (match the app, small-widget value, check-in feedback, relevance): [Product.md §11.3](Product.md#113-plan). Awaiting confirmation.
 - [x] Quiet, missing, learning (per domain) and waiting states in `DailySummary` (11 table tests).
 - [ ] On the iPhone: widget check-in while the app is closed, locked-phone inbox write, VoiceOver, large text, tinted widgets; record evidence.
 - [ ] **Decide:** an empty HealthKit step result is imported as 0 steps (both engines; HealthKit hides denied access), so "0" can mean nothing recorded, no access, or a real zero. P1 now words it "No steps recorded yet". Changing the import to record "no samples" separately changes the data contract and fixtures in both languages.
@@ -300,7 +308,7 @@ keeps zero, missing data and planned rest distinct.
 - [ ] Sleep/movement trends using supported, retained observations.
 - [ ] GitHub-style activity calendar with day details and accessible navigation.
 - [ ] Journal shell and data controls.
-- [ ] Focused/pinned widgets; Movement pace only if the A3/M2 gate passed.
+- [ ] Focused/pinned widgets; Movement pace only if the A3/M2 gate passed. Widget W2: configuration, large, Lock Screen, Control ([Product.md §11.3](Product.md#113-plan)).
 - [ ] Verify source corrections, duplicates, time-zone/day boundaries and accessibility.
 
 ### Step 11 — add activity logging and reflection (P2)
@@ -365,6 +373,7 @@ are labeled and forecasts are explicitly hypothetical.
 
 | Date | Round / check | Build | Result |
 |---|---|---|---|
+| 2026-10-09 | M3 bounded snapshot reads: Swift tests + app/widget simulator build | working tree | 157 tests, 4 skipped, 0 failures; build succeeded; force-quit device acceptance still open |
 | 2026-10-08 | Step 0: `swift test` | working tree | 81 run, 2 skipped (device DB), 0 failures |
 | 2026-10-08 | Step 0: app + widget simulator build | working tree | Succeeded |
 | 2026-10-08 | Step 0: backend `pytest -q` without PostgreSQL | working tree | 3,602 passed, 0 failed; 167 errors, all database connection refused |
@@ -373,6 +382,7 @@ are labeled and forecasts are explicitly hypothetical.
 | 2026-10-09 | M3 + P1 build: `swift test`; app + widget simulator build | 783804c | 93 run, 2 skipped, 0 failures; build succeeded; widget binary has the engine and no GRDB |
 | 2026-10-09 | P1 Today screen on iPhone 18 Pro simulator (iOS 27) | 783804c | Learning state with per-domain counts; energy save and undo verified in the database (create applied:1, undo deleted). Not a device check |
 | 2026-10-09 | Review fixes (M3 + P1) | 339893f | 156 Swift tests (4 skipped) pass; app + widget build; Today (values while learning, no-steps wording) and layered explanation checked on the iOS 27 simulator |
+| 2026-10-09 | Today/explanation restyle | working tree | App + widget simulator build succeeded; iPhone 18 Pro simulator (iOS 27): light, dark, largest accessibility size (fixed a mid-word button break and icon overflow), row → explanation, energy save + undo. Not a device or VoiceOver check |
 | 2026-10-09 | Plan tracking revision | documentation only | Steps 01–13 verified in order; local document links resolve; `git diff --check` passed. No implementation or device checks performed |
 | 2026-10-09 | Step 02 real-data experience audit | working tree; connected iPhone database copy | SQLite integrity OK; 51 local-noon days: 29 observation headlines, 22 calibrating, 0 quiet, 0 no-data; all 51 match Swift across features, health and widget state. Retrospective, not actual screen exposure |
 | 2026-10-09 | Step 04 standard device replay | working tree; same phone copy | Saved phone HealthState and WidgetState match Python; 50 standard checkpoints match Swift, including avatar. No physical background-use acceptance claimed |
@@ -404,7 +414,9 @@ Earlier evidence: [archive/Step_14_16_plan.md](archive/Step_14_16_plan.md) §12�
 | 2026-10-09 | Latest scope: interactive scenario review and physical background checks only; confirm before implementation. Companion/separate rings remain flexible |
 | 2026-10-09 | User approved the plan and authorized starting. Companion/separate rings are working directions; daily-loop specification prepared from real-data replay. Native P1 gates remain |
 | 2026-10-09 | User go-ahead: build everything in the [architecture](specs/System_architecture.md) build order (M3, then P1 foundations/surfaces, P1b, P2…), stopping at each device or review gate |
+| 2026-10-09 | User asked for a simpler, elegant, futuristic app and a widget plan: Today restyled with Liquid Glass (visual direction for the app); widget plan W1–W4 recorded, widget code waits for confirmation |
 | 2026-10-09 | Plan reorganized into numbered steps with status, dependencies and completion criteria. User review precedes further implementation; visual direction remains open |
+| 2026-10-09 | User confirmed continuing implementation. Resumed M3 validation from the existing implementation and added bounded snapshot reads; Companion and separate rings remain flexible directions |
 
 ## 8. Documents
 
