@@ -2,7 +2,7 @@
 
     python -m app.experience_audit STORE.sqlite --out-dir /tmp/homeostat-review --days 30
 
-Uses the existing reference replay engine, at local noon on each supported day.
+Uses the existing reference replay engine, at a local hour (default noon) on each supported day.
 This is a retrospective reconstruction using currently retained/corrected data,
 not a record of what the user actually saw. No network or database writes.
 """
@@ -25,16 +25,18 @@ from app.presentation import PRESENTATION_VERSION
 CATEGORIES = ("headline", "quiet", "calibrating", "no_data")
 TRAITS = {"sleep": "headline", "recovery": "headline", "movement": "headline", "workout": "headline",
           "typical": "quiet", "calibration": "calibrating", "no_data": "no_data"}
-LIMITATION = ("Retrospective reconstruction from retained, corrected data at local noon; not historical "
+LIMITATION = ("Retrospective reconstruction from retained, corrected data at a fixed local hour; not historical "
               "delivery or actual widget exposure. A headline is an eligible observation, not proof of "
               "usefulness or a newly changed state. Missing data is separate from a quiet day. "
               "Calibration here reflects retained history, not days since installation.")
 
 
 def checkpoints(lower: datetime, through: dict[str, datetime], zone: str, days: int,
-                end: date | None = None) -> list[tuple[str, datetime]]:
+                end: date | None = None, hour: int = 12) -> list[tuple[str, datetime]]:
     if not 1 <= days <= 60:
         raise ValueError("days must be between 1 and 60")
+    if not 0 <= hour <= 23:
+        raise ValueError("hour must be between 0 and 23")
     if not through:
         return []
     tz = ZoneInfo(zone)
@@ -42,7 +44,7 @@ def checkpoints(lower: datetime, through: dict[str, datetime], zone: str, days: 
     # domains aren't fabricated; their absence remains visible in engine outputs.
     cutoff = min(through.values())
     last = cutoff.astimezone(tz).date()
-    if utc(datetime.combine(last, time(12), tz)) > cutoff:
+    if utc(datetime.combine(last, time(hour), tz)) > cutoff:
         last -= timedelta(days=1)
     if end is not None:
         last = min(last, end)
@@ -50,9 +52,9 @@ def checkpoints(lower: datetime, through: dict[str, datetime], zone: str, days: 
     for offset in range(days - 1, -1, -1):
         day = last - timedelta(days=offset)
         start = utc(datetime.combine(day, time.min, tz))
-        at = utc(datetime.combine(day, time(12), tz))
+        at = utc(datetime.combine(day, time(hour), tz))
         if start >= lower and at <= cutoff:
-            result.append((f"noon:{day}", at))
+            result.append((f"{hour:02d}00:{day}" if hour != 12 else f"noon:{day}", at))
     return result
 
 
@@ -78,12 +80,12 @@ def summarize(results: dict) -> dict:
             "days": rows}
 
 
-def audit(path: str, zone: str, days: int, end: date | None = None) -> tuple[dict, dict]:
+def audit(path: str, zone: str, days: int, end: date | None = None, hour: int = 12) -> tuple[dict, dict]:
     settings = load_settings()
     lower, through, observations, coverage, _ = load(path, zone)
-    wanted = checkpoints(lower, through, zone, days, end)
+    wanted = checkpoints(lower, through, zone, days, end, hour)
     results = {name: calculate(observations, coverage, zone, at, settings) for name, at in wanted}
-    report = {"version": "experience-audit@0.1.0", "timezone": zone, "local_sample_time": "12:00",
+    report = {"version": "experience-audit@0.1.0", "timezone": zone, "local_sample_time": f"{hour:02d}:00",
               "requested_days": days, "requested_end": end.isoformat() if end else None,
               "import_lower_bound": lower.isoformat(),
               "coverage_through": {domain: at.isoformat() for domain, at in sorted(through.items())},
@@ -100,8 +102,8 @@ def markdown(report: dict) -> str:
     lines = ["# Daily widget experience review", "", report["limitation"], "",
              f"Requested: {report['requested_days']} days. Evaluated: {report['evaluated_days']} days.",
              f"Window: {report['first_day'] or 'none'} to {report['last_day'] or 'none'}; "
-             f"12:00 in {report['timezone']}.", "",
-             "Only days starting within retained coverage and reaching noon across imported domains are included.",
+             f"{report['local_sample_time']} in {report['timezone']}.", "",
+             "Only days starting within retained coverage and reaching the sample time across imported domains are included.",
              "", "| Category | Days |", "|---|---:|"]
     lines += [f"| {category} | {count} |" for category, count in report["counts"].items()]
     if not report["evaluated_days"]:
@@ -125,6 +127,7 @@ def main() -> None:
     parser.add_argument("--days", type=int, default=30)
     parser.add_argument("--zone", default="America/Chicago")
     parser.add_argument("--end", type=date.fromisoformat, help="Optional latest local day (YYYY-MM-DD).")
+    parser.add_argument("--hour", type=int, default=12, help="Local sample hour, 0-23 (default 12).")
     args = parser.parse_args()
     if not args.store.is_file():
         parser.error("store must be an existing iPhone database export")
@@ -132,7 +135,7 @@ def main() -> None:
         parser.error("out-dir already exists; choose a new directory to preserve previous evidence")
     try:
         ZoneInfo(args.zone)
-        report, results = audit(str(args.store.resolve()), args.zone, args.days, args.end)
+        report, results = audit(str(args.store.resolve()), args.zone, args.days, args.end, args.hour)
     except (ValueError, KeyError, sqlite3.Error, ZoneInfoNotFoundError) as error:
         parser.error(str(error))
     args.out_dir.mkdir(parents=True, exist_ok=False)

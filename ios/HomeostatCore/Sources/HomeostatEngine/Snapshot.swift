@@ -105,6 +105,7 @@ public enum EngineSnapshot {
             "complete": Dictionary(uniqueKeysWithValues: inputs.coverage.map { ($0.domain.rawValue, $0.complete) }),
         ]
         var data = try JSONSerialization.data(withJSONObject: head, options: [.sortedKeys])
+        guard data.count <= maxBytes else { throw Failure.tooLarge }
         for row in inputs.rows {
             // Canonical JSON escapes control characters, so a body never holds a raw newline.
             guard !row.body.contains(newline), !row.createdAt.utf8.contains(tab) else { throw Failure.malformed }
@@ -119,10 +120,20 @@ public enum EngineSnapshot {
 
     static let newline = UInt8(ascii: "\n"), tab = UInt8(ascii: "\t")
 
+    /// Bound allocation before parsing, including files replaced since the app wrote them.
+    public static func read(from url: URL) throws -> Data {
+        let file = try FileHandle(forReadingFrom: url)
+        defer { try? file.close() }
+        let data = try file.read(upToCount: maxBytes + 1) ?? Data()
+        guard data.count <= maxBytes else { throw Failure.tooLarge }
+        return data
+    }
+
     /// Without `steps`: the app's own calculation at `now`. With `steps`: movement
     /// at the step read; every other domain held at the app run's cutoff (D-A).
     public static func calculate(_ data: Data, now: Instant, steps: StepRead? = nil,
                                  settings: EngineSettings = .standard) throws -> Result {
+        guard data.count <= maxBytes else { throw Failure.tooLarge }
         let lines = data.split(separator: newline, omittingEmptySubsequences: false)
         guard let first = lines.first, let root = try? JSONSerialization.jsonObject(with: first) as? [String: Any],
               root["version"] as? String == version else { throw Failure.unsupported }

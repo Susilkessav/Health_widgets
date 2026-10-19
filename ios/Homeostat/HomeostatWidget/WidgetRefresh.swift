@@ -24,8 +24,8 @@ enum WidgetRefresh {
 
     static func run(now: Date = Date()) async {
         guard let shared = SharedWidgetStore.shared(), case .state(let cache) = shared.read(),
-              let url = SharedWidgetStore.engineInputsURL, let inputs = try? Data(contentsOf: url) else {
-            return record("widget refresh: skipped (no cached result or inputs)")
+              let url = SharedWidgetStore.engineInputsURL, let inputs = try? EngineSnapshot.read(from: url) else {
+            return record("widget refresh: skipped (no cached result, unreadable or oversized inputs)")
         }
         let started = ContinuousClock.now, before = ProbeLog.footprintMB()
         let at = Instant(now)

@@ -190,6 +190,22 @@ final class EngineInputsSnapshotTests: XCTestCase {
         }
     }
 
+    func testOversizedSnapshotsAreRejectedBeforeParsing() throws {
+        let oversized = Data(repeating: UInt8(ascii: "x"), count: EngineSnapshot.maxBytes + 1)
+        XCTAssertThrowsError(try EngineSnapshot.calculate(oversized, now: NOW)) {
+            XCTAssertEqual($0 as? EngineSnapshot.Failure, .tooLarge)
+        }
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("snapshot-cap-\(UUID())")
+        defer { try? FileManager.default.removeItem(at: url) }
+        try oversized.write(to: url)
+        XCTAssertThrowsError(try EngineSnapshot.read(from: url)) {
+            XCTAssertEqual($0 as? EngineSnapshot.Failure, .tooLarge)
+        }
+        let atLimit = Data(oversized.prefix(EngineSnapshot.maxBytes))
+        try atLimit.write(to: url)
+        XCTAssertEqual(try EngineSnapshot.read(from: url), atLimit)
+    }
+
     /// P1: the engine's own HealthState becomes the facts and the daily summary.
     func testTheEnginesStateBecomesTheDailySummary() async throws {
         let store = try await importedStore()

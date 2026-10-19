@@ -38,6 +38,16 @@ def test_end_caps_the_window_and_missing_coverage_is_not_zero():
     assert [key for key, _ in points] == ["noon:2026-09-21", "noon:2026-09-22"]
 
 
+def test_morning_hour_samples_a_day_noon_would_exclude():
+    lower = at("2026-09-20T08:00:00Z")
+    through = {"sleep": at("2026-09-23T15:00:00Z")}  # 10:00 local: past 08:00, before noon
+    points = audit.checkpoints(lower, through, "America/Chicago", 30, hour=8)
+    assert [key for key, _ in points] == ["0800:2026-09-21", "0800:2026-09-22", "0800:2026-09-23"]
+    assert all(value.hour == 13 for _, value in points)
+    with pytest.raises(ValueError):
+        audit.checkpoints(lower, through, "America/Chicago", 30, hour=24)
+
+
 @pytest.mark.parametrize("days", [0, -1, 61])
 def test_rejects_invalid_windows_even_without_coverage(days):
     with pytest.raises(ValueError):
