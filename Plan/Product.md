@@ -4,7 +4,7 @@ Updated: 2026-10-09. What the app and widget should do and look like. Order,
 status and the checklist are in [Plan.md](Plan.md); the long-term vision is in
 [specs/Whole_project.md](specs/Whole_project.md).
 
-Status: review in progress; confirmation required before implementation. Redesign remains design studies, not native P1.
+Status: Today restyled natively (Liquid Glass, §12, 2026-10-09). Widget work is planned in §11, not built.
 **Visual design stays flexible:** Companion and separate rings are working
 options. Real-data findings and implementation contracts are in
 [Daily_loop_contract.md](specs/Daily_loop_contract.md).
@@ -400,3 +400,123 @@ check exposed that native form submission is blocked in the preview sandbox.
 These checks cover the study, not native accessibility, persistence, HealthKit
 coverage, historical goal versions, or workout deduplication. Those gates remain
 open. The ring contents, activity bins, color mapping and layout are proposals.
+
+
+## 11. Widget roadmap — research and plan, 2026-10-09
+
+The user asked for a widget that is easier to use, reacts faster, and leaves room
+for later ideas. This section is the plan. **No widget code changed in this pass.**
+The app's Today and explanation screens were restyled natively (§12).
+
+### 11.1 What the widget does today
+
+| Area | Today | Gap |
+|---|---|---|
+| Content | Avatar, one headline, one comparison, freshness; medium adds Low/Okay/High | Small widget has no value; the widget doesn't match the restyled app |
+| Check-in | `LogEnergyIntent` → App Group inbox → imported on the next app run; "You: okay energy · saving" | No visible selected state, no instant feedback, no undo from the widget |
+| Freshness | Updates through app wake, unlock retry and self-refresh (§4 paths 1–3); dims after 90 min | iOS decides the refresh times; the widget can't show live minute-by-minute data |
+| Timeline | Entries at lighting changes, workout-effect fades, stale time and midnight | No Smart Stack relevance; no animated changes between entries |
+| Surfaces | Home Screen small and medium | No large, Lock Screen, Control Center, StandBy layout or configuration |
+
+### 11.2 What iOS 26–27 offers
+
+| Capability | API | What it gives Homeostat | Fit |
+|---|---|---|---|
+| Interactive buttons | `Button(intent:)` (iOS 17) | Already used for energy. Add a selected state and `invalidatableContent()` so a tap shows feedback until the timeline reloads | **W1** |
+| Animated updates | `contentTransition(.numericText())`, view transitions between entries | Steps and times change with a short animation instead of a jump | **W1** |
+| Smart Stack relevance | `TimelineEntryRelevance` on entries | Rank the widget higher in a stack after a sleep change in the morning or right after a workout; lower on quiet days | **W1** |
+| Tinted and clear (Liquid Glass) Home Screens | `widgetRenderingMode`, `widgetAccentedRenderingMode` | The avatar already draws an accented figure; check clear mode and pick a mode per image. A forum report says accented images inside links can drop the deep link, so test on device | **W1** check |
+| Configurable widget | `AppIntentConfiguration`; iOS 27 adds App Intents customization and dynamic styling | One "Focus" choice (Your day, Sleep, Movement, Recovery, Check-in), with Your day as the default. Apple's guidance: one or two parameters and a working default | **W2** (P1b) |
+| More sizes | `.systemLarge`; `.accessoryCircular`, `.accessoryRectangular`, `.accessoryInline`; `.systemExtraLargePortrait` (new on iOS 27) | Large: headline plus two metrics and a small trend. Lock Screen: private glance with redaction. Extra-large portrait: "Your week" calendar | Large/Lock Screen **W2**; extra-large **W4** |
+| Controls | `ControlWidget` (iOS 18): Control Center, Lock Screen, Action button | "Log energy" from Control Center or the Action button (opens the check-in) | **W2** |
+| Live Activities | ActivityKit (Dynamic Island now in landscape on iOS 27) | Workout session timer, exercise and rest state (P2). Not for health summaries | **W3** (P2) |
+| Siri and Shortcuts | App Intents, `SnippetIntent` interactive snippets (iOS 26), intent schemas (iOS 27) | "Log my energy as low"; "How did I sleep?" answers with the same summary and a confirm/undo snippet | **W3** |
+| On-device language model | Foundation Models framework (iOS 26; iOS 27 adds image input and swappable models) | Plain-language "why" written on the iPhone, from the typed evidence only. Needs a capable device and a fallback. One beta report says health prompts were refused on iOS 27, so test early | **W4**, optional |
+| Push updates | `WidgetPushHandler` (iOS 26), APNs | Server-triggered reloads | **Blocked**: APNs needs the paid Developer Program and a server (Plan.md §5 Later) |
+
+What none of these change: iOS still sets the refresh budget, Health data stays
+unreadable while the phone is locked, and a reload request doesn't guarantee new
+readings. Every proposal keeps the §3 rules: freshness and age shown, no earlier
+day shown as today, privacy redaction, one tap to the exact evidence.
+
+### 11.3 Plan
+
+**W1 — polish the Your day widget (small change, after the P1 device checks).**
+
+1. Match the restyled app: rounded type, the domain icon next to the comparison,
+   deep-green accent, a freshness dot. Keep `containerBackground` so clear and
+   tinted modes still replace it with glass.
+2. Small widget: add the one value line under the headline (for example "6h 12m ·
+   usually 7h 05m"). Still one tap target.
+3. Check-in feedback: highlight the chosen level, mark buttons
+   `invalidatableContent()`, and show "Saved" only after the inbox write succeeds
+   (existing rule). Undo stays in the app.
+4. `contentTransition(.numericText())` on values and times.
+5. Smart Stack relevance per entry: high for a fresh change, medium after a workout
+   (falls with the sweat/glow fade already in the timeline), low for quiet,
+   stale or earlier-day results. Relevance never changes what the widget says.
+6. Check on the iPhone: clear and tinted modes, the deep link from the avatar,
+   VoiceOver, large text, and that a check-in tap shows feedback.
+
+**W2 — more places and a choice of focus (P1b, Step 10).**
+
+1. `AppIntentConfiguration` with one Focus parameter. Keep `kind =
+   "HomeostatWidget"` so widgets already placed keep working; a missing choice
+   means Your day.
+2. New focus views reuse `DailySummary` (the one mapping); ranking stays there,
+   not in views.
+3. Large: headline, two supporting metrics, compact 7-day trend from retained data.
+4. Lock Screen rectangular and inline, redacted when private.
+5. A "Log energy" Control for Control Center and the Action button.
+
+**W3 — act from anywhere (P2, Step 11).**
+
+1. Workout Live Activity with resumable sessions (Plan.md Step 11).
+2. Siri/Shortcuts: log energy, ask about today; interactive snippet confirms with undo.
+
+**W4 — later ideas, each needing its own review.**
+
+1. Extra-large portrait "Your week": the activity calendar (§10) on the Home Screen.
+2. On-device explanations with the Foundation Models framework, generated only from
+   the explanation's typed evidence, labeled as generated, with the plain text
+   explanation always available.
+3. Push-triggered refresh once a server and the paid program exist.
+4. Apple Watch complication sharing the same summary mapping.
+
+### 11.4 Room for future ideas: keep these seams
+
+- **One mapping.** Every surface (app, each widget size, Lock Screen, Siri,
+  Control) reads `DailySummary`. New wording or ranking goes there once.
+- **One intent per action.** `LogEnergyIntent` already serves the widget; the same
+  intent can back a Control, Siri and Shortcuts without new code paths.
+- **Stable widget kind.** Add families and a configuration to the existing widget
+  instead of new kinds, so placed widgets survive updates.
+- **Inbox for writes.** Any future widget or Control action writes to the App Group
+  inbox the app imports; extensions never write the app database.
+
+Sources: Apple, [WidgetKit foundations (WWDC26)](https://developer.apple.com/videos/play/wwdc2026/277/),
+[WWDC26 iOS guide](https://developer.apple.com/wwdc26/guides/ios/),
+[What's new in widgets (WWDC25)](https://developer.apple.com/videos/play/wwdc2025/278/),
+[WidgetPushHandler](https://developer.apple.com/documentation/widgetkit/widgetpushhandler).
+Community reports used only as cautions: [deep links with accented images](https://developer.apple.com/forums/thread/795408),
+[Foundation Models health-prompt refusals on iOS 27 beta](https://developer.apple.com/forums/thread/836673).
+
+## 12. Today restyle — built 2026-10-09
+
+The user asked for an app that feels simpler, more elegant and more futuristic.
+Built natively in `TodayView` and `ExplanationView`; wording still comes from
+`DailySummary`, and no rule above changed.
+
+- Liquid Glass cards over a soft sky gradient that follows the avatar's
+  time-of-day lighting (morning, day, evening, night), never the health state.
+  Increased contrast drops the gradient.
+- Time-of-day greeting with the date; rounded type; deep-green accent color.
+- Sleep, Recovery and Steps rows with an icon, value, observation time and a
+  learning progress bar. Each row opens the explanation.
+- Energy check-in as three large buttons with battery icons; the chosen level is
+  highlighted, saving gives a success haptic, and the acknowledgment animates in.
+- At accessibility text sizes, rows and the action button stack vertically and
+  icons scale.
+- Checked on the iOS 27 simulator: light, dark, largest accessibility text, row →
+  explanation, energy save and undo. Not checked: device, VoiceOver, Reduce
+  Transparency.

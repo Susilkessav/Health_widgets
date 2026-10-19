@@ -24,7 +24,7 @@ struct ExplanationView: View {
         List {
             Section {
                 if let message { Text(message).foregroundStyle(.secondary) }
-                Text(summary?.headline ?? state.widgetState.presentation.headline).font(.headline)
+                Text(summary?.headline ?? state.widgetState.presentation.headline).font(.title3.bold())
                 if let comparison = summary?.comparison { Text(comparison) }
                 if let secondary = state.widgetState.presentation.secondary { Text(secondary).foregroundStyle(.secondary) }
                 if !state.widgetState.primaryTrait.explainable {
@@ -81,6 +81,7 @@ struct ExplanationView: View {
             }
         }
         .navigationTitle("Why this")
+        .fontDesign(.rounded)
     }
 }
 
@@ -92,6 +93,16 @@ private struct MeasurementRow: View {
 
     var body: some View {
         let id = driver["id"]?.string ?? ""
+        let style = DomainStyle.of(id)
+        Label {
+            measurement(id)
+        } icon: {
+            Image(systemName: style.symbol).foregroundStyle(style.color)
+        }
+        .accessibilityElement(children: .combine)
+    }
+
+    @ViewBuilder func measurement(_ id: String) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(Self.names[id] ?? id).font(.headline)
             if let value = number(driver["value"]) {
@@ -105,7 +116,6 @@ private struct MeasurementRow: View {
                 Text("No reading for this result").foregroundStyle(.secondary)
             }
         }
-        .accessibilityElement(children: .combine)
     }
 
     func format(_ value: Double, _ id: String, usual: Bool = false) -> String {
